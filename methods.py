@@ -1,3 +1,4 @@
+import fnmatch
 import os
 import sys
 from enum import Enum
@@ -50,3 +51,25 @@ def print_warning(*values: object) -> None:
 def print_error(*values: object) -> None:
     """Prints an error message with formatting."""
     print(f"{ANSI.RED}{ANSI.BOLD}ERROR:{ANSI.REGULAR}", *values, ANSI.RESET, file=sys.stderr)
+
+def get_all_directories_recursive(root_directory):
+    directories = []
+    
+    for (search_path,directory_names,files) in os.walk(root_directory, topdown=True):
+        search_path_with_ending_slash = os.path.join(search_path, '').replace('\\', '/')
+        directories.append(search_path_with_ending_slash)
+    
+    return directories
+    
+def get_all_files_recursive(root_directory, filetype='*.*'):
+    files_matching_type = []
+
+    for (search_path,directory_names,files) in os.walk(root_directory, topdown=True):
+        search_path_with_ending_slash = os.path.join(search_path, '').replace('\\', '/')
+        
+        for (file) in files:
+            if fnmatch.fnmatch(file, '*' + filetype):
+                files_matching_type.append(str(search_path_with_ending_slash + file))
+                
+    return files_matching_type
+
