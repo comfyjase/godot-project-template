@@ -2,3 +2,7 @@
 	path = godot-cpp
 	url = https://github.com/godotengine/godot-cpp.git
 	branch = 4.3
+[submodule "godot"]
+	path = godot
+	url = https://github.com/comfyjase/godot.git
+	branch = 4.3
