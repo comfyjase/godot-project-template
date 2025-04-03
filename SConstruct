@@ -6,6 +6,7 @@ from methods import print_error
 from methods import get_all_directories_recursive
 from methods import get_all_files_recursive
 
+from msvs import configurations
 from msvs import generate_vs_project
 from msvs import generate_and_build_vs_solution
 
@@ -16,8 +17,6 @@ local_env = Environment(tools=["default"])
 
 customs = ["custom.py"]
 customs = [os.path.abspath(path) for path in customs]
-
-configurations = ['template_debug', 'template_release']    
 
 opts = Variables(customs, ARGUMENTS)
 
@@ -63,8 +62,11 @@ if env["target"] in ["editor", "template_debug"]:
         print("Not including class reference as we're targeting a pre-4.3 baseline.")
 
 env.Append(CPPPATH=get_all_directories_recursive("src/"))
-sources = get_all_files_recursive("src/", "*.cpp")
-includes = get_all_files_recursive("src/", "*.h")
+source_files = get_all_files_recursive("src/", "*.cpp")
+include_files = get_all_files_recursive("src/", "*.h")
+
+print("env[\"suffix\"] = " + env["suffix"])
+print("env[\"SHLIBSUFFIX\"] = " + env["SHLIBSUFFIX"])
 
 file = "{}{}{}".format(lib_name, env["suffix"], env["SHLIBSUFFIX"])
 filepath = ""
@@ -76,26 +78,28 @@ if env["platform"] == "macos" or env["platform"] == "ios":
 libraryfile = "bin/{}/{}{}".format(env["platform"], filepath, file)
 library = env.SharedLibrary(
     libraryfile,
-    source=sources,
+    source=source_files,
 )
 
 copy = env.InstallAs("{}/bin/{}/{}lib{}".format(project_dir, env["platform"], filepath, file), library)
 
-if env["vsproj"]:
-    platforms = [ "x64" ]
+if env["vsproj"]:    
+    resource_files = []
     
     misc_files = get_all_files_recursive("godot-cpp/gdextension/", "*.h")
     misc_files.extend(get_all_files_recursive("godot-cpp/gen/include/", "*.hpp"))
     misc_files.extend(get_all_files_recursive("godot-cpp/gen/src/", "*.cpp"))
     misc_files.extend(get_all_files_recursive("godot-cpp/include/", "*.hpp"))
     misc_files.extend(get_all_files_recursive("godot-cpp/src/", "*.cpp"))
+    misc_files.append(".runsettings")
     
-    game_project_file = generate_vs_project(env, env["vsproj_name"], configurations, platforms, sources, includes, misc_files)
+    game_project_file = generate_vs_project(env, source_files, include_files, resource_files, misc_files)
         
     vcxproj_files = []
+    vcxproj_files.append("godot/godot.vcxproj")
     vcxproj_files.append(game_project_file)
     
-    game_solution_file = generate_and_build_vs_solution(env, env["vsproj_name"], configurations, platforms, vcxproj_files)
+    game_solution_file = generate_and_build_vs_solution(env, vcxproj_files)
 else:
     default_args = [library, copy]
     Default(*default_args)
