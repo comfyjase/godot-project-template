@@ -2,9 +2,7 @@
 import os
 import sys
 
-from methods import print_error
-from methods import get_all_directories_recursive
-from methods import get_all_files_recursive
+from methods import *
 
 from msvs import configurations
 from msvs import generate_vs_project
@@ -40,33 +38,41 @@ Help(opts.GenerateHelpText(local_env))
 
 env = local_env.Clone()
 
-submodule_initialized = False
+dir_name = 'godot'
+if not is_submodule_initialized(dir_name):
+    sys.exit(1)
 dir_name = 'godot-cpp'
-if os.path.isdir(dir_name):
-    if os.listdir(dir_name):
-        submodule_initialized = True
-
-if not submodule_initialized:
-    print_error("""godot-cpp is not available within this folder, as Git submodules haven't been initialized.
-Run the following command to download godot-cpp:
-
-    git submodule update --init --recursive""")
+if not is_submodule_initialized(dir_name):
+    sys.exit(1)
+dir_name = 'thirdparty/imgui'
+if not is_submodule_initialized(dir_name):
     sys.exit(1)
 
 env = SConscript("godot-cpp/SConstruct", {"env": env, "customs": customs})
 
-if env["target"] in ["editor", "template_debug"]:
+if env["target"] in ["editor", "editor_game", "template_debug"]:
     try:
         doc_data = env.GodotCPPDocData("src/gen/doc_data.gen.cpp", source=Glob("doc_classes/*.xml", strings=True))
     except AttributeError:
         print("Not including class reference as we're targeting a pre-4.3 baseline.")
 
-env.Append(CPPPATH=get_all_directories_recursive("src/"))
-source_files = get_all_files_recursive("src/", "*.cpp")
-include_files = get_all_files_recursive("src/", "*.h")
+# imgui
+all_directories = ["game/addons/imgui-godot/include", "thirdparty/imgui" ]
+source_files = Glob("thirdparty/imgui/*.cpp", strings=True)
+include_files = Glob("thirdparty/imgui/*.h", strings=True)
+cpp_defines = [ 'IMGUI_USER_CONFIG="\\"imconfig-godot.h\\""', "IMGUI_ENABLED" ]
 
-print("env[\"suffix\"] = " + env["suffix"])
-print("env[\"SHLIBSUFFIX\"] = " + env["SHLIBSUFFIX"])
+# game
+all_directories.extend(get_all_directories_recursive("src/"))
+source_files.extend(get_all_files_recursive("src/", "*.cpp"))
+include_files.extend(get_all_files_recursive("src/", "*.h"))
+if env["target"] in ["editor", "editor_game", "template_debug"]:
+    cpp_defines.append("TOOLS_ENABLED")
+    cpp_defines.append("DEBUG_ENABLED")
+    cpp_defines.append("TESTS_ENABLED")
+
+env.Append(CPPPATH=all_directories)
+env.Append(CPPDEFINES=cpp_defines)
 
 file = "{}{}{}".format(lib_name, env["suffix"], env["SHLIBSUFFIX"])
 filepath = ""

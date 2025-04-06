@@ -4,18 +4,34 @@
 #include <godot_cpp/core/defs.hpp>
 #include <godot_cpp/godot.hpp>
 
+#if IMGUI_ENABLED
+#include <imgui-godot.h>
+#endif
+
+#include "custom_sprite.h"
+
 using namespace godot;
 
 void initialize_gdextension_types(ModuleInitializationLevel p_level)
 {
-	if (p_level != MODULE_INITIALIZATION_LEVEL_SCENE) {
+	if (p_level != MODULE_INITIALIZATION_LEVEL_SCENE)
+	{
 		return;
 	}
-	//GDREGISTER_CLASS(YourClass);
+
+#if IMGUI_ENABLED
+	ImGui::Godot::SyncImGuiPtrs();
+#endif
+
+	// Use GDREGISTER_CLASS if you want logic to run in editor as well...
+	//GDREGISTER_CLASS(CustomSprite);
+	GDREGISTER_RUNTIME_CLASS(CustomSprite);
 }
 
-void uninitialize_gdextension_types(ModuleInitializationLevel p_level) {
-	if (p_level != MODULE_INITIALIZATION_LEVEL_SCENE) {
+void uninitialize_gdextension_types(ModuleInitializationLevel p_level)
+{
+	if (p_level != MODULE_INITIALIZATION_LEVEL_SCENE)
+	{
 		return;
 	}
 }

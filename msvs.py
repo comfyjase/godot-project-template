@@ -59,30 +59,42 @@ def get_vs_cpp_defines():
     return [
         # editor
         [
+            'IMGUI_USER_CONFIG="\\"imconfig-godot.h\\""',
+            "IMGUI_ENABLED",
             "TOOLS_ENABLED",
             "DEBUG_ENABLED",
             "TESTS_ENABLED"
         ],
         # editor_game
         [
+            'IMGUI_USER_CONFIG="\\"imconfig-godot.h\\""',
+            "IMGUI_ENABLED",
             "TOOLS_ENABLED",
             "DEBUG_ENABLED",
             "TESTS_ENABLED"
         ],
         # template_debug
         [
+            'IMGUI_USER_CONFIG="\\"imconfig-godot.h\\""',
+            "IMGUI_ENABLED",
             "TOOLS_ENABLED",
             "DEBUG_ENABLED",
             "TESTS_ENABLED"
         ],
         # template_release
         [
+            'IMGUI_USER_CONFIG="\\"imconfig-godot.h\\""',
+            "IMGUI_ENABLED"
         ],
         # profile
         [
+            'IMGUI_USER_CONFIG="\\"imconfig-godot.h\\""',
+            "IMGUI_ENABLED"
         ],
         # production
         [
+            'IMGUI_USER_CONFIG="\\"imconfig-godot.h\\""',
+            "IMGUI_ENABLED"
         ]
     ]
 

@@ -6,3 +6,7 @@
 	path = godot
 	url = https://github.com/comfyjase/godot.git
 	branch = 4.3
+[submodule "thirdparty/imgui"]
+	path = thirdparty/imgui
+	url = https://github.com/ocornut/imgui
+	branch = docking

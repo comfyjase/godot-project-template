@@ -1,3 +1,12 @@
-[gd_scene format=3 uid="uid://cexe77d1cxuao"]
+[gd_scene load_steps=2 format=3 uid="uid://cexe77d1cxuao"]
 
-[node name="Node2D" type="Node2D"]
+[ext_resource type="Texture2D" uid="uid://dbx66sovxd1" path="res://icon.svg" id="1_ry8g2"]
+
+[node name="Main" type="Node2D"]
+
+[node name="CustomSprite" type="CustomSprite" parent="."]
+amplitude = 80.0
+speed = 2.0
+number = 5
+position = Vector2(343, 157)
+texture = ExtResource("1_ry8g2")

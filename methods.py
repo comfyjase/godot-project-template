@@ -73,3 +73,13 @@ def get_all_files_recursive(root_directory, filetype='*.*'):
                 
     return files_matching_type
 
+def is_submodule_initialized(dir_name):
+    if os.path.isdir(dir_name):
+        if os.listdir(dir_name):
+            return True
+            
+    print_error("""{dir_name} is not available within this folder, as Git submodules haven't been initialized.
+Run the following command to download {dir_name}:
+
+    git submodule update --init --recursive""")
+    return False
