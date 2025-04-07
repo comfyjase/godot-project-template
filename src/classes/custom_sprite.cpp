@@ -18,9 +18,9 @@ void CustomSprite::_bind_methods()
 	ClassDB::bind_method(D_METHOD("set_speed", "p_speed"), &CustomSprite::set_speed);
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "speed", PROPERTY_HINT_RANGE, "0,20,0.01"), "set_speed", "get_speed");
 
-	ClassDB::bind_method(D_METHOD("get_number"), &CustomSprite::get_number);
-	ClassDB::bind_method(D_METHOD("set_number", "p_number"), &CustomSprite::set_number);
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "number"), "set_number", "get_number");
+#if IMGUI_ENABLED
+	ClassDB::bind_method(D_METHOD("draw_debug"), &CustomSprite::draw_debug);
+#endif
 
 	ADD_SIGNAL(MethodInfo("position_changed", PropertyInfo(Variant::OBJECT, "node"), PropertyInfo(Variant::VECTOR2, "new_pos")));
 }
@@ -32,7 +32,6 @@ CustomSprite::CustomSprite()
 	time_emit = 0.0f;
 	amplitude = 10.0f;
 	speed = 1.0f;
-	number = 1;
 }
 
 CustomSprite::~CustomSprite()
@@ -61,31 +60,9 @@ void CustomSprite::_process(double delta)
 		if (Engine::get_singleton()->is_editor_hint())
 		{
 			emit_signal("position_changed", this, new_position);
-
 			time_emit = 0.0;
-
-			int i = 0;
-			++i;
 		}
 	}
-
-	draw_debug();
-}
-
-
-void CustomSprite::draw_debug()
-{
-#if IMGUI_ENABLED
-	//ImGui::ShowDemoWindow();
-
-	ImGui::SetNextWindowSize({ 200, 200 }, ImGuiCond_Once);
-	ImGui::Begin("Custom Sprite Debug");
-	{
-		ImGui::DragFloat("Amplitude", &amplitude);
-		ImGui::DragFloat("Speed", &speed);
-	}
-	ImGui::End();
-#endif
 }
 
 void CustomSprite::set_amplitude(const float p_amplitude)
@@ -108,12 +85,10 @@ float CustomSprite::get_speed() const
 	return speed;
 }
 
-void CustomSprite::set_number(const int p_number)
+void CustomSprite::draw_debug()
 {
-	speed = p_number;
-}
-
-int CustomSprite::get_number() const
-{
-	return number;
+#if IMGUI_ENABLED
+	ImGui::DragFloat("Amplitude", &amplitude);
+	ImGui::DragFloat("Speed", &speed);
+#endif
 }

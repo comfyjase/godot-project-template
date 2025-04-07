@@ -18,17 +18,13 @@ namespace godot
 		void _ready() override;
 		void _process(double delta) override;
 
-		// TODO: Some kind of _debug_draw function/system?
-		void draw_debug();
-
 		void set_amplitude(const float p_amplitude);
 		float get_amplitude() const;
 
 		void set_speed(const float p_speed);
 		float get_speed() const;
 
-		void set_number(const int p_number);
-		int get_number() const;
+		void draw_debug();
 
 	private:
 		Vector2 starting_position;
@@ -37,7 +33,5 @@ namespace godot
 		float time_emit;
 		float amplitude;
 		float speed;
-
-		int number;
 	};
 }

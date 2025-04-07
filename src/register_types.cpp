@@ -6,6 +6,7 @@
 
 #if IMGUI_ENABLED
 #include <imgui-godot.h>
+#include "imgui_debug.h"
 #endif
 
 #include "custom_sprite.h"
@@ -21,6 +22,7 @@ void initialize_gdextension_types(ModuleInitializationLevel p_level)
 
 #if IMGUI_ENABLED
 	ImGui::Godot::SyncImGuiPtrs();
+	GDREGISTER_RUNTIME_CLASS(ImGuiDebug);
 #endif
 
 	// Use GDREGISTER_CLASS if you want logic to run in editor as well...

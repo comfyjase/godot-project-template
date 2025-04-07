@@ -53,8 +53,8 @@ if "%configuration%" == "template_debug" (
 	)
 ) else (
 	set "export_command_line_type=release"
-	if not exist "%current_directory%\game\bin\windows\libgame.windows.template_release.x86_64.dll" (
-		echo "ERROR: "%current_directory%\game\bin\windows\libgame.windows.template_release.x86_64.dll" doesn't exist, please build project for %configuration% first."
+	if not exist "%current_directory%\game\bin\windows\libgame.windows.%configuration%.x86_64.dll" (
+		echo "ERROR: "%current_directory%\game\bin\windows\libgame.windows.%configuration%.x86_64.dll" doesn't exist, please build project for %configuration% first."
 		exit /b
 	)
 )

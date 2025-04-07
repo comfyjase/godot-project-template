@@ -20,9 +20,12 @@ opts = Variables(customs, ARGUMENTS)
 
 opts.Add(BoolVariable("vsproj", "Generate a Visual Studio solution", False))
 opts.Add("vsproj_name", "Name of the Visual Studio solution", lib_name)
-
+opts.Add(BoolVariable("debug_symbols", "Build with debugging symbols", True))
+opts.Add(BoolVariable("dev_build", "Developer build with dev-only debugging code (DEV_ENABLED)", False))
+opts.Add(BoolVariable("production", "Used for shipping a build", False))
+    
 # What configuration target to use for compiling with
-# Defaults to template_debug if not specified
+# Defaults to editor if not specified
 opts.Add(
     EnumVariable(
         key="target",
@@ -48,9 +51,23 @@ dir_name = 'thirdparty/imgui'
 if not is_submodule_initialized(dir_name):
     sys.exit(1)
 
+# Convert from game configuration to something godot/godot-cpp understands
+game_target = env["target"]
+if game_target == "editor_game":
+    env["target"] = "editor"
+elif game_target == "profile":
+    env["target"] = "template_release"
+elif game_target == "production":
+    env["target"] = "template_release"
+ARGUMENTS["target"] = env["target"]
+
 env = SConscript("godot-cpp/SConstruct", {"env": env, "customs": customs})
 
-if env["target"] in ["editor", "editor_game", "template_debug"]:
+# Then convert back to the original target value
+env["target"] = game_target
+ARGUMENTS["target"] = env["target"]
+
+if env["target"] in ["editor", "template_debug"]:
     try:
         doc_data = env.GodotCPPDocData("src/gen/doc_data.gen.cpp", source=Glob("doc_classes/*.xml", strings=True))
     except AttributeError:
@@ -66,13 +83,35 @@ cpp_defines = [ 'IMGUI_USER_CONFIG="\\"imconfig-godot.h\\""', "IMGUI_ENABLED" ]
 all_directories.extend(get_all_directories_recursive("src/"))
 source_files.extend(get_all_files_recursive("src/", "*.cpp"))
 include_files.extend(get_all_files_recursive("src/", "*.h"))
-if env["target"] in ["editor", "editor_game", "template_debug"]:
+if env["target"] in ["editor", "template_debug"]:
     cpp_defines.append("TOOLS_ENABLED")
     cpp_defines.append("DEBUG_ENABLED")
     cpp_defines.append("TESTS_ENABLED")
 
+if env["target"] == "production":
+    cpp_defines.append("PRODUCTION")
+elif env["target"] == "profile":
+    cpp_defines.append("PROFILE")
+elif env["target"] == "template_release":
+    cpp_defines.append("RELEASE")
+else:
+    cpp_defines.append("DEBUG")
+
 env.Append(CPPPATH=all_directories)
 env.Append(CPPDEFINES=cpp_defines)
+
+suffix = ".{}.{}".format(env["platform"], env["target"])
+if env.dev_build:
+    suffix += ".dev"
+if env["precision"] == "double":
+    suffix += ".double"
+suffix += "." + env["arch"]
+if env["ios_simulator"]:
+    suffix += ".simulator"
+if not env["threads"]:
+    suffix += ".nothreads"
+
+env["suffix"] = suffix
 
 file = "{}{}{}".format(lib_name, env["suffix"], env["SHLIBSUFFIX"])
 filepath = ""
@@ -98,6 +137,7 @@ if env["vsproj"]:
     misc_files.extend(get_all_files_recursive("godot-cpp/include/", "*.hpp"))
     misc_files.extend(get_all_files_recursive("godot-cpp/src/", "*.cpp"))
     misc_files.append(".runsettings")
+    misc_files.append(".editorconfig")
     
     game_project_file = generate_vs_project(env, source_files, include_files, resource_files, misc_files)
         

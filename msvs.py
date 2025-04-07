@@ -63,7 +63,8 @@ def get_vs_cpp_defines():
             "IMGUI_ENABLED",
             "TOOLS_ENABLED",
             "DEBUG_ENABLED",
-            "TESTS_ENABLED"
+            "TESTS_ENABLED",
+            "DEBUG"
         ],
         # editor_game
         [
@@ -71,7 +72,8 @@ def get_vs_cpp_defines():
             "IMGUI_ENABLED",
             "TOOLS_ENABLED",
             "DEBUG_ENABLED",
-            "TESTS_ENABLED"
+            "TESTS_ENABLED",
+            "DEBUG"
         ],
         # template_debug
         [
@@ -79,22 +81,26 @@ def get_vs_cpp_defines():
             "IMGUI_ENABLED",
             "TOOLS_ENABLED",
             "DEBUG_ENABLED",
-            "TESTS_ENABLED"
+            "TESTS_ENABLED",
+            "DEBUG"
         ],
         # template_release
         [
             'IMGUI_USER_CONFIG="\\"imconfig-godot.h\\""',
-            "IMGUI_ENABLED"
+            "IMGUI_ENABLED",
+            "RELEASE"
         ],
         # profile
         [
             'IMGUI_USER_CONFIG="\\"imconfig-godot.h\\""',
-            "IMGUI_ENABLED"
+            "IMGUI_ENABLED",
+            "PROFILE"
         ],
         # production
         [
             'IMGUI_USER_CONFIG="\\"imconfig-godot.h\\""',
-            "IMGUI_ENABLED"
+            "IMGUI_ENABLED",
+            "PRODUCTION"
         ]
     ]
 

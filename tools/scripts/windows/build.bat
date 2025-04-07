@@ -3,25 +3,11 @@ pushd %~dp0\..\..\..\
 
 set "current_directory=%cd%"
 set "configuration=%1"
-
-:: ===========================================================================
-:: Correct Configuration For Game
-set "game_configuration=%configuration%"
-if "%game_configuration%" == "editor_game" (
-	set "game_configuration=editor"
-) else (
-	if "%game_configuration%" == "profile" (
-		set "game_configuration=template_release"
-	) else (
-		if "%game_configuration%" == "production" (
-			set "game_configuration=template_release"
-		)
-	)
-)
+set "build_info_file=%cd%\bin\windows\build_info.txt"
 
 :: ===========================================================================
 :: Build Godot
-echo "Step 1) Build Godot %configuration%"
+echo "Step 1) Build Godot Engine"
 cd godot
 if "%configuration%" == "production" (
 	scons target=editor production=yes
@@ -54,17 +40,18 @@ echo "Step 3) Build Game %configuration%"
 cd ..
 cd ..
 if "%configuration%" == "production" (
-	scons target=%game_configuration% production=yes
+	scons target=%configuration% production=yes
 ) else (
 	if "%configuration%" == "profile" (
-		scons target=%game_configuration% production=yes debug_symbols=yes
+		scons target=%configuration% production=yes debug_symbols=yes
 	) else (
 		if "%configuration%" == "template_release" (
-			scons target=%game_configuration%
+			scons target=%configuration%
 		) else (
 			:: editor / editor_game / template_debug
-			scons target=%game_configuration% dev_build=yes dev_mode=yes
+			scons target=%configuration% dev_build=yes dev_mode=yes
 		)
 	)
 )
+
 popd
