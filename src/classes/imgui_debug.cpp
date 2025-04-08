@@ -1,9 +1,11 @@
 #include "imgui_debug.h"
 
-#include <godot_cpp/godot.hpp>
+#include <godot_cpp/classes/global_constants.hpp>
+#include <godot_cpp/classes/input.hpp>
+#include <godot_cpp/classes/input_event.hpp>
 #include <godot_cpp/classes/rendering_server.hpp>
-#include <godot_cpp/classes/viewport.hpp>
 #include <godot_cpp/classes/scene_tree.hpp>
+#include <godot_cpp/classes/viewport.hpp>
 
 #if IMGUI_ENABLED
 #include <imgui-godot.h>
@@ -15,6 +17,7 @@ void ImGuiDebug::_bind_methods()
 {}
 
 ImGuiDebug::ImGuiDebug() :
+		always_show_build_information(true),
 		cpu_times(),
 		gpu_times(),
 		current_frame_history_index(0),
@@ -22,7 +25,9 @@ ImGuiDebug::ImGuiDebug() :
 		viewport(nullptr),
 		viewport_rid(),
 		selected_node(nullptr),
-		any_hierarchy_item_selected(false)
+		any_hierarchy_item_selected(false),
+		joypad_button_just_pressed(false),
+		show(false)
 {}
 
 ImGuiDebug::~ImGuiDebug()
@@ -31,6 +36,11 @@ ImGuiDebug::~ImGuiDebug()
 void ImGuiDebug::_ready()
 {
 #if IMGUI_ENABLED
+	ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
+
+	input = Input::get_singleton();
+	ERR_FAIL_NULL_MSG(input, "Input hasn't been initialized yet?");
+
 	viewport = get_viewport();
 	ERR_FAIL_NULL_MSG(viewport, "Viewport hasn't been initialized yet?");
 	viewport_rid = viewport->get_viewport_rid();
@@ -50,9 +60,46 @@ void ImGuiDebug::_ready()
 #endif
 }
 
+void ImGuiDebug::_input(const Ref<InputEvent> &p_event)
+{
+#if IMGUI_ENABLED
+	bool imgui_toggle_debug_joypad_input = (input->is_joy_button_pressed(0, JoyButton::JOY_BUTTON_LEFT_STICK) && input->is_joy_button_pressed(0, JoyButton::JOY_BUTTON_RIGHT_STICK));
+
+	// Keyboard input
+	if (input->is_action_just_pressed("imgui_toggle_debug"))
+	{
+		show = !show;
+	}
+
+	// Joypad input
+	if (imgui_toggle_debug_joypad_input)
+	{
+		if (!joypad_button_just_pressed)
+		{
+			show = !show;
+			joypad_button_just_pressed = true;
+		}
+	}
+	else
+	{
+		joypad_button_just_pressed = false;
+	}
+#endif
+}
+
 void ImGuiDebug::_process(double delta)
 {
 #if IMGUI_ENABLED
+	if (!show)
+	{
+		if (always_show_build_information)
+		{
+			draw_build_information(delta);
+		}
+
+		return;
+	}
+
 	// Build Information
 	// Things such as build type, FPS and frame times
 	draw_build_information(delta);
@@ -100,7 +147,7 @@ void godot::ImGuiDebug::draw_build_information(double delta)
 	ImGui::SetNextWindowBgAlpha(0.5f);
 
 	// General Build Information
-	ImGui::Begin("BuildInformation", 0, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar);
+	ImGui::Begin("BuildInformation", 0, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoNav | ImGuiWindowFlags_NoNavFocus | ImGuiWindowFlags_NoNavInputs);
 	{
 #if DEBUG
 		ImGui::Text("Debug Build");
@@ -111,6 +158,8 @@ void godot::ImGuiDebug::draw_build_information(double delta)
 #elif PRODUCTION
 		ImGui::Text("Production Build");
 #endif
+		ImGui::Separator();
+
 		const double fps = 1.0 / delta;
 		if (fps <= 10.0)
 			ImGui::PushStyleColor(ImGuiCol_Text, BAD_COLOUR);
@@ -190,6 +239,7 @@ void ImGuiDebug::draw_node_hierarchy(Node *node)
 	else
 	{
 		flag |= ImGuiTreeNodeFlags_OpenOnArrow;
+		flag |= ImGuiTreeNodeFlags_OpenOnDoubleClick;
 	}
 
 	if (selected_node == node)
@@ -200,7 +250,7 @@ void ImGuiDebug::draw_node_hierarchy(Node *node)
 
 	if (ImGui::TreeNodeEx(node->get_name().c_unescape().utf8().get_data(), flag))
 	{
-		if (ImGui::IsItemClicked())
+		if (ImGui::IsItemClicked() || ImGui::IsItemActivated())
 		{
 			selected_node = node;
 			any_hierarchy_item_selected = true;
