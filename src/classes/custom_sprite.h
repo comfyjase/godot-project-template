@@ -34,4 +34,4 @@ namespace godot
 		float amplitude;
 		float speed;
 	};
-}
+} // namespace godot

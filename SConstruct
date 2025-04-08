@@ -51,23 +51,8 @@ dir_name = 'thirdparty/imgui'
 if not is_submodule_initialized(dir_name):
     sys.exit(1)
 
-# Convert from game configuration to something godot/godot-cpp understands
-game_target = env["target"]
-if game_target == "editor_game":
-    env["target"] = "editor"
-elif game_target == "profile":
-    env["target"] = "template_release"
-elif game_target == "production":
-    env["target"] = "template_release"
-ARGUMENTS["target"] = env["target"]
 
-env = SConscript("godot-cpp/SConstruct", {"env": env, "customs": customs})
-
-# Then convert back to the original target value
-env["target"] = game_target
-ARGUMENTS["target"] = env["target"]
-
-if env["target"] in ["editor", "template_debug"]:
+if env["target"] in ["editor", "editor_game", "template_debug"]:
     try:
         doc_data = env.GodotCPPDocData("src/gen/doc_data.gen.cpp", source=Glob("doc_classes/*.xml", strings=True))
     except AttributeError:
@@ -83,7 +68,7 @@ cpp_defines = [ 'IMGUI_USER_CONFIG="\\"imconfig-godot.h\\""', "IMGUI_ENABLED" ]
 all_directories.extend(get_all_directories_recursive("src/"))
 source_files.extend(get_all_files_recursive("src/", "*.cpp"))
 include_files.extend(get_all_files_recursive("src/", "*.h"))
-if env["target"] in ["editor", "template_debug"]:
+if env["target"] in ["editor", "editor_game", "template_debug"]:
     cpp_defines.append("TOOLS_ENABLED")
     cpp_defines.append("DEBUG_ENABLED")
     cpp_defines.append("TESTS_ENABLED")
@@ -100,18 +85,21 @@ else:
 env.Append(CPPPATH=all_directories)
 env.Append(CPPDEFINES=cpp_defines)
 
-suffix = ".{}.{}".format(env["platform"], env["target"])
-if env.dev_build:
-    suffix += ".dev"
-if env["precision"] == "double":
-    suffix += ".double"
-suffix += "." + env["arch"]
-if env["ios_simulator"]:
-    suffix += ".simulator"
-if not env["threads"]:
-    suffix += ".nothreads"
+# Convert from game configuration to something godot/godot-cpp understands
+game_target = env["target"]
+if game_target == "editor_game":
+    env["target"] = "editor"
+elif game_target == "profile":
+    env["target"] = "template_release"
+elif game_target == "production":
+    env["target"] = "template_release"
+ARGUMENTS["target"] = env["target"]
 
-env["suffix"] = suffix
+env = SConscript("godot-cpp/SConstruct", {"env": env, "customs": customs})
+
+# Then convert back to the original target value
+env["target"] = game_target
+ARGUMENTS["target"] = env["target"]
 
 file = "{}{}{}".format(lib_name, env["suffix"], env["SHLIBSUFFIX"])
 filepath = ""

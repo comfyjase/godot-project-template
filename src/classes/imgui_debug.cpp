@@ -1,6 +1,9 @@
 #include "imgui_debug.h"
 
 #include <godot_cpp/godot.hpp>
+#include <godot_cpp/classes/rendering_server.hpp>
+#include <godot_cpp/classes/viewport.hpp>
+#include <godot_cpp/classes/scene_tree.hpp>
 
 #if IMGUI_ENABLED
 #include <imgui-godot.h>
@@ -12,6 +15,12 @@ void ImGuiDebug::_bind_methods()
 {}
 
 ImGuiDebug::ImGuiDebug() :
+		cpu_times(),
+		gpu_times(),
+		current_frame_history_index(0),
+		rendering_server(nullptr),
+		viewport(nullptr),
+		viewport_rid(),
 		selected_node(nullptr),
 		any_hierarchy_item_selected(false)
 {}
@@ -19,33 +28,40 @@ ImGuiDebug::ImGuiDebug() :
 ImGuiDebug::~ImGuiDebug()
 {}
 
+void ImGuiDebug::_ready()
+{
+#if IMGUI_ENABLED
+	viewport = get_viewport();
+	ERR_FAIL_NULL_MSG(viewport, "Viewport hasn't been initialized yet?");
+	viewport_rid = viewport->get_viewport_rid();
+
+	rendering_server = RenderingServer::get_singleton();
+	ERR_FAIL_NULL_MSG(rendering_server, "Rendering server is invalid");
+	rendering_server->viewport_set_measure_render_time(viewport_rid, true);
+
+	const double initial_frame_time = (1000.0 / 120.0);
+	for (int i = 0; i < FRAME_TIME_HISTORY; ++i)
+	{
+		cpu_times[i] = initial_frame_time;
+		gpu_times[i] = initial_frame_time;
+	}
+
+	current_frame_history_index = 0;
+#endif
+}
+
 void ImGuiDebug::_process(double delta)
 {
 #if IMGUI_ENABLED
-	ImVec2 top_center = ImVec2(ImGui::GetMainViewport()->GetCenter().x, 0.0f);
-	ImGui::SetNextWindowPos(top_center, ImGuiCond_Appearing, ImVec2(0.5f, 0.0f));
-	ImGui::SetNextWindowBgAlpha(0.5f);
-
-	// General Build Information
-	ImGui::Begin("BuildInformation", 0, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar);
-	{
-#if DEBUG
-		ImGui::Text("Debug Build");
-#elif RELEASE
-		ImGui::Text("Release Build");
-#elif PROFILE
-		ImGui::Text("Profile Build");
-#elif PRODUCTION
-		ImGui::Text("Production Build");
-#endif
-		double fps = 1.0 / delta;
-		ImGui::Text("FPS: %.2f", fps);
-	}
-	ImGui::End();
+	// Build Information
+	// Things such as build type, FPS and frame times
+	draw_build_information(delta);
 
 	// Game Specific Debug
-	Node *root_node = find_parent("/root");
-	ERR_FAIL_NULL_MSG(root_node, "Does the scene have any nodes?");
+	SceneTree *scene_tree = get_tree();
+	ERR_FAIL_NULL_MSG(scene_tree, "Failed to get scene tree somehow");
+	Node *root_node = scene_tree->get_current_scene();
+	ERR_FAIL_NULL_MSG(root_node, "Failed to find root node somehow");
 
 	ImGui::Begin("Scene Hierarchy");
 	{
@@ -71,6 +87,97 @@ void ImGuiDebug::_process(double delta)
 #endif
 }
 
+void godot::ImGuiDebug::draw_build_information(double delta)
+{
+#if IMGUI_ENABLED
+	static const ImVec4 GOOD_COLOUR = ImVec4(0.0f, 1.0f, 0.0f, 1.0f);	// Green
+	static const ImVec4 OKAY_COLOUR = ImVec4(1.0f, 1.0f, 0.0f, 1.0f);	// Yellow
+	static const ImVec4 BAD_COLOUR = ImVec4(1.0f, 0.0f, 0.0f, 1.0f);	// Red
+
+	const ImVec2 top_center = ImVec2(ImGui::GetMainViewport()->GetCenter().x, 0.0f);
+	ImGui::SetNextWindowPos(top_center, ImGuiCond_Appearing, ImVec2(0.5f, 0.0f));
+	ImGui::SetNextWindowSize({ 200, 150 }, ImGuiCond_Once);
+	ImGui::SetNextWindowBgAlpha(0.5f);
+
+	// General Build Information
+	ImGui::Begin("BuildInformation", 0, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar);
+	{
+#if DEBUG
+		ImGui::Text("Debug Build");
+#elif RELEASE
+		ImGui::Text("Release Build");
+#elif PROFILE
+		ImGui::Text("Profile Build");
+#elif PRODUCTION
+		ImGui::Text("Production Build");
+#endif
+		const double fps = 1.0 / delta;
+		if (fps <= 10.0)
+			ImGui::PushStyleColor(ImGuiCol_Text, BAD_COLOUR);
+		else if (fps < 60.0)
+			ImGui::PushStyleColor(ImGuiCol_Text, OKAY_COLOUR);
+		else
+			ImGui::PushStyleColor(ImGuiCol_Text, GOOD_COLOUR);
+		ImGui::Text("FPS: %.2f", fps);
+		ImGui::PopStyleColor();
+
+		const double frame_time = 1000.0 / fps;
+		if (frame_time >= 100.0)
+			ImGui::PushStyleColor(ImGuiCol_Text, BAD_COLOUR);
+		else if (frame_time > 16.66)
+			ImGui::PushStyleColor(ImGuiCol_Text, OKAY_COLOUR);
+		else
+			ImGui::PushStyleColor(ImGuiCol_Text, GOOD_COLOUR);
+		ImGui::Text("Frame Time: %.2fms", frame_time);
+		ImGui::PopStyleColor();
+
+		const double cpu_frame_time = rendering_server->viewport_get_measured_render_time_cpu(viewport_rid) + rendering_server->get_frame_setup_time_cpu();
+		const double gpu_frame_time = rendering_server->viewport_get_measured_render_time_gpu(viewport_rid);
+		cpu_times[current_frame_history_index] = cpu_frame_time;
+		gpu_times[current_frame_history_index] = gpu_frame_time;
+
+		double cpu_time = 0.0;
+		for (int i = 0; i < FRAME_TIME_HISTORY; ++i)
+		{
+			cpu_time += cpu_times[i];
+		}
+		cpu_time /= FRAME_TIME_HISTORY;
+		cpu_time = MAX(0.01, cpu_time);
+
+		double gpu_time = 0.0;
+		for (int i = 0; i < FRAME_TIME_HISTORY; ++i)
+		{
+			gpu_time += gpu_times[i];
+		}
+		gpu_time /= FRAME_TIME_HISTORY;
+		gpu_time = MAX(0.01, gpu_time);
+
+		if (cpu_time >= 15.0)
+			ImGui::PushStyleColor(ImGuiCol_Text, BAD_COLOUR);
+		else if (cpu_time > 7.0)
+			ImGui::PushStyleColor(ImGuiCol_Text, OKAY_COLOUR);
+		else
+			ImGui::PushStyleColor(ImGuiCol_Text, GOOD_COLOUR);
+		ImGui::Text("CPU Time: %.2fms", cpu_time);
+		ImGui::PopStyleColor();
+
+		if (gpu_time >= 15.0)
+			ImGui::PushStyleColor(ImGuiCol_Text, BAD_COLOUR);
+		else if (gpu_time > 7.0)
+			ImGui::PushStyleColor(ImGuiCol_Text, OKAY_COLOUR);
+		else
+			ImGui::PushStyleColor(ImGuiCol_Text, GOOD_COLOUR);
+		ImGui::Text("GPU Time: %.2fms", gpu_time);
+		ImGui::PopStyleColor();
+	}
+	ImGui::End();
+
+	++current_frame_history_index;
+	if ((current_frame_history_index + 1) == FRAME_TIME_HISTORY)
+		current_frame_history_index = 0;
+#endif
+}
+
 void ImGuiDebug::draw_node_hierarchy(Node *node)
 {
 #if IMGUI_ENABLED
@@ -91,8 +198,7 @@ void ImGuiDebug::draw_node_hierarchy(Node *node)
 		any_hierarchy_item_selected = true;
 	}
 
-	const char* node_name = node->get_name().c_unescape().utf8().get_data();
-	if (ImGui::TreeNodeEx(node_name, flag))
+	if (ImGui::TreeNodeEx(node->get_name().c_unescape().utf8().get_data(), flag))
 	{
 		if (ImGui::IsItemClicked())
 		{
