@@ -1,8 +1,9 @@
 #include "imgui_debug.h"
 
+#include <godot_cpp/core/class_db.hpp>
+#include <godot_cpp/classes/engine.hpp>
 #include <godot_cpp/classes/global_constants.hpp>
 #include <godot_cpp/classes/input.hpp>
-#include <godot_cpp/classes/input_event.hpp>
 #include <godot_cpp/classes/rendering_server.hpp>
 #include <godot_cpp/classes/scene_tree.hpp>
 #include <godot_cpp/classes/viewport.hpp>
@@ -21,6 +22,7 @@ ImGuiDebug::ImGuiDebug() :
 		cpu_times(),
 		gpu_times(),
 		current_frame_history_index(0),
+		input(nullptr),
 		rendering_server(nullptr),
 		viewport(nullptr),
 		viewport_rid(),
@@ -149,15 +151,36 @@ void godot::ImGuiDebug::draw_build_information(double delta)
 	// General Build Information
 	ImGui::Begin("BuildInformation", 0, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoNav | ImGuiWindowFlags_NoNavFocus | ImGuiWindowFlags_NoNavInputs);
 	{
-#if DEBUG
-		ImGui::Text("Debug Build");
-#elif RELEASE
-		ImGui::Text("Release Build");
-#elif PROFILE
-		ImGui::Text("Profile Build");
-#elif PRODUCTION
-		ImGui::Text("Production Build");
+		String platform = "None";
+#if PLATFORM_WIN32
+#error Win32 isn't supported by imgui-godot and doesn't have IMGUI_ENABLED defined
+		return;
+#elif PLATFORM_WIN64
+		platform = "Win64";
+#elif PLATFORM_LINUX
+		platform = "Linux";
+#elif PLATFORM_MACOS
+		platform = "MacOS";
+#else
+		#error Unsupported platform, should IMGUI_ENABLED by defined for this platform?
+		return;
 #endif
+
+		String configuration = "None";
+#if DEBUG
+		configuration = "Debug";
+#elif RELEASE
+		configuration = "Release";
+#elif PROFILE
+		configuration = "Profile";
+#elif PRODUCTION
+		configuration = "Production";
+#else
+		#error Unsupported configuration
+		return;
+#endif
+
+		ImGui::Text("%s %s Build", platform.c_unescape().utf8().get_data(), configuration.c_unescape().utf8().get_data());
 		ImGui::Separator();
 
 		const double fps = 1.0 / delta;

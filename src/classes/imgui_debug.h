@@ -1,12 +1,12 @@
 #pragma once
 
+#include <godot_cpp/classes/input_event.hpp>
 #include <godot_cpp/classes/node.hpp>
 #include <godot_cpp/variant/rid.hpp>
 
 namespace godot
 {
 	class Input;
-	class InputEvent;
 	class RenderingServer;
 	class Viewport;
 
