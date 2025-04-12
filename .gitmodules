@@ -10,3 +10,6 @@
 	path = thirdparty/imgui
 	url = https://github.com/ocornut/imgui
 	branch = docking
+[submodule "thirdparty/emsdk"]
+	path = thirdparty/emsdk
+	url = https://github.com/emscripten-core/emsdk.git
