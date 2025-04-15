@@ -9,3 +9,7 @@
 [submodule "thirdparty/emsdk"]
 	path = thirdparty/emsdk
 	url = https://github.com/emscripten-core/emsdk.git
+[submodule "godot-cpp"]
+	path = godot-cpp
+	url = https://github.com/comfyjase/godot-cpp.git
+	branch = 4.4
