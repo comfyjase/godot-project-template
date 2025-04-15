@@ -1,11 +1,11 @@
 [submodule "godot-cpp"]
 	path = godot-cpp
 	url = https://github.com/godotengine/godot-cpp.git
-	branch = 4.3
+	branch = 4.4
 [submodule "godot"]
 	path = godot
 	url = https://github.com/comfyjase/godot.git
-	branch = 4.3
+	branch = 4.4
 [submodule "thirdparty/imgui"]
 	path = thirdparty/imgui
 	url = https://github.com/ocornut/imgui
