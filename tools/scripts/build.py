@@ -33,6 +33,8 @@ elif architecture == "x64" or architecture == "linux":
     architecture = "x86_64"
 elif architecture == "web":
     architecture = "wasm32"
+elif architecture == "android": # TODO: Add different android processor platforms? E.g. android_arm32, android_arm64, android_x86_32, android_x86_64?
+    architecture = "arm64"
     
 using_wsl = (platform.system() == "Windows") and (platform_arg == "linux")
 
@@ -61,7 +63,9 @@ if platform_arg == "web":
         build_command = build_command.replace("dev_build=yes dev_mode=yes", "dlink_enabled=yes")
     else:
         build_command += " dlink_enabled=yes"
-        
+elif platform_arg == "android":
+    build_command += " generate_apk=yes"
+    
 return_code = subprocess.call(build_command, shell=True)
 if return_code != 0:
     print(f"Error: Failed to build godot for {platform_arg} {configuration} {architecture} {precision}")
@@ -72,26 +76,23 @@ if return_code != 0:
 print("Step 2) Generate C++ extension api files", flush=True)
 os.chdir("bin")
 
-godot_binary_file_name = ""
-if precision == "single":
-    godot_binary_file_name = f"godot.{platform_arg}.editor.dev.{architecture}"
-elif precision == "double":
-    godot_binary_file_name = f"godot.{platform_arg}.editor.dev.{precision}.{architecture}"
+godot_engine_architecture = ""
+is_os_64_bit = sys.maxsize > 2**32
+if is_os_64_bit:
+    godot_engine_architecture = "x86_64"
+else:
+    godot_engine_architecture = "x86_32"
 
-if platform_arg == "windows":
-    godot_binary_file_name += ".exe"
-elif platform_arg == "linux":
-    godot_binary_file_name = godot_binary_file_name.replace("linux", "linuxbsd")
-elif platform_arg == "macos":
-    godot_binary_file_name += ".universal"
-elif platform_arg == "web":
-    godot_binary_file_name = godot_binary_file_name.replace("wasm32", "x86_64")
-    if platform.system() == "Windows":
-        godot_binary_file_name = godot_binary_file_name.replace("web", "windows") + ".exe"
-    elif platform.system() == "Linux":
-        godot_binary_file_name = godot_binary_file_name.replace("web", "linuxbsd")
-    elif platform.system() == "Darwin":
-        godot_binary_file_name = godot_binary_file_name.replace("web", "macos") + ".universal"
+godot_binary_file_name = ""
+if platform.system() == "Windows":
+    godot_binary_file_name = f"godot.windows.editor.dev.{godot_engine_architecture}.exe"
+elif platform.system() == "Linux":
+    godot_binary_file_name = f"godot.linuxbsd.editor.dev.{godot_engine_architecture}"
+elif platform.system() == "Darwin":
+    godot_binary_file_name = f"godot.macos.editor.dev.{godot_engine_architecture}"
+
+if precision == "double":
+    godot_binary_file_name = godot_binary_file_name.replace(f"{architecture}", f"{precision}.{architecture}")
 
 build_command = ""
 if using_wsl:

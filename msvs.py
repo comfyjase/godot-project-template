@@ -21,6 +21,8 @@ is_os_64_bit = sys.maxsize > 2**32
 
 using_wsl = False
 
+# TODO: Abstract out specific platform logic, settings and values into separate python scripts and then reference in here...
+
 if platform.system() == "Linux":
     vs_platforms = [ "linux" ]
 elif platform.system() == "Darwin":
@@ -37,6 +39,11 @@ elif platform.system() == "Windows":
 
 if is_os_64_bit:
     vs_platforms.append("web")
+
+is_android_setup = False
+if "ANDROID_HOME" in os.environ:
+    vs_platforms.append("android")
+    is_android_setup = True
 
 def set_vs_environment_variables(env):
     if not env.get('MSVS'):
@@ -79,10 +86,14 @@ def get_vs_debug_settings():
                 binary_file_name = "python.exe"
             else:
                 binary_file_name = "python"
+        elif godot_platform == "android":
+            binary_file_name = "adb.exe"
+            
         binary_file_names.append(binary_file_name)
     
     if is_os_64_bit:
-        web_command_arguments_to_run_editor = "godot/platform/web/serve.py";
+        web_command_arguments_to_run_editor = "godot/platform/web/serve.py"
+        android_command_arguments_to_run_editor = "install godot/bin/android_editor_builds/android_editor-android-dev.apk"
         
         if using_wsl:            
             wsl_command_arguments_to_open_project_in_editor = f"./godot/bin/{binary_file_names[2]} --editor --path \"game\""
@@ -109,6 +120,11 @@ def get_vs_debug_settings():
                     'LocalDebuggerCommand': binary_file_names[3],
                     'LocalDebuggerCommandArguments': web_command_arguments_to_run_editor
                 },
+                # android editor
+                {
+                    'LocalDebuggerCommand': binary_file_names[4],
+                    'LocalDebuggerCommandArguments': android_command_arguments_to_run_editor
+                },
                 # Win32 editor_game
                 {
                     'LocalDebuggerCommand': f"$(SolutionDir)godot/bin/{binary_file_names[0]}",
@@ -129,6 +145,11 @@ def get_vs_debug_settings():
                     'LocalDebuggerCommand': binary_file_names[3],
                     'LocalDebuggerCommandArguments': web_command_arguments_to_run_editor
                 },
+                # android editor_game
+                {
+                    'LocalDebuggerCommand': binary_file_names[4],
+                    'LocalDebuggerCommandArguments': android_command_arguments_to_run_editor
+                },
                 # Win32 template_debug
                 {
                 },
@@ -139,6 +160,9 @@ def get_vs_debug_settings():
                 {
                 },
                 # web template_debug
+                {
+                },
+                # android template_debug
                 {
                 },
                 # Win32 template_release
@@ -153,6 +177,9 @@ def get_vs_debug_settings():
                 # web template_release
                 {
                 },
+                # android template_debug
+                {
+                },
                 # Win32 profile
                 {
                 },
@@ -163,6 +190,9 @@ def get_vs_debug_settings():
                 {
                 },
                 # web profile
+                {
+                },
+                # android template_debug
                 {
                 },
                 # Win32 production
@@ -176,7 +206,10 @@ def get_vs_debug_settings():
                 },
                 # web production
                 {
-                }
+                },
+                # android template_debug
+                {
+                },
             ])
         else:
             vs_debug_settings.extend([
@@ -195,6 +228,11 @@ def get_vs_debug_settings():
                     'LocalDebuggerCommand': binary_file_names[3],
                     'LocalDebuggerCommandArguments': web_command_arguments_to_run_editor
                 },
+                # android editor
+                {
+                    'LocalDebuggerCommand': binary_file_names[4],
+                    'LocalDebuggerCommandArguments': android_command_arguments_to_run_editor
+                },
                 # Win32 editor_game
                 {
                     'LocalDebuggerCommand': f"$(SolutionDir)godot/bin/{binary_file_names[0]}", 
@@ -210,6 +248,11 @@ def get_vs_debug_settings():
                     'LocalDebuggerCommand': binary_file_names[3],
                     'LocalDebuggerCommandArguments': web_command_arguments_to_run_editor
                 },
+                # android editor_game
+                {
+                    'LocalDebuggerCommand': binary_file_names[4],
+                    'LocalDebuggerCommandArguments': android_command_arguments_to_run_editor
+                },
                 # Win32 template_debug
                 {
                 },
@@ -217,6 +260,9 @@ def get_vs_debug_settings():
                 {
                 },
                 # web template_debug
+                {
+                },
+                # android template_debug
                 {
                 },
                 # Win32 template_release
@@ -228,6 +274,9 @@ def get_vs_debug_settings():
                 # web template_release
                 {
                 },
+                # android template_release
+                {
+                },
                 # Win32 profile
                 {
                 },
@@ -237,6 +286,9 @@ def get_vs_debug_settings():
                 # web profile
                 {
                 },
+                # android profile
+                {
+                },
                 # Win32 production
                 {
                 },
@@ -244,6 +296,9 @@ def get_vs_debug_settings():
                 {
                 },
                 # web production
+                {
+                },
+                # android production
                 {
                 }
             ])
@@ -317,6 +372,14 @@ def get_vs_cpp_defines():
                     "TESTS_ENABLED",
                     "DEBUG"
                 ],
+                # android editor
+                [
+                    "PLATFORM_ANDROID",
+                    "TOOLS_ENABLED",
+                    "DEBUG_ENABLED",
+                    "TESTS_ENABLED",
+                    "DEBUG"
+                ],
                 # Win32 editor_game
                 [
                     "PLATFORM_WIN32",
@@ -348,6 +411,14 @@ def get_vs_cpp_defines():
                 # web editor_game
                 [
                     "PLATFORM_WEB",
+                    "TOOLS_ENABLED",
+                    "DEBUG_ENABLED",
+                    "TESTS_ENABLED",
+                    "DEBUG"
+                ],
+                # android editor_game
+                [
+                    "PLATFORM_ANDROID",
                     "TOOLS_ENABLED",
                     "DEBUG_ENABLED",
                     "TESTS_ENABLED",
@@ -389,6 +460,14 @@ def get_vs_cpp_defines():
                     "TESTS_ENABLED",
                     "DEBUG"
                 ],
+                # android template_debug
+                [
+                    "PLATFORM_ANDROID",
+                    "TOOLS_ENABLED",
+                    "DEBUG_ENABLED",
+                    "TESTS_ENABLED",
+                    "DEBUG"
+                ],
                 # Win32 template_release
                 [
                     "PLATFORM_WIN32",
@@ -411,6 +490,11 @@ def get_vs_cpp_defines():
                 # web template_release
                 [
                     "PLATFORM_WEB",
+                    "RELEASE"
+                ],
+                # android template_release
+                [
+                    "PLATFORM_ANDROID",
                     "RELEASE"
                 ],
                 # Win32 profile
@@ -437,6 +521,11 @@ def get_vs_cpp_defines():
                     "PLATFORM_WEB",
                     "PROFILE"
                 ],
+                # android profile
+                [
+                    "PLATFORM_ANDROID",
+                    "PROFILE"
+                ],
                 # Win32 production
                 [
                     "PLATFORM_WIN32",
@@ -459,6 +548,11 @@ def get_vs_cpp_defines():
                 # web production
                 [
                     "PLATFORM_WEB",
+                    "PRODUCTION"
+                ],
+                # android production
+                [
+                    "PLATFORM_ANDROID",
                     "PRODUCTION"
                 ]
             ])
@@ -490,6 +584,14 @@ def get_vs_cpp_defines():
                     "TESTS_ENABLED",
                     "DEBUG"
                 ],
+                # android editor
+                [
+                    "PLATFORM_ANDROID",
+                    "TOOLS_ENABLED",
+                    "DEBUG_ENABLED",
+                    "TESTS_ENABLED",
+                    "DEBUG"
+                ],
                 # Win32 editor_game
                 [
                     "PLATFORM_WIN32",
@@ -511,6 +613,14 @@ def get_vs_cpp_defines():
                 # web editor_game
                 [
                     "PLATFORM_WEB",
+                    "TOOLS_ENABLED",
+                    "DEBUG_ENABLED",
+                    "TESTS_ENABLED",
+                    "DEBUG"
+                ],
+                # android editor_game
+                [
+                    "PLATFORM_ANDROID",
                     "TOOLS_ENABLED",
                     "DEBUG_ENABLED",
                     "TESTS_ENABLED",
@@ -542,6 +652,14 @@ def get_vs_cpp_defines():
                     "TESTS_ENABLED",
                     "DEBUG"
                 ],
+                # android template_debug
+                [
+                    "PLATFORM_ANDROID",
+                    "TOOLS_ENABLED",
+                    "DEBUG_ENABLED",
+                    "TESTS_ENABLED",
+                    "DEBUG"
+                ],
                 # Win32 template_release
                 [
                     "PLATFORM_WIN32",
@@ -557,6 +675,11 @@ def get_vs_cpp_defines():
                 # web template_release
                 [
                     "PLATFORM_WEB",
+                    "RELEASE"
+                ],
+                # android template_release
+                [
+                    "PLATFORM_ANDROID",
                     "RELEASE"
                 ],
                 # Win32 profile
@@ -576,6 +699,11 @@ def get_vs_cpp_defines():
                     "PLATFORM_WEB",
                     "PROFILE"
                 ],
+                # android profile
+                [
+                    "PLATFORM_ANDROID",
+                    "PROFILE"
+                ],
                 # Win32 production
                 [
                     "PLATFORM_WIN32",
@@ -591,6 +719,11 @@ def get_vs_cpp_defines():
                 # web production
                 [
                     "PLATFORM_WEB",
+                    "PRODUCTION"
+                ],
+                # android production
+                [
+                    "PLATFORM_ANDROID",
                     "PRODUCTION"
                 ]
             ])
@@ -661,6 +794,10 @@ def get_vs_cpp_flags():
                 [
                     "/nologo /utf-8 /MT /Zi /FS /O2 /TP /std:c++17 /Zc:__cplusplus"
                 ],
+                # android editor
+                [
+                    "/nologo /utf-8 /MT /Zi /FS /O2 /TP /std:c++17 /Zc:__cplusplus"
+                ],
                 # Win32 editor_game
                 [
                     "/nologo /utf-8 /MT /Zi /FS /O2 /TP /std:c++17 /Zc:__cplusplus"
@@ -674,6 +811,10 @@ def get_vs_cpp_flags():
                     "/nologo /utf-8 /MT /Zi /FS /O2 /TP /std:c++17 /Zc:__cplusplus"
                 ],
                 # web editor_game
+                [
+                    "/nologo /utf-8 /MT /Zi /FS /O2 /TP /std:c++17 /Zc:__cplusplus"
+                ],
+                # android editor_game
                 [
                     "/nologo /utf-8 /MT /Zi /FS /O2 /TP /std:c++17 /Zc:__cplusplus"
                 ],
@@ -693,6 +834,10 @@ def get_vs_cpp_flags():
                 [
                     "/nologo /utf-8 /MT /Zi /FS /O2 /TP /std:c++17 /Zc:__cplusplus"
                 ],
+                # android template_debug
+                [
+                    "/nologo /utf-8 /MT /Zi /FS /O2 /TP /std:c++17 /Zc:__cplusplus"
+                ],
                 # Win32 template_release
                 [
                     "/nologo /utf-8 /MT /FS /O2 /TP /std:c++17 /Zc:__cplusplus"
@@ -706,6 +851,10 @@ def get_vs_cpp_flags():
                     "/nologo /utf-8 /MT /FS /O2 /TP /std:c++17 /Zc:__cplusplus"
                 ],
                 # web template_release
+                [
+                    "/nologo /utf-8 /MT /FS /O2 /TP /std:c++17 /Zc:__cplusplus"
+                ],
+                # android template_release
                 [
                     "/nologo /utf-8 /MT /FS /O2 /TP /std:c++17 /Zc:__cplusplus"
                 ],
@@ -725,6 +874,10 @@ def get_vs_cpp_flags():
                 [
                     "/nologo /utf-8 /MT /Zi /FS /O2 /TP /std:c++17 /Zc:__cplusplus"
                 ],
+                # android profile
+                [
+                    "/nologo /utf-8 /MT /Zi /FS /O2 /TP /std:c++17 /Zc:__cplusplus"
+                ],
                 # Win32 production
                 [
                     "/nologo /utf-8 /MT /FS /O2 /TP /std:c++17 /Zc:__cplusplus"
@@ -738,6 +891,10 @@ def get_vs_cpp_flags():
                     "/nologo /utf-8 /MT /FS /O2 /TP /std:c++17 /Zc:__cplusplus"
                 ],
                 # web production
+                [
+                    "/nologo /utf-8 /MT /FS /O2 /TP /std:c++17 /Zc:__cplusplus"
+                ],
+                # android production
                 [
                     "/nologo /utf-8 /MT /FS /O2 /TP /std:c++17 /Zc:__cplusplus"
                 ]
@@ -756,6 +913,10 @@ def get_vs_cpp_flags():
                 [
                     "/nologo /utf-8 /MT /Zi /FS /O2 /TP /std:c++17 /Zc:__cplusplus"
                 ],
+                # android editor
+                [
+                    "/nologo /utf-8 /MT /Zi /FS /O2 /TP /std:c++17 /Zc:__cplusplus"
+                ],
                 # Win32 editor_game
                 [
                     "/nologo /utf-8 /MT /Zi /FS /O2 /TP /std:c++17 /Zc:__cplusplus"
@@ -765,6 +926,10 @@ def get_vs_cpp_flags():
                     "/nologo /utf-8 /MT /Zi /FS /O2 /TP /std:c++17 /Zc:__cplusplus"
                 ],
                 # web editor_game
+                [
+                    "/nologo /utf-8 /MT /Zi /FS /O2 /TP /std:c++17 /Zc:__cplusplus"
+                ],
+                # android editor_game
                 [
                     "/nologo /utf-8 /MT /Zi /FS /O2 /TP /std:c++17 /Zc:__cplusplus"
                 ],
@@ -780,6 +945,10 @@ def get_vs_cpp_flags():
                 [
                     "/nologo /utf-8 /MT /Zi /FS /O2 /TP /std:c++17 /Zc:__cplusplus"
                 ],
+                # android template_debug
+                [
+                    "/nologo /utf-8 /MT /Zi /FS /O2 /TP /std:c++17 /Zc:__cplusplus"
+                ],
                 # Win32 template_release
                 [
                     "/nologo /utf-8 /MT /FS /O2 /TP /std:c++17 /Zc:__cplusplus"
@@ -789,6 +958,10 @@ def get_vs_cpp_flags():
                     "/nologo /utf-8 /MT /FS /O2 /TP /std:c++17 /Zc:__cplusplus"
                 ],
                 # web template_release
+                [
+                    "/nologo /utf-8 /MT /FS /O2 /TP /std:c++17 /Zc:__cplusplus"
+                ],
+                # android template_release
                 [
                     "/nologo /utf-8 /MT /FS /O2 /TP /std:c++17 /Zc:__cplusplus"
                 ],
@@ -804,6 +977,10 @@ def get_vs_cpp_flags():
                 [
                     "/nologo /utf-8 /MT /Zi /FS /O2 /TP /std:c++17 /Zc:__cplusplus"
                 ],
+                # android profile
+                [
+                    "/nologo /utf-8 /MT /Zi /FS /O2 /TP /std:c++17 /Zc:__cplusplus"
+                ],
                 # Win32 production
                 [
                     "/nologo /utf-8 /MT /FS /O2 /TP /std:c++17 /Zc:__cplusplus"
@@ -813,6 +990,10 @@ def get_vs_cpp_flags():
                     "/nologo /utf-8 /MT /FS /O2 /TP /std:c++17 /Zc:__cplusplus"
                 ],
                 # web production
+                [
+                    "/nologo /utf-8 /MT /FS /O2 /TP /std:c++17 /Zc:__cplusplus"
+                ],
+                # android production
                 [
                     "/nologo /utf-8 /MT /FS /O2 /TP /std:c++17 /Zc:__cplusplus"
                 ]
@@ -895,7 +1076,7 @@ def update_vs_solution_file(target, source, env):
                     if using_wsl:
                         if godot_platform == "linux":
                             godot_platform = "x64"  # Convert to map to Win64 instead since the godot engine project doesn't have a windows -> linux config mapping
-                    if godot_platform == "web":
+                    if godot_platform in ["web", "android"]:
                         godot_platform = "x64"
                     if godot_project_unique_identifier + "." + configuration + "|" + vs_platform + ".ActiveCfg" in line:
                         out_file.write("\t\t" + godot_project_unique_identifier + "." + configuration + "|" + vs_platform + ".ActiveCfg = editor|" + godot_platform + "\n")
