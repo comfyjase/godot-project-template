@@ -8,7 +8,7 @@ from msvs import *
 lib_name = "game"
 project_dir = "game"
 
-local_env = Environment(tools=["default"])
+local_env = Environment(tools=["default"], PLATFORM="")
 
 customs = ["custom.py"]
 customs = [os.path.abspath(path) for path in customs]
@@ -101,7 +101,17 @@ opts.Update(local_env)
 
 Help(opts.GenerateHelpText(local_env))
 
-env = local_env.Clone()
+# To use MSVSProject/MSVSSolution the default system platform needs to be used
+# The PLATFORM="" above in the default environment removes any platform specific tools
+# and prevents the MSVS functions from working.
+# Cloning another environment here where PLATFORM = system default fixes this issue when
+# the user wants to generate a '.sln' file.
+environment_to_clone = local_env
+if local_env["vsproj"]:
+    environment_to_clone = Environment(tools=["default"])
+    opts.Update(environment_to_clone)
+
+env = environment_to_clone.Clone()
 
 dir_name = 'godot'
 if not is_submodule_initialized(dir_name):
@@ -112,6 +122,23 @@ if not is_submodule_initialized(dir_name):
 dir_name = 'thirdparty/imgui'
 if not is_submodule_initialized(dir_name):
     sys.exit(1)
+
+# Convert from game configuration to something godot/godot-cpp understands
+game_target = env["target"]
+if game_target == "editor_game":
+    env["target"] = "editor"
+elif game_target == "profile":
+    env["target"] = "template_release"
+elif game_target == "production":
+    env["target"] = "template_release"
+
+ARGUMENTS["target"] = env["target"]
+
+env = SConscript("godot-cpp/SConstruct", {"env": env, "customs": customs})
+
+# Then convert back to the original target value
+env["target"] = game_target
+ARGUMENTS["target"] = env["target"]
 
 if env["target"] in ["editor", "editor_game", "template_debug"]:
     try:
@@ -125,7 +152,7 @@ include_files = []
 cpp_defines = []
 
 # imgui
-should_include_imgui = (env["arch"] != "x86_32") and (env["platform"] not in ["android", "ios"])
+should_include_imgui = (env["arch"] != "x86_32") and (env["platform"] not in ["web", "android", "ios"])
 if should_include_imgui:
     all_directories = ["game/addons/imgui-godot/include", "thirdparty/imgui" ]
     source_files = Glob("thirdparty/imgui/*.cpp", strings=True)
@@ -169,37 +196,18 @@ else:
 env.Append(CPPPATH=all_directories)
 env.Append(CPPDEFINES=cpp_defines)
 
-# Convert from game configuration to something godot/godot-cpp understands
-game_target = env["target"]
-if game_target == "editor_game":
-    env["target"] = "editor"
-elif game_target == "profile":
-    env["target"] = "template_release"
-elif game_target == "production":
-    env["target"] = "template_release"
+# .dev doesn't inhibit compatibility, so we don't need to key it.
+# .universal just means "compatible with all relevant arches" so we don't need to key it.
+suffix = env['suffix'].replace(".dev", "").replace(".universal", "")
 
-ARGUMENTS["target"] = env["target"]
+lib_filename = "{}{}{}{}".format(env.subst('$SHLIBPREFIX'), lib_name, suffix, env.subst('$SHLIBSUFFIX'))
 
-env = SConscript("godot-cpp/SConstruct", {"env": env, "customs": customs})
-
-# Then convert back to the original target value
-env["target"] = game_target
-ARGUMENTS["target"] = env["target"]
-
-file = "{}{}{}".format(lib_name, env["suffix"], env["SHLIBSUFFIX"])
-filepath = ""
-
-if env["platform"] == "macos" or env["platform"] == "ios":
-    filepath = "{}.framework/".format(env["platform"])
-    file = "{}{}".format(lib_name, env["suffix"])
-
-libraryfile = "bin/{}/{}{}".format(env["platform"], filepath, file)
 library = env.SharedLibrary(
-    libraryfile,
+    "bin/{}/{}".format(env['platform'], lib_filename),
     source=source_files,
 )
 
-copy = env.InstallAs("{}/bin/{}/{}lib{}".format(project_dir, env["platform"], filepath, file), library)
+copy = env.Install("{}/bin/{}/".format(project_dir, env["platform"]), library)
 
 if env["vsproj"]:    
     resource_files = []

@@ -73,14 +73,27 @@ if platform.system() == "Linux":
     run_subprocess("sudo apt-get install -y libembree-dev libenet-dev libfreetype-dev libpng-dev zlib1g-dev libgraphite2-dev libharfbuzz-dev libogg-dev libtheora-dev libvorbis-dev libwebp-dev libmbedtls-dev libminiupnpc-dev libpcre2-dev libzstd-dev libsquish-dev libicu-dev", "Error: Failed to update linux somehow, aborting!") 
     
 # ======================================================
+# Submodules
+
 # ImGui checkout correct branch to match imgui-godot
 os.chdir("thirdparty/imgui")
-return_code = subprocess.call(f"git checkout v1.91.6-docking", shell=True)
+run_subprocess("git checkout v1.91.6-docking", "Error: Failed to checkout imgui at branch v1.91.6-docking, has submodule been initialized? Aborting!")
+os.chdir("..")
+
+# emsdk install and activate 
+os.chdir("emsdk")
+emsdk_version = "latest"
+if platform.system() == "Windows":
+    run_subprocess(f"emsdk.bat install {emsdk_version}", f"Error: Failed to install emsdk version {emsdk_version}, has submodule been initialized? Aborting!")
+    run_subprocess(f"emsdk.bat activate {emsdk_version} --permanent", f"Error: Failed to activate emsdk version {emsdk_version}, has submodule been initialized? Aborting!")
+else:
+    run_subprocess(f"./emsdk install {emsdk_version}", f"Error: Failed to install emsdk version {emsdk_version}, has submodule been initialized? Aborting!")
+    run_subprocess(f"./emsdk activate {emsdk_version} --permanent", f"Error: Failed to activate emsdk version {emsdk_version}, has submodule been initialized? Aborting!")
+
+print("Please restart your machine after this project setup has finished - this is needed to make sure emsdk path/environment variables are set properly.")
+
 os.chdir("..")
 os.chdir("..")
-if return_code != 0:
-    print(f"Error: Failed to checkout v1.91.6-docking for imgui, has the submodule been initialized? CWD: {os.getcwd()} Aborting!")
-    exit()
 
 # ======================================================
 # (Windows Only) Create New Platforms For Visual Studio

@@ -35,6 +35,9 @@ elif platform.system() == "Windows":
     else:
         vs_platforms = [ "Win32" ]
 
+if is_os_64_bit:
+    vs_platforms.append("web")
+
 def set_vs_environment_variables(env):
     if not env.get('MSVS'):
         env["MSVS"]["PROJECTSUFFIX"] = ".vcxproj"    
@@ -43,8 +46,8 @@ def set_vs_environment_variables(env):
 def get_vs_variants():
     vs_variants = []
     for (configuration) in configurations:
-        for (platform) in vs_platforms:
-            vs_variants.append(configuration + '|' + platform)
+        for (vs_platform) in vs_platforms:
+            vs_variants.append(configuration + '|' + vs_platform)
     return vs_variants
 
 def get_vs_debug_settings():
@@ -53,39 +56,47 @@ def get_vs_debug_settings():
     command_arguments_to_open_project_in_editor = "--editor --path \"$(SolutionDir)game\""
     command_arguments_to_run_project_as_game = "--path \"$(SolutionDir)game\""
     
-    godot_binary_file_names = []
-    for (platform) in vs_platforms:
-        godot_platform = platform
+    binary_file_names = []
+    for (vs_platform) in vs_platforms:
+        godot_platform = vs_platform
         architecture = "x86_64"
         
-        if platform == "Win32":
+        if vs_platform == "Win32":
             godot_platform = "windows"
             architecture = "x86_32"
-        elif platform == "x64":
+        elif vs_platform == "x64":
             godot_platform = "windows"
+        elif vs_platform == "web":
+            architecture = "wasm32"
             
-        godot_binary_file_name = f"godot.{godot_platform}.editor.dev.{architecture}"
+        binary_file_name = f"godot.{godot_platform}.editor.dev.{architecture}"
         if godot_platform == "windows":
-            godot_binary_file_name += ".exe"
+            binary_file_name += ".exe"
         elif godot_platform == "linux":
-            godot_binary_file_name = godot_binary_file_name.replace("linux", "linuxbsd")
-        
-        godot_binary_file_names.append(godot_binary_file_name)
+            binary_file_name = binary_file_name.replace("linux", "linuxbsd")
+        elif godot_platform == "web":
+            if platform.system() == "Windows":
+                binary_file_name = "python.exe"
+            else:
+                binary_file_name = "python"
+        binary_file_names.append(binary_file_name)
     
     if is_os_64_bit:
-        if using_wsl:
-            wsl_command_arguments_to_open_project_in_editor = f"./godot/bin/{godot_binary_file_names[2]} --editor --path \"game\""
-            wsl_command_arguments_to_run_project_as_game = f"./godot/bin/{godot_binary_file_names[2]} --path \"game\""
+        web_command_arguments_to_run_editor = "godot/platform/web/serve.py";
+        
+        if using_wsl:            
+            wsl_command_arguments_to_open_project_in_editor = f"./godot/bin/{binary_file_names[2]} --editor --path \"game\""
+            wsl_command_arguments_to_run_project_as_game = f"./godot/bin/{binary_file_names[2]} --path \"game\""
             
             vs_debug_settings.extend([
                 # Win32 editor
                 {
-                    'LocalDebuggerCommand': f"$(SolutionDir)godot/bin/{godot_binary_file_names[0]}", 
+                    'LocalDebuggerCommand': f"$(SolutionDir)godot/bin/{binary_file_names[0]}", 
                     'LocalDebuggerCommandArguments': command_arguments_to_open_project_in_editor
                 },
                 # x64 editor
                 {
-                    'LocalDebuggerCommand': f"$(SolutionDir)godot/bin/{godot_binary_file_names[1]}",
+                    'LocalDebuggerCommand': f"$(SolutionDir)godot/bin/{binary_file_names[1]}",
                     'LocalDebuggerCommandArguments': command_arguments_to_open_project_in_editor
                 },
                 # linux editor
@@ -93,20 +104,30 @@ def get_vs_debug_settings():
                     'LocalDebuggerCommand': "wsl.exe",
                     'LocalDebuggerCommandArguments': wsl_command_arguments_to_open_project_in_editor
                 },
+                # web editor
+                {
+                    'LocalDebuggerCommand': binary_file_names[3],
+                    'LocalDebuggerCommandArguments': web_command_arguments_to_run_editor
+                },
                 # Win32 editor_game
                 {
-                    'LocalDebuggerCommand': f"$(SolutionDir)godot/bin/{godot_binary_file_names[0]}",
+                    'LocalDebuggerCommand': f"$(SolutionDir)godot/bin/{binary_file_names[0]}",
                     'LocalDebuggerCommandArguments': command_arguments_to_run_project_as_game
                 },
                 # x64 editor_game
                 {
-                    'LocalDebuggerCommand': f"$(SolutionDir)godot/bin/{godot_binary_file_names[1]}",
+                    'LocalDebuggerCommand': f"$(SolutionDir)godot/bin/{binary_file_names[1]}",
                     'LocalDebuggerCommandArguments': command_arguments_to_run_project_as_game
                 },
                 # linux editor_game
                 {
                     'LocalDebuggerCommand': "wsl.exe",
                     'LocalDebuggerCommandArguments': wsl_command_arguments_to_run_project_as_game
+                },
+                # web editor_game
+                {
+                    'LocalDebuggerCommand': binary_file_names[3],
+                    'LocalDebuggerCommandArguments': web_command_arguments_to_run_editor
                 },
                 # Win32 template_debug
                 {
@@ -115,6 +136,9 @@ def get_vs_debug_settings():
                 {
                 },
                 # linux template_debug
+                {
+                },
+                # web template_debug
                 {
                 },
                 # Win32 template_release
@@ -126,6 +150,9 @@ def get_vs_debug_settings():
                 # linux template_release
                 {
                 },
+                # web template_release
+                {
+                },
                 # Win32 profile
                 {
                 },
@@ -133,6 +160,9 @@ def get_vs_debug_settings():
                 {
                 },
                 # linux profile
+                {
+                },
+                # web profile
                 {
                 },
                 # Win32 production
@@ -143,34 +173,50 @@ def get_vs_debug_settings():
                 },
                 # linux production
                 {
+                },
+                # web production
+                {
                 }
             ])
         else:
             vs_debug_settings.extend([
                 # Win32 editor
                 {
-                    'LocalDebuggerCommand': f"$(SolutionDir)godot/bin/{godot_binary_file_names[0]}", 
+                    'LocalDebuggerCommand': f"$(SolutionDir)godot/bin/{binary_file_names[0]}", 
                     'LocalDebuggerCommandArguments': command_arguments_to_open_project_in_editor
                 },
                 # x64 editor
                 {
-                    'LocalDebuggerCommand': f"$(SolutionDir)godot/bin/{godot_binary_file_names[1]}",
+                    'LocalDebuggerCommand': f"$(SolutionDir)godot/bin/{binary_file_names[1]}",
                     'LocalDebuggerCommandArguments': command_arguments_to_open_project_in_editor
+                },
+                # web editor
+                {
+                    'LocalDebuggerCommand': binary_file_names[3],
+                    'LocalDebuggerCommandArguments': web_command_arguments_to_run_editor
                 },
                 # Win32 editor_game
                 {
-                    'LocalDebuggerCommand': f"$(SolutionDir)godot/bin/{godot_binary_file_names[0]}", 
+                    'LocalDebuggerCommand': f"$(SolutionDir)godot/bin/{binary_file_names[0]}", 
                     'LocalDebuggerCommandArguments': command_arguments_to_run_project_as_game
                 },
                 # x64 editor_game
                 {
-                    'LocalDebuggerCommand': f"$(SolutionDir)godot/bin/{godot_binary_file_names[1]}", 
+                    'LocalDebuggerCommand': f"$(SolutionDir)godot/bin/{binary_file_names[1]}", 
                     'LocalDebuggerCommandArguments': command_arguments_to_run_project_as_game
+                },
+                # web editor_game
+                {
+                    'LocalDebuggerCommand': binary_file_names[3],
+                    'LocalDebuggerCommandArguments': web_command_arguments_to_run_editor
                 },
                 # Win32 template_debug
                 {
                 },
                 # x64 template_debug
+                {
+                },
+                # web template_debug
                 {
                 },
                 # Win32 template_release
@@ -179,10 +225,16 @@ def get_vs_debug_settings():
                 # x64 template_release
                 {
                 },
+                # web template_release
+                {
+                },
                 # Win32 profile
                 {
                 },
                 # x64 profile
+                {
+                },
+                # web profile
                 {
                 },
                 # Win32 production
@@ -190,18 +242,21 @@ def get_vs_debug_settings():
                 },
                 # x64 production
                 {
+                },
+                # web production
+                {
                 }
             ])
     else:
         vs_debug_settings.extend([
             # Win32 editor
             {
-                'LocalDebuggerCommand': f"$(SolutionDir)godot/bin/{godot_binary_file_names[0]}", 
+                'LocalDebuggerCommand': f"$(SolutionDir)godot/bin/{binary_file_names[0]}", 
                 'LocalDebuggerCommandArguments': command_arguments_to_open_project_in_editor
             },
             # Win32 editor_game
             {
-                'LocalDebuggerCommand': f"$(SolutionDir)godot/bin/{godot_binary_file_names[0]}", 
+                'LocalDebuggerCommand': f"$(SolutionDir)godot/bin/{binary_file_names[0]}", 
                 'LocalDebuggerCommandArguments': command_arguments_to_run_project_as_game
             },
             # Win32 template_debug
@@ -254,6 +309,14 @@ def get_vs_cpp_defines():
                     "TESTS_ENABLED",
                     "DEBUG"
                 ],
+                # web editor
+                [
+                    "PLATFORM_WEB",
+                    "TOOLS_ENABLED",
+                    "DEBUG_ENABLED",
+                    "TESTS_ENABLED",
+                    "DEBUG"
+                ],
                 # Win32 editor_game
                 [
                     "PLATFORM_WIN32",
@@ -277,6 +340,14 @@ def get_vs_cpp_defines():
                     "PLATFORM_LINUX",
                     'IMGUI_USER_CONFIG="\\"imconfig-godot.h\\""',
                     "IMGUI_ENABLED",
+                    "TOOLS_ENABLED",
+                    "DEBUG_ENABLED",
+                    "TESTS_ENABLED",
+                    "DEBUG"
+                ],
+                # web editor_game
+                [
+                    "PLATFORM_WEB",
                     "TOOLS_ENABLED",
                     "DEBUG_ENABLED",
                     "TESTS_ENABLED",
@@ -310,6 +381,14 @@ def get_vs_cpp_defines():
                     "TESTS_ENABLED",
                     "DEBUG"
                 ],
+                # web template_debug
+                [
+                    "PLATFORM_WEB",
+                    "TOOLS_ENABLED",
+                    "DEBUG_ENABLED",
+                    "TESTS_ENABLED",
+                    "DEBUG"
+                ],
                 # Win32 template_release
                 [
                     "PLATFORM_WIN32",
@@ -327,6 +406,11 @@ def get_vs_cpp_defines():
                     "PLATFORM_LINUX",
                     'IMGUI_USER_CONFIG="\\"imconfig-godot.h\\""',
                     "IMGUI_ENABLED",
+                    "RELEASE"
+                ],
+                # web template_release
+                [
+                    "PLATFORM_WEB",
                     "RELEASE"
                 ],
                 # Win32 profile
@@ -348,6 +432,11 @@ def get_vs_cpp_defines():
                     "IMGUI_ENABLED",
                     "PROFILE"
                 ],
+                # web profile
+                [
+                    "PLATFORM_WEB",
+                    "PROFILE"
+                ],
                 # Win32 production
                 [
                     "PLATFORM_WIN32",
@@ -365,6 +454,11 @@ def get_vs_cpp_defines():
                     "PLATFORM_LINUX",
                     'IMGUI_USER_CONFIG="\\"imconfig-godot.h\\""',
                     "IMGUI_ENABLED",
+                    "PRODUCTION"
+                ],
+                # web production
+                [
+                    "PLATFORM_WEB",
                     "PRODUCTION"
                 ]
             ])
@@ -388,6 +482,14 @@ def get_vs_cpp_defines():
                     "TESTS_ENABLED",
                     "DEBUG"
                 ],
+                # web editor
+                [
+                    "PLATFORM_WEB",
+                    "TOOLS_ENABLED",
+                    "DEBUG_ENABLED",
+                    "TESTS_ENABLED",
+                    "DEBUG"
+                ],
                 # Win32 editor_game
                 [
                     "PLATFORM_WIN32",
@@ -401,6 +503,14 @@ def get_vs_cpp_defines():
                     "PLATFORM_WIN64",
                     'IMGUI_USER_CONFIG="\\"imconfig-godot.h\\""',
                     "IMGUI_ENABLED",
+                    "TOOLS_ENABLED",
+                    "DEBUG_ENABLED",
+                    "TESTS_ENABLED",
+                    "DEBUG"
+                ],
+                # web editor_game
+                [
+                    "PLATFORM_WEB",
                     "TOOLS_ENABLED",
                     "DEBUG_ENABLED",
                     "TESTS_ENABLED",
@@ -424,6 +534,14 @@ def get_vs_cpp_defines():
                     "TESTS_ENABLED",
                     "DEBUG"
                 ],
+                # web template_debug
+                [
+                    "PLATFORM_WEB",
+                    "TOOLS_ENABLED",
+                    "DEBUG_ENABLED",
+                    "TESTS_ENABLED",
+                    "DEBUG"
+                ],
                 # Win32 template_release
                 [
                     "PLATFORM_WIN32",
@@ -434,6 +552,11 @@ def get_vs_cpp_defines():
                     "PLATFORM_WIN64",
                     'IMGUI_USER_CONFIG="\\"imconfig-godot.h\\""',
                     "IMGUI_ENABLED",
+                    "RELEASE"
+                ],
+                # web template_release
+                [
+                    "PLATFORM_WEB",
                     "RELEASE"
                 ],
                 # Win32 profile
@@ -448,6 +571,11 @@ def get_vs_cpp_defines():
                     "IMGUI_ENABLED",
                     "PROFILE"
                 ],
+                # web profile
+                [
+                    "PLATFORM_WEB",
+                    "PROFILE"
+                ],
                 # Win32 production
                 [
                     "PLATFORM_WIN32",
@@ -458,6 +586,11 @@ def get_vs_cpp_defines():
                     "PLATFORM_WIN64",
                     'IMGUI_USER_CONFIG="\\"imconfig-godot.h\\""',
                     "IMGUI_ENABLED",
+                    "PRODUCTION"
+                ],
+                # web production
+                [
+                    "PLATFORM_WEB",
                     "PRODUCTION"
                 ]
             ])
@@ -524,6 +657,10 @@ def get_vs_cpp_flags():
                 [
                     "/nologo /utf-8 /MT /Zi /FS /O2 /TP /std:c++17 /Zc:__cplusplus"
                 ],
+                # web editor
+                [
+                    "/nologo /utf-8 /MT /Zi /FS /O2 /TP /std:c++17 /Zc:__cplusplus"
+                ],
                 # Win32 editor_game
                 [
                     "/nologo /utf-8 /MT /Zi /FS /O2 /TP /std:c++17 /Zc:__cplusplus"
@@ -533,6 +670,10 @@ def get_vs_cpp_flags():
                     "/nologo /utf-8 /MT /Zi /FS /O2 /TP /std:c++17 /Zc:__cplusplus"
                 ],
                 # linux editor_game
+                [
+                    "/nologo /utf-8 /MT /Zi /FS /O2 /TP /std:c++17 /Zc:__cplusplus"
+                ],
+                # web editor_game
                 [
                     "/nologo /utf-8 /MT /Zi /FS /O2 /TP /std:c++17 /Zc:__cplusplus"
                 ],
@@ -548,6 +689,10 @@ def get_vs_cpp_flags():
                 [
                     "/nologo /utf-8 /MT /Zi /FS /O2 /TP /std:c++17 /Zc:__cplusplus"
                 ],
+                # web template_debug
+                [
+                    "/nologo /utf-8 /MT /Zi /FS /O2 /TP /std:c++17 /Zc:__cplusplus"
+                ],
                 # Win32 template_release
                 [
                     "/nologo /utf-8 /MT /FS /O2 /TP /std:c++17 /Zc:__cplusplus"
@@ -557,6 +702,10 @@ def get_vs_cpp_flags():
                     "/nologo /utf-8 /MT /FS /O2 /TP /std:c++17 /Zc:__cplusplus"
                 ],
                 # linux template_release
+                [
+                    "/nologo /utf-8 /MT /FS /O2 /TP /std:c++17 /Zc:__cplusplus"
+                ],
+                # web template_release
                 [
                     "/nologo /utf-8 /MT /FS /O2 /TP /std:c++17 /Zc:__cplusplus"
                 ],
@@ -572,6 +721,10 @@ def get_vs_cpp_flags():
                 [
                     "/nologo /utf-8 /MT /Zi /FS /O2 /TP /std:c++17 /Zc:__cplusplus"
                 ],
+                # web profile
+                [
+                    "/nologo /utf-8 /MT /Zi /FS /O2 /TP /std:c++17 /Zc:__cplusplus"
+                ],
                 # Win32 production
                 [
                     "/nologo /utf-8 /MT /FS /O2 /TP /std:c++17 /Zc:__cplusplus"
@@ -581,6 +734,10 @@ def get_vs_cpp_flags():
                     "/nologo /utf-8 /MT /FS /O2 /TP /std:c++17 /Zc:__cplusplus"
                 ],
                 # linux production
+                [
+                    "/nologo /utf-8 /MT /FS /O2 /TP /std:c++17 /Zc:__cplusplus"
+                ],
+                # web production
                 [
                     "/nologo /utf-8 /MT /FS /O2 /TP /std:c++17 /Zc:__cplusplus"
                 ]
@@ -595,11 +752,19 @@ def get_vs_cpp_flags():
                 [
                     "/nologo /utf-8 /MT /Zi /FS /O2 /TP /std:c++17 /Zc:__cplusplus"
                 ],
+                # web editor
+                [
+                    "/nologo /utf-8 /MT /Zi /FS /O2 /TP /std:c++17 /Zc:__cplusplus"
+                ],
                 # Win32 editor_game
                 [
                     "/nologo /utf-8 /MT /Zi /FS /O2 /TP /std:c++17 /Zc:__cplusplus"
                 ],
                 # x64 editor_game
+                [
+                    "/nologo /utf-8 /MT /Zi /FS /O2 /TP /std:c++17 /Zc:__cplusplus"
+                ],
+                # web editor_game
                 [
                     "/nologo /utf-8 /MT /Zi /FS /O2 /TP /std:c++17 /Zc:__cplusplus"
                 ],
@@ -611,11 +776,19 @@ def get_vs_cpp_flags():
                 [
                     "/nologo /utf-8 /MT /Zi /FS /O2 /TP /std:c++17 /Zc:__cplusplus"
                 ],
+                # web template_debug
+                [
+                    "/nologo /utf-8 /MT /Zi /FS /O2 /TP /std:c++17 /Zc:__cplusplus"
+                ],
                 # Win32 template_release
                 [
                     "/nologo /utf-8 /MT /FS /O2 /TP /std:c++17 /Zc:__cplusplus"
                 ],
                 # x64 template_release
+                [
+                    "/nologo /utf-8 /MT /FS /O2 /TP /std:c++17 /Zc:__cplusplus"
+                ],
+                # web template_release
                 [
                     "/nologo /utf-8 /MT /FS /O2 /TP /std:c++17 /Zc:__cplusplus"
                 ],
@@ -627,11 +800,19 @@ def get_vs_cpp_flags():
                 [
                     "/nologo /utf-8 /MT /Zi /FS /O2 /TP /std:c++17 /Zc:__cplusplus"
                 ],
+                # web profile
+                [
+                    "/nologo /utf-8 /MT /Zi /FS /O2 /TP /std:c++17 /Zc:__cplusplus"
+                ],
                 # Win32 production
                 [
                     "/nologo /utf-8 /MT /FS /O2 /TP /std:c++17 /Zc:__cplusplus"
                 ],
                 # x64 production
+                [
+                    "/nologo /utf-8 /MT /FS /O2 /TP /std:c++17 /Zc:__cplusplus"
+                ],
+                # web production
                 [
                     "/nologo /utf-8 /MT /FS /O2 /TP /std:c++17 /Zc:__cplusplus"
                 ]
@@ -714,6 +895,8 @@ def update_vs_solution_file(target, source, env):
                     if using_wsl:
                         if godot_platform == "linux":
                             godot_platform = "x64"  # Convert to map to Win64 instead since the godot engine project doesn't have a windows -> linux config mapping
+                    if godot_platform == "web":
+                        godot_platform = "x64"
                     if godot_project_unique_identifier + "." + configuration + "|" + vs_platform + ".ActiveCfg" in line:
                         out_file.write("\t\t" + godot_project_unique_identifier + "." + configuration + "|" + vs_platform + ".ActiveCfg = editor|" + godot_platform + "\n")
                         line_write_done = True
