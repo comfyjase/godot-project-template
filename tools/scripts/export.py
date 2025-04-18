@@ -24,14 +24,15 @@ precision = sys.argv[4]
 if platform_arg == "Win32" or platform_arg == "x64":
     platform_arg = "windows"
 
-if architecture == "Win32":
-    architecture = "x86_32"
-elif architecture == "x64" or architecture == "linux":
-    architecture = "x86_64"
-elif architecture == "web":
-    architecture = "wasm32"
-elif architecture == "android": # TODO: Add different android processor platforms? E.g. android_arm32, android_arm64, android_x86_32, android_x86_64?
-    architecture = "arm64"
+if platform_arg == architecture:
+    if architecture == "Win32":
+        architecture = "x86_32"
+    elif architecture == "x64" or architecture == "linux":
+        architecture = "x86_64"
+    elif architecture == "web":
+        architecture = "wasm32"
+    elif architecture == "android": # TODO: Add different android processor platforms? E.g. android_arm32, android_arm64, android_x86_32, android_x86_64?
+        architecture = "arm64"
     
 using_wsl = (platform.system() == "Windows") and (platform_arg == "linux")
 
@@ -54,22 +55,57 @@ elif platform_arg == "android":
     build_suffix = ".apk"
 elif platform_arg == "ios":
     build_suffix = ".zip"
+    
+library_suffix = ""
+if platform_arg == "windows":
+    library_suffix = ".dll"
+elif platform_arg == "macos":
+    library_suffix = ".dylib"
+elif platform_arg == "linux":
+    library_suffix = ".so"
+elif platform_arg == "web":
+    library_suffix = ".wasm"
+elif platform_arg == "android":
+    library_suffix = ".so"
+elif platform_arg == "ios":
+    library_suffix = ".so"
 
 build_file_name_and_type = ""
 
 if platform_arg == "web":
     build_file_name_and_type = f"index{build_suffix}"
+elif platform_arg == "android" and configuration == "editor_game":
+    build_file_name_and_type = f"android_{configuration}{build_suffix}"
 else:
     current_date_time_stamp = datetime.datetime.now()
     date_time_stamp = f"{current_date_time_stamp.year}{current_date_time_stamp.month}{current_date_time_stamp.day}_{current_date_time_stamp.hour}{current_date_time_stamp.minute}{current_date_time_stamp.second}"
     build_file_name_and_type = f"game_{platform_arg}_{configuration}_{date_time_stamp}_{latest_git_commit_id}{build_suffix}"
     print(f"Build Name: {build_file_name_and_type}", flush=True)
 
+necessary_file_path = ""
 export_command_type = ""
 if configuration in ["editor", "editor_game", "template_debug"]:
     export_command_type = "debug"
+    if platform_arg == "windows":
+        necessary_file_path = os.path.join(f"{project_directory}", "game", "bin", f"{platform_arg}", f"game.{platform_arg}.template_debug.{architecture}.dev{library_suffix}")
+    else:
+        necessary_file_path = os.path.join(f"{project_directory}", "game", "bin", f"{platform_arg}", f"libgame.{platform_arg}.template_debug.{architecture}.dev{library_suffix}")
 else:
     export_command_type = "release"
+    if platform_arg == "windows":
+        necessary_file_path = os.path.join(f"{project_directory}", "game", "bin", f"{platform_arg}", f"game.{platform_arg}.template_release.{architecture}{library_suffix}")
+    else:
+        necessary_file_path = os.path.join(f"{project_directory}", "game", "bin", f"{platform_arg}", f"libgame.{platform_arg}.template_release.{architecture}{library_suffix}")
+
+if precision == "double":
+    necessary_file_path = necessary_file_path.replace(f"{library_suffix}", f"{precision}{library_suffix}")
+
+if platform_arg == "android" and configuration in ["editor", "editor_game", "template_debug"]:
+    necessary_file_path = necessary_file_path.replace(".dev", "")
+
+if not os.path.exists(necessary_file_path):
+    print(f"Error: {necessary_file_path} file is missing, please build project for {platform_arg} template_{export_command_type} {architecture} {precision}")
+    exit()
 
 godot_binary_file_name = ""
 if platform.system() == "Windows":

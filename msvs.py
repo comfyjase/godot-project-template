@@ -87,7 +87,7 @@ def get_vs_debug_settings():
             else:
                 binary_file_name = "python"
         elif godot_platform == "android":
-            binary_file_name = "adb.exe"
+            binary_file_name = "python.exe"
             
         binary_file_names.append(binary_file_name)
     
@@ -95,7 +95,7 @@ def get_vs_debug_settings():
         web_command_arguments_to_run_editor = "godot/platform/web/serve.py --root ../../bin/.web_zip"
         web_command_arguments_to_run_project_as_game = "tools/scripts/export_and_run.py web editor_game wasm32 single"
         
-        android_command_arguments_to_run_editor = "install godot/bin/android_editor_builds/android_editor-android-dev.apk"
+        android_command_arguments_to_install_and_run = "tools/scripts/android_install_and_run.py $(Configuration) arm64 single"
         
         if using_wsl:            
             wsl_command_arguments_to_open_project_in_editor = f"./godot/bin/{binary_file_names[2]} --editor --path \"game\""
@@ -125,7 +125,7 @@ def get_vs_debug_settings():
                 # android editor
                 {
                     'LocalDebuggerCommand': binary_file_names[4],
-                    'LocalDebuggerCommandArguments': android_command_arguments_to_run_editor
+                    'LocalDebuggerCommandArguments': android_command_arguments_to_install_and_run
                 },
                 # Win32 editor_game
                 {
@@ -150,7 +150,7 @@ def get_vs_debug_settings():
                 # android editor_game
                 {
                     'LocalDebuggerCommand': binary_file_names[4],
-                    'LocalDebuggerCommandArguments': android_command_arguments_to_run_editor
+                    'LocalDebuggerCommandArguments': android_command_arguments_to_install_and_run
                 },
                 # Win32 template_debug
                 {
@@ -233,7 +233,7 @@ def get_vs_debug_settings():
                 # android editor
                 {
                     'LocalDebuggerCommand': binary_file_names[4],
-                    'LocalDebuggerCommandArguments': android_command_arguments_to_run_editor
+                    'LocalDebuggerCommandArguments': android_command_arguments_to_install_and_run
                 },
                 # Win32 editor_game
                 {
@@ -253,7 +253,7 @@ def get_vs_debug_settings():
                 # android editor_game
                 {
                     'LocalDebuggerCommand': binary_file_names[4],
-                    'LocalDebuggerCommandArguments': android_command_arguments_to_run_editor
+                    'LocalDebuggerCommandArguments': android_command_arguments_to_install_and_run
                 },
                 # Win32 template_debug
                 {

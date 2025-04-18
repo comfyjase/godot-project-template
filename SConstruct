@@ -201,6 +201,8 @@ env.Append(CPPDEFINES=cpp_defines)
 suffix = env['suffix'].replace(".dev", "").replace(".universal", "")
 
 lib_filename = "{}{}{}{}".format(env.subst('$SHLIBPREFIX'), lib_name, suffix, env.subst('$SHLIBSUFFIX'))
+if env["platform"] != "windows":
+    lib_filename = "lib" + lib_filename
 
 library = env.SharedLibrary(
     "bin/{}/{}".format(env['platform'], lib_filename),
@@ -209,7 +211,7 @@ library = env.SharedLibrary(
 
 copy = env.Install("{}/bin/{}/".format(project_dir, env["platform"]), library)
 
-if env["vsproj"]:    
+if env["vsproj"]:
     resource_files = []
     
     misc_files = get_all_files_recursive("godot-cpp/gdextension/", "*.h")

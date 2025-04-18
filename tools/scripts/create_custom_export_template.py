@@ -24,14 +24,15 @@ precision = sys.argv[4]
 if platform_arg == "Win32" or platform_arg == "x64":
     platform_arg = "windows"
 
-if architecture == "Win32":
-    architecture = "x86_32"
-elif architecture == "x64" or architecture == "linux":
-    architecture = "x86_64"
-elif architecture == "web":
-    architecture = "wasm32"
-elif architecture == "android": # TODO: Add different android processor platforms? E.g. android_arm32, android_arm64, android_x86_32, android_x86_64?
-    architecture = "arm64"
+if architecture == platform_arg:
+    if architecture == "Win32":
+        architecture = "x86_32"
+    elif architecture == "x64" or architecture == "linux":
+        architecture = "x86_64"
+    elif architecture == "web":
+        architecture = "wasm32"
+    elif architecture == "android": # TODO: Add different android processor platforms? E.g. android_arm32, android_arm64, android_x86_32, android_x86_64?
+        architecture = "arm64"
     
 using_wsl = (platform.system() == "Windows") and (platform_arg == "linux")
 
@@ -83,6 +84,9 @@ godot_files = []
 if platform_arg == "web":    
     shutil.copytree(".web_zip", f"web_{configuration}", dirs_exist_ok=True)
     shutil.make_archive(f"web_{configuration}", "zip", f"web_{configuration}")
+elif platform_arg == "android":
+    if os.path.isfile("android_dev.apk"):
+        os.rename("android_dev.apk", f"android_{configuration}.apk")
 else:
     godot_files = glob(f"godot.{platform_arg}.{godot_configuration}.*")
     print(godot_files, flush=True)

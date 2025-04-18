@@ -37,7 +37,6 @@ using_wsl = (platform.system() == "Windows") and (platform_arg == "linux")
 
 # ===============================================
 # Export
-
 os.chdir(os.path.join("tools", "scripts"))
 
 return_code = subprocess.call(f"export.py {platform_arg} {configuration} {architecture} {precision}", shell=True)
@@ -47,9 +46,12 @@ if return_code != 0:
 
 # ===============================================
 # Run exported project
-
 if platform_arg == "web":
-    os.chdir("..")
-    os.chdir("..")
+    os.chdir(os.path.join("..", ".."))    
+    return_code = subprocess.call(f"python godot/platform/web/serve.py --root ../../../bin/web", shell=True)
+elif platform_arg == "android":
+    return_code = subprocess.call(f"python android_install_and_run.py {configuration} {architecture} {precision}", shell=True)
     
-    subprocess.call(f"python godot/platform/web/serve.py --root ../../../bin/web", shell=True)
+if return_code != 0:
+    print(f"Error: Failed to run project for {platform_arg} {configuration} {architecture} {precision}")
+    exit()
