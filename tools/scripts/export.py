@@ -100,8 +100,14 @@ else:
 if precision == "double":
     necessary_file_path = necessary_file_path.replace(f"{library_suffix}", f"{precision}{library_suffix}")
 
-if platform_arg == "android" and configuration in ["editor", "editor_game", "template_debug"]:
-    necessary_file_path = necessary_file_path.replace(".dev", "")
+if platform_arg == "web":
+    necessary_file_path = necessary_file_path.replace(f"{architecture}", f"{architecture}.nothreads")
+
+if configuration in ["editor", "editor_game", "template_debug"]:
+    if platform_arg == "web":
+        necessary_file_path = necessary_file_path.replace(".dev", "")
+    elif platform_arg == "android":
+        necessary_file_path = necessary_file_path.replace(".dev", "")
 
 if not os.path.exists(necessary_file_path):
     print(f"Error: {necessary_file_path} file is missing, please build project for {platform_arg} template_{export_command_type} {architecture} {precision}")

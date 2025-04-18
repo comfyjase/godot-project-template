@@ -201,7 +201,7 @@ env.Append(CPPDEFINES=cpp_defines)
 suffix = env['suffix'].replace(".dev", "").replace(".universal", "")
 
 lib_filename = "{}{}{}{}".format(env.subst('$SHLIBPREFIX'), lib_name, suffix, env.subst('$SHLIBSUFFIX'))
-if env["platform"] != "windows":
+if env["platform"] in ["web", "android"]:
     lib_filename = "lib" + lib_filename
 
 library = env.SharedLibrary(
