@@ -92,7 +92,9 @@ def get_vs_debug_settings():
         binary_file_names.append(binary_file_name)
     
     if is_os_64_bit:
-        web_command_arguments_to_run_editor = "godot/platform/web/serve.py"
+        web_command_arguments_to_run_editor = "godot/platform/web/serve.py --root ../../bin/.web_zip"
+        web_command_arguments_to_run_project_as_game = "tools/scripts/export_and_run.py web editor_game wasm32 single"
+        
         android_command_arguments_to_run_editor = "install godot/bin/android_editor_builds/android_editor-android-dev.apk"
         
         if using_wsl:            
@@ -143,7 +145,7 @@ def get_vs_debug_settings():
                 # web editor_game
                 {
                     'LocalDebuggerCommand': binary_file_names[3],
-                    'LocalDebuggerCommandArguments': web_command_arguments_to_run_editor
+                    'LocalDebuggerCommandArguments': web_command_arguments_to_run_project_as_game
                 },
                 # android editor_game
                 {
@@ -246,7 +248,7 @@ def get_vs_debug_settings():
                 # web editor_game
                 {
                     'LocalDebuggerCommand': binary_file_names[3],
-                    'LocalDebuggerCommandArguments': web_command_arguments_to_run_editor
+                    'LocalDebuggerCommandArguments': web_command_arguments_to_run_project_as_game
                 },
                 # android editor_game
                 {

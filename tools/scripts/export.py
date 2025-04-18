@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import datetime
+import platform
 import os
 import subprocess
 import sys
@@ -13,72 +14,79 @@ if not os.path.exists(os.path.join(f"{current_directory}", "game")):
 
 project_directory = os.getcwd()
 
-platform = sys.argv[1]          # e.g. windows/mac/linux
+platform_arg = sys.argv[1]
 configuration = sys.argv[2]
-target = sys.argv[3]            # e.g. android/ios
+architecture = sys.argv[3]
+precision = sys.argv[4]
 
 # ===============================================
 # Visual Studio 2022 specific stuff
-if platform == "Win32" or platform == "x64":
-    platform = "windows"
+if platform_arg == "Win32" or platform_arg == "x64":
+    platform_arg = "windows"
 
 if architecture == "Win32":
     architecture = "x86_32"
-elif architecture == "x64":
+elif architecture == "x64" or architecture == "linux":
     architecture = "x86_64"
-
-using_wsl = "wsl" in configuration
-if using_wsl:
-    if architecture == "x86_32":
-        print(f"Error: Running 32 bit app with WSL 64 bit is unsupported, please choose x64 instead of x86 in the platform dropdown")
-        exit()
-    platform = "linux"
-    configuration = configuration.replace("wsl_", "")
+elif architecture == "web":
+    architecture = "wasm32"
+elif architecture == "android": # TODO: Add different android processor platforms? E.g. android_arm32, android_arm64, android_x86_32, android_x86_64?
+    architecture = "arm64"
+    
+using_wsl = (platform.system() == "Windows") and (platform_arg == "linux")
 
 # ===============================================
 # Export
-latest_git_commit_id = subprocess.check_output(['git', 'rev-parse', '--short', 'HEAD']).decode('ascii').strip()
+latest_git_commit_id = subprocess.check_output("git rev-parse --short HEAD").decode('ascii').strip()
 
 os.chdir(os.path.join("godot", "bin"))
 
 build_suffix = ""
-if target == "windows":
+if platform_arg == "windows":
     build_suffix = ".exe"
-elif target = "macos":
+elif platform_arg == "macos":
     build_suffix = ".dmg"
-elif target == "linux":
-    build_suffix = ""   
-elif target == "web":
-    build_suffix = ".zip"
-elif target = "android":
+elif platform_arg == "linux":
+    build_suffix = ""
+elif platform_arg == "web":
+    build_suffix = ".html"
+elif platform_arg == "android":
     build_suffix = ".apk"
-elif target = "ios":
+elif platform_arg == "ios":
     build_suffix = ".zip"
 
-current_date_time_stamp = datetime.datetime.now()
-date_time_stamp = f"{current_date_time_stamp.year}{current_date_time_stamp.month}{current_date_time_stamp.day}_{current_date_time_stamp.hour}{current_date_time_stamp.minute}{current_date_time_stamp.second}"
-build_file_name_and_type = f"game_{target}_{configuration}_{date_time_stamp}_{latest_git_commit_id}{build_suffix}"
-print(f"Build Name: {build_file_name_and_type}", flush=True)
+build_file_name_and_type = ""
 
-export_command_type = "debug"
-if configuration == "template_debug":
+if platform_arg == "web":
+    build_file_name_and_type = f"index{build_suffix}"
+else:
+    current_date_time_stamp = datetime.datetime.now()
+    date_time_stamp = f"{current_date_time_stamp.year}{current_date_time_stamp.month}{current_date_time_stamp.day}_{current_date_time_stamp.hour}{current_date_time_stamp.minute}{current_date_time_stamp.second}"
+    build_file_name_and_type = f"game_{platform_arg}_{configuration}_{date_time_stamp}_{latest_git_commit_id}{build_suffix}"
+    print(f"Build Name: {build_file_name_and_type}", flush=True)
+
+export_command_type = ""
+if configuration in ["editor", "editor_game", "template_debug"]:
     export_command_type = "debug"
-    if not os.path.exists(os.path.join(f"{project_directory}", "game", "bin", f"{target}", f"libgame.{target}.template_debug.dev.*")):
-        print(f"Error: libgame.{target}.template_debug.dev.* files are missing, please build project for {target} {configuration}")
-        exit()
 else:
     export_command_type = "release"
-    if not os.path.exists(os.path.join(f"{project_directory}", "game", "bin", f"{target}", f"libgame.{target}.template_release.*")):
-        print(f"Error: libgame.{target}.template_release.* files are missing, please build project for {target} {configuration}")
-        exit()
 
 godot_binary_file_name = ""
-if platform == "windows":
-    godot_binary_file_name = f"godot.{platform}.editor.dev.x86_64.exe"
-elif platform == "macos":
+if platform.system() == "Windows":
+    godot_binary_file_name = f"godot.windows.editor.dev.x86_64.exe"
+elif platform.system() == "Darwin":
     godot_binary_file_name = f"godot.macos.editor.dev.universal"
-elif platform == "linux":
-    godot_binary_file_name = f"godot.linux.editor.dev.TODO"
+elif platform.system() == "Linux":
+    godot_binary_file_name = f"godot.linuxbsd.editor.dev.x86_64"
 
-return_code = subprocess.call(f"{godot_binary_file_name} --path {os.path.join({project_directory}, "game")} --headless --export-{export_command_type} \"{target} {configuration}\" \"{os.path.join({project_directory}, "bin", {target}, {build_file_name_and_type})}\"", shell=True)
-print(f"Done ")
+if not os.path.exists(godot_binary_file_name):
+    print(f"Error: godot editor {godot_binary_file_name} doesn't exist yet, please build the godot editor for your OS platform first before attempting to export.")
+    exit()
+
+export_command = f"{godot_binary_file_name} --path {os.path.join(project_directory, "game")} --headless --export-{export_command_type} \"{platform_arg} {configuration} {architecture} {precision}\" \"{os.path.join(project_directory, "bin", platform_arg, build_file_name_and_type)}\""
+return_code = subprocess.call(export_command, shell=True)
+if return_code != 0:
+    print(f"Error: Failed to export game for {platform_arg} {configuration} {architecture} {precision} from godot binary {godot_binary_file_name}")
+    exit()
+    
+print("Done")

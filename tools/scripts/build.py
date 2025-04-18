@@ -47,12 +47,11 @@ build_command = ""
 if using_wsl:
     build_command = "wsl "
 
-return_code = 0
-if "production" in configuration:
+if configuration == "production":
     build_command += f"scons platform={platform_arg} target=editor arch={architecture} precision={precision} production=yes"
-elif "profile" in configuration:
+elif configuration == "profile":
     build_command += f"scons platform={platform_arg} target=editor arch={architecture} precision={precision} production=yes debug_symbols=yes"
-elif "template_release" in configuration:
+elif configuration == "template_release":
     build_command += f"scons platform={platform_arg} target=editor arch={architecture} precision={precision}"
 else:
     build_command += f"scons platform={platform_arg} target=editor arch={architecture} precision={precision} dev_build=yes dev_mode=yes"
@@ -60,9 +59,10 @@ else:
 # Removing dev_build/dev_mode from web editor because it doesn't compile (get emscripten errors...) and adding dlink_enabled
 if platform_arg == "web":
     if configuration in ["editor", "editor_game", "template_debug"]:
-        build_command = build_command.replace("dev_build=yes dev_mode=yes", "dlink_enabled=yes")
-    else:
-        build_command += " dlink_enabled=yes"
+        build_command = build_command.replace(" dev_build=yes dev_mode=yes", "")
+    
+    build_command += " dlink_enabled=yes threads=no"
+    
 elif platform_arg == "android":
     build_command += " generate_apk=yes"
     
@@ -70,6 +70,16 @@ return_code = subprocess.call(build_command, shell=True)
 if return_code != 0:
     print(f"Error: Failed to build godot for {platform_arg} {configuration} {architecture} {precision}")
     exit()
+
+if platform_arg == "web" and configuration in ["editor", "editor_game"]:
+    print(os.getcwd(), flush=True)
+    os.chdir(os.path.join("bin", ".web_zip"))
+    
+    godot_html_editor_file_name = "godot.editor.html"
+    if os.path.isfile(godot_html_editor_file_name):
+        shutil.copyfile(godot_html_editor_file_name, "index.html")
+        
+    os.chdir(os.path.join("..", ".."))
 
 # ===============================================
 # Generate C++ extension api files
@@ -132,6 +142,7 @@ else:
 
 if platform_arg == "web" and configuration in ["editor", "editor_game", "template_debug"]:
     build_command = build_command.replace(" dev_build=yes dev_mode=yes", "")
+    build_command += " threads=no"
     
 return_code = subprocess.call(build_command, shell=True)
 if return_code != 0:
