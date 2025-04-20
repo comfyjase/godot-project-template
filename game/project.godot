@@ -15,6 +15,14 @@ run/main_scene="res://scenes/main.tscn"
 config/features=PackedStringArray("4.4", "Forward Plus")
 config/icon="res://icon.svg"
 
+[autoload]
+
+ImGuiRoot="*res://addons/imgui-godot/data/ImGuiRoot.tscn"
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/imgui-godot/plugin.cfg")
+
 [input]
 
 imgui_toggle_debug={
