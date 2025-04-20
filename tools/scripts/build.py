@@ -40,50 +40,51 @@ using_wsl = (platform.system() == "Windows") and (platform_arg == "linux")
 
 # ===============================================
 # Build Godot
-print("Step 1) Build Godot Engine", flush=True)
+print("Build Godot Engine", flush=True)
 os.chdir("godot")
 
-build_command = ""
-if using_wsl:
-    build_command = "wsl "
-
-if configuration == "production":
-    build_command += f"scons platform={platform_arg} target=editor arch={architecture} precision={precision} production=yes"
-elif configuration == "profile":
-    build_command += f"scons platform={platform_arg} target=editor arch={architecture} precision={precision} production=yes debug_symbols=yes"
-elif configuration == "template_release":
-    build_command += f"scons platform={platform_arg} target=editor arch={architecture} precision={precision}"
-else:
-    build_command += f"scons platform={platform_arg} target=editor arch={architecture} precision={precision} dev_build=yes dev_mode=yes"
-
-# Removing dev_build/dev_mode from web editor because it doesn't compile (get emscripten errors...) and adding dlink_enabled
-if platform_arg == "web":
-    if configuration in ["editor", "editor_game", "template_debug"]:
-        build_command = build_command.replace(" dev_build=yes dev_mode=yes", "")
+if configuration in ["editor", "editor_game"]:
+    build_command = ""
+    if using_wsl:
+        build_command = "wsl "
     
-    build_command += " dlink_enabled=yes threads=no"
+    if configuration == "production":
+        build_command += f"scons platform={platform_arg} target=editor arch={architecture} precision={precision} production=yes"
+    elif configuration == "profile":
+        build_command += f"scons platform={platform_arg} target=editor arch={architecture} precision={precision} production=yes debug_symbols=yes"
+    elif configuration == "template_release":
+        build_command += f"scons platform={platform_arg} target=editor arch={architecture} precision={precision}"
+    else:
+        build_command += f"scons platform={platform_arg} target=editor arch={architecture} precision={precision} dev_build=yes dev_mode=yes"
     
-elif platform_arg == "android":
-    build_command += " generate_apk=yes"
-    
-return_code = subprocess.call(build_command, shell=True)
-if return_code != 0:
-    print(f"Error: Failed to build godot for {platform_arg} {configuration} {architecture} {precision}")
-    exit()
-
-if platform_arg == "web" and configuration in ["editor", "editor_game"]:
-    print(os.getcwd(), flush=True)
-    os.chdir(os.path.join("bin", ".web_zip"))
-    
-    godot_html_editor_file_name = "godot.editor.html"
-    if os.path.isfile(godot_html_editor_file_name):
-        shutil.copyfile(godot_html_editor_file_name, "index.html")
+    # Removing dev_build/dev_mode from web editor because it doesn't compile (get emscripten errors...) and adding dlink_enabled
+    if platform_arg == "web":
+        if configuration in ["editor", "editor_game", "template_debug"]:
+            build_command = build_command.replace(" dev_build=yes dev_mode=yes", "")
         
-    os.chdir(os.path.join("..", ".."))
+        build_command += " dlink_enabled=yes threads=no"
+        
+    elif platform_arg == "android":
+        build_command += " generate_apk=yes"
+        
+    return_code = subprocess.call(build_command, shell=True)
+    if return_code != 0:
+        print(f"Error: Failed to build godot for {platform_arg} {configuration} {architecture} {precision}")
+        exit()
+    
+    if platform_arg == "web" and configuration in ["editor", "editor_game"]:
+        print(os.getcwd(), flush=True)
+        os.chdir(os.path.join("bin", ".web_zip"))
+        
+        godot_html_editor_file_name = "godot.editor.html"
+        if os.path.isfile(godot_html_editor_file_name):
+            shutil.copyfile(godot_html_editor_file_name, "index.html")
+            
+        os.chdir(os.path.join("..", ".."))
 
 # ===============================================
 # Generate C++ extension api files
-print("Step 2) Generate C++ extension api files", flush=True)
+print("Generate C++ extension api files", flush=True)
 os.chdir("bin")
 
 godot_engine_architecture = ""
@@ -123,7 +124,7 @@ except IOError as e:
 
 # ===============================================
 # Build Game
-print("Step 3) Build Game", flush=True)
+print("Build Game", flush=True)
 os.chdir("..")
 os.chdir("..")
 
@@ -140,8 +141,9 @@ elif configuration == "template_release":
 else:
     build_command += f"scons platform={platform_arg} target={configuration} arch={architecture} precision={precision} dev_build=yes dev_mode=yes"
 
-if platform_arg == "web" and configuration in ["editor", "editor_game", "template_debug"]:
-    build_command = build_command.replace(" dev_build=yes dev_mode=yes", "")
+if platform_arg == "web":
+    if configuration in ["editor", "editor_game", "template_debug"]:
+        build_command = build_command.replace(" dev_build=yes dev_mode=yes", "")
     build_command += " threads=no"
     
 return_code = subprocess.call(build_command, shell=True)
@@ -151,8 +153,8 @@ if return_code != 0:
 
 # ===============================================
 # (Web Only) Zip Project
-if platform_arg == "web" and configuration in ["editor", "editor_game"]:
-    print("Step 4) Zip Game Project For Web Editor", flush=True)
+if platform_arg == "web" and configuration == "editor":
+    print("Zip Game Project For Web Editor", flush=True)
     
     # Remove the old folder
     if os.path.isdir("game.zip"):

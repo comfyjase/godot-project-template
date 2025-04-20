@@ -62,11 +62,13 @@ else:
 if platform_arg == "web":
     if configuration in ["editor", "editor_game", "template_debug"]:
         build_command = build_command.replace(" dev_build=yes dev_mode=yes", "")
-    
+        if os.path.isdir(f"bin/.web_zip"):
+            shutil.rmtree(f"bin/.web_zip", True)
+    else:
+        if os.path.isdir(f"bin/web_{configuration}.zip"):
+            shutil.rmtree(f"bin/web_{configuration}.zip", True)
+            
     build_command += " dlink_enabled=yes threads=no"
-    
-    if os.path.isdir(f"bin/.web_zip"):
-        shutil.rmtree(f"bin/.web_zip", True)
         
 elif platform_arg == "android":
     build_command += " generate_apk=yes"
@@ -81,12 +83,19 @@ if return_code != 0:
 os.chdir("bin")
 
 godot_files = []
-if platform_arg == "web":    
-    shutil.copytree(".web_zip", f"web_{configuration}", dirs_exist_ok=True)
-    shutil.make_archive(f"web_{configuration}", "zip", f"web_{configuration}")
+if platform_arg == "web":
+    if configuration in ["editor", "editor_game"]:
+        shutil.copytree(".web_zip", f"web_{configuration}", dirs_exist_ok=True)
+        shutil.make_archive(f"web_{configuration}", "zip", f"web_{configuration}")
+    else:
+        os.rename(f"godot.web.{godot_configuration}.wasm32.nothreads.dlink.zip", f"web_{configuration}.zip")
 elif platform_arg == "android":
-    if os.path.isfile("android_dev.apk"):
-        os.rename("android_dev.apk", f"android_{configuration}.apk")
+    if configuration in ["editor", "editor_game", "template_debug"]:
+        if os.path.isfile("android_dev.apk"):
+            os.rename("android_dev.apk", f"android_{configuration}.apk")
+    else:
+        if os.path.isfile("android_release.apk"):
+            os.rename("android_release.apk", f"android_{configuration}.apk")
 else:
     godot_files = glob(f"godot.{platform_arg}.{godot_configuration}.*")
     print(godot_files, flush=True)
