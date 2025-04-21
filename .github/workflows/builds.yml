@@ -1,4 +1,4 @@
-name: :video_game: Build Game Project
+name: Build Game Project
 on:
   workflow_call:
   push:
