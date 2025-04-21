@@ -39,7 +39,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          submodules: true
+          submodules: recursive
 
       # Lint
       #- name: Setup clang-format
@@ -61,6 +61,7 @@ jobs:
         shell: sh
         run: |
           cd thirdparty/imgui
+          echo %cd%
           git checkout v1.91.6-docking
           
       # Build GDExtension (with caches)
