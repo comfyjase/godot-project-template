@@ -13,29 +13,25 @@ jobs:
         # A build is made for every possible combination of parameters
         # You can add or remove entries from the arrays of each parameter to custimize which builds you want to run
         # See https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/running-variations-of-jobs-in-a-workflow
+        #target:
+        #  [
+            #{ platform: linux, arch: x86_64, os: ubuntu-22.04 },
+            #{ platform: windows, arch: x86_64, os: windows-latest },
+            #{ platform: windows, arch: x86_32, os: windows-latest },
+            #{ platform: macos, arch: universal, os: macos-latest },
+            #{ platform: android, arch: arm64, os: ubuntu-22.04 },
+            #{ platform: android, arch: arm32, os: ubuntu-22.04 },
+            #{ platform: android, arch: x86_64, os: ubuntu-22.04 },
+            #{ platform: android, arch: x86_32, os: ubuntu-22.04 },
+            #{ platform: ios, arch: arm64, os: macos-latest },
+            #{ platform: web, arch: wasm32, os: ubuntu-22.04 }
+        #  ]
         target:
           [
-            { platform: linux, arch: x86_64, os: ubuntu-22.04 },
-            { platform: windows, arch: x86_64, os: windows-latest },
-            { platform: windows, arch: x86_32, os: windows-latest },
-            { platform: macos, arch: universal, os: macos-latest },
-            { platform: android, arch: arm64, os: ubuntu-22.04 },
-            { platform: android, arch: arm32, os: ubuntu-22.04 },
-            { platform: android, arch: x86_64, os: ubuntu-22.04 },
-            { platform: android, arch: x86_32, os: ubuntu-22.04 },
-            { platform: ios, arch: arm64, os: macos-latest },
-            { platform: web, arch: wasm32, os: ubuntu-22.04 }
+            { platform: windows, arch: x86_64, os: windows-latest }
           ]
-        target-type: [template_debug]
+        target-type: [template_debug, template_release, profile, production]
         float-precision: [single, double]
-        include: # Also build a release version for these specific targets. Remove if you add template_release above.
-          - target: { platform: linux, arch: x86_64, os: ubuntu-22.04 }
-            target-type: template_release
-            float-precision: single
-
-          - target: { platform: linux, arch: x86_64, os: ubuntu-22.04 }
-            target-type: template_release
-            float-precision: double
 
     runs-on: ${{ matrix.target.os }}
     steps:
@@ -61,20 +57,36 @@ jobs:
         with:
           platform: ${{ matrix.target.platform }}
           em-version: 3.1.62
-
+      - name: Setup ImGui
+        shell: sh
+        working-directory: ./thirdparty/imgui
+        run: |
+          git checkout v1.91.6-docking
+          
       # Build GDExtension (with caches)
       - name: Cache .scons_cache
         uses: actions/cache@v4
         with:
           path: ${{ github.workspace }}/.scons-cache/
           key: ${{ matrix.target.platform }}_${{ matrix.target.arch }}_${{ matrix.float-precision }}_${{ matrix.target-type }}_cache
-      - name: Build GDExtension Debug Build
+      
+      - name: Build Project
         shell: sh
         env:
           SCONS_CACHE: ${{ github.workspace }}/.scons-cache/
         run: |
-          scons target=${{ matrix.target-type }} platform=${{ matrix.target.platform }} arch=${{ matrix.target.arch }} precision=${{ matrix.float-precision }}
-
+          python tools/scripts/build.py ${{ matrix.target.platform }} ${{ matrix.target-type }} ${{ matrix.target.arch }} ${{ matrix.float-precision }} True
+      
+      - name: Create Custom Export Template
+        shell: sh
+        run: |
+          python tools/scripts/create_custom_export_template.py ${{ matrix.target.platform }} ${{ matrix.target-type }} ${{ matrix.target.arch }} ${{ matrix.float-precision }} True
+      
+      - name: Export Project
+        shell: sh
+        run: |
+          python tools/scripts/export.py ${{ matrix.target.platform }} ${{ matrix.target-type }} ${{ matrix.target.arch }} ${{ matrix.float-precision }}
+      
       # Sign the binary (macOS only)
       - name: Mac Sign
         # Disable sign if secrets are not set
@@ -102,19 +114,19 @@ jobs:
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: godot-cpp-template-${{ matrix.target.platform }}-${{ matrix.target.arch }}-${{ matrix.float-precision }}-${{ matrix.target-type }}
+          name: game-${{ matrix.target.platform }}-${{ matrix.target.arch }}-${{ matrix.float-precision }}-${{ matrix.target-type }}
           path: |
             ${{ github.workspace }}/bin/**
 
   # Merges all the build artifacts together into a single godot-cpp-template artifact.
   # If you comment out this step, all the builds will be uploaded individually.
-  merge:
-    runs-on: ubuntu-22.04
-    needs: build
-    steps:
-      - name: Merge Artifacts
-        uses: actions/upload-artifact/merge@v4
-        with:
-          name: godot-cpp-template
-          pattern: godot-cpp-template-*
-          delete-merged: true
+  #merge:
+  #  runs-on: ubuntu-22.04
+  #  needs: build
+  #  steps:
+  #    - name: Merge Artifacts
+  #      uses: actions/upload-artifact/merge@v4
+  #      with:
+  #        name: godot-cpp-template
+  #        pattern: godot-cpp-template-*
+  #        delete-merged: true

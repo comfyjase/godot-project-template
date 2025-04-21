@@ -18,6 +18,9 @@ platform_arg = sys.argv[1]
 configuration = sys.argv[2]
 architecture = sys.argv[3]
 precision = sys.argv[4]
+is_ci = False
+if len(sys.argv) == 6:
+    is_ci = sys.argv[5]
 
 # ===============================================
 # Visual Studio 2022 specific stuff
@@ -40,10 +43,11 @@ using_wsl = (platform.system() == "Windows") and (platform_arg == "linux")
 
 # ===============================================
 # Build Godot
-print("Build Godot Engine", flush=True)
 os.chdir("godot")
 
-if configuration in ["editor", "editor_game"]:
+if configuration in ["editor", "editor_game"] or is_ci:
+    print("Build Godot Engine", flush=True)
+    
     build_command = ""
     if using_wsl:
         build_command = "wsl "
@@ -52,11 +56,18 @@ if configuration in ["editor", "editor_game"]:
         build_command += f"scons platform={platform_arg} target=editor arch={architecture} precision={precision} production=yes"
     elif configuration == "profile":
         build_command += f"scons platform={platform_arg} target=editor arch={architecture} precision={precision} production=yes debug_symbols=yes"
+        if is_ci:   # engine debug symbols are too large for CI
+            build_command = build_command.replace(" debug_symbols=yes", "")
     elif configuration == "template_release":
         build_command += f"scons platform={platform_arg} target=editor arch={architecture} precision={precision}"
     else:
         build_command += f"scons platform={platform_arg} target=editor arch={architecture} precision={precision} dev_build=yes dev_mode=yes"
-    
+        if is_ci:   # Same as above...
+            build_command = build_command.replace(" dev_build=yes dev_mode=yes", "")
+
+    if is_ci:
+        build_command += " debug_symbols=no tests=yes"
+
     # Removing dev_build/dev_mode from web editor because it doesn't compile (get emscripten errors...) and adding dlink_enabled
     if platform_arg == "web":
         if configuration in ["editor", "editor_game", "template_debug"]:
@@ -67,6 +78,7 @@ if configuration in ["editor", "editor_game"]:
     elif platform_arg == "android":
         build_command += " generate_apk=yes"
         
+    print("Build Command: " + build_command)
     return_code = subprocess.call(build_command, shell=True)
     if return_code != 0:
         print(f"Error: Failed to build godot for {platform_arg} {configuration} {architecture} {precision}")
@@ -102,8 +114,11 @@ elif platform.system() == "Linux":
 elif platform.system() == "Darwin":
     godot_binary_file_name = f"godot.macos.editor.dev.{godot_engine_architecture}"
 
+if configuration in ["template_release", "profile", "production"] or is_ci:
+    godot_binary_file_name = godot_binary_file_name.replace(".dev", "")
+
 if precision == "double":
-    godot_binary_file_name = godot_binary_file_name.replace(f"{architecture}", f"{precision}.{architecture}")
+    godot_binary_file_name = godot_binary_file_name.replace(f"{godot_engine_architecture}", f"{precision}.{godot_engine_architecture}")
 
 build_command = ""
 if using_wsl:

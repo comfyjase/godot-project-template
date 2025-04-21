@@ -79,7 +79,7 @@ elif platform_arg == "android" and configuration == "editor_game":
 else:
     current_date_time_stamp = datetime.datetime.now()
     date_time_stamp = f"{current_date_time_stamp.year}{current_date_time_stamp.month}{current_date_time_stamp.day}_{current_date_time_stamp.hour}{current_date_time_stamp.minute}{current_date_time_stamp.second}"
-    build_file_name_and_type = f"game_{platform_arg}_{configuration}_{date_time_stamp}_{latest_git_commit_id}{build_suffix}"
+    build_file_name_and_type = f"game_{platform_arg}_{configuration}_{architecture}_{precision}_{date_time_stamp}_{latest_git_commit_id}{build_suffix}"
     print(f"Build Name: {build_file_name_and_type}", flush=True)
 
 necessary_file_path = ""
@@ -113,13 +113,26 @@ if not os.path.exists(necessary_file_path):
     print(f"Error: {necessary_file_path} file is missing, please build project for {platform_arg} template_{export_command_type} {architecture} {precision}")
     exit()
 
+godot_engine_architecture = ""
+is_os_64_bit = sys.maxsize > 2**32
+if is_os_64_bit:
+    godot_engine_architecture = "x86_64"
+else:
+    godot_engine_architecture = "x86_32"
+
 godot_binary_file_name = ""
 if platform.system() == "Windows":
-    godot_binary_file_name = f"godot.windows.editor.dev.x86_64.exe"
+    godot_binary_file_name = f"godot.windows.editor.dev.{godot_engine_architecture}.exe"
 elif platform.system() == "Darwin":
-    godot_binary_file_name = f"godot.macos.editor.dev.universal"
+    godot_binary_file_name = f"godot.macos.editor.dev.{godot_engine_architecture}"
 elif platform.system() == "Linux":
-    godot_binary_file_name = f"godot.linuxbsd.editor.dev.x86_64"
+    godot_binary_file_name = f"godot.linuxbsd.editor.dev.{godot_engine_architecture}"
+
+if configuration in ["template_release", "profile", "production"]:
+    godot_binary_file_name = godot_binary_file_name.replace(".dev", "")
+
+if precision == "double":
+    godot_binary_file_name = godot_binary_file_name.replace(f"{godot_engine_architecture}", f"{precision}.{godot_engine_architecture}")
 
 if not os.path.exists(godot_binary_file_name):
     print(f"Error: godot editor {godot_binary_file_name} doesn't exist yet, please build the godot editor for your OS platform first before attempting to export.")
