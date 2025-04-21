@@ -57,8 +57,9 @@ jobs:
         with:
           platform: ${{ matrix.target.platform }}
           em-version: 3.1.62
+          windows-compiler: msvc
+      
       - name: Setup ImGui
-        shell: sh
         run: |
           cd thirdparty/imgui
           echo %cd%
