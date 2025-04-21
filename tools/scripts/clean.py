@@ -56,4 +56,4 @@ if platform_arg == "web" and configuration in ["editor", "editor_game", "templat
 
 return_code = subprocess.call(clean_command, shell=True)
 if return_code != 0:
-    print(f"Error: Failed to clean project using scons for {platform_arg} {godot_configuration} {architecture} {precision}")
+    sys.exit(f"Error: Failed to clean project using scons for {platform_arg} {godot_configuration} {architecture} {precision}")

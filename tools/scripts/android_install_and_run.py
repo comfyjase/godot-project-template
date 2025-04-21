@@ -32,8 +32,7 @@ else:
     return_code = subprocess.call(f"adb install bin/android/android_editor_game.apk", shell=True)
     
 if return_code != 0:
-    print(f"Error: adb install {platform_arg} {configuration} {architecture} {precision} failed")
-    exit()
+    sys.exit(f"Error: adb install {platform_arg} {configuration} {architecture} {precision} failed")
 
 # ===============================================
 # Run
@@ -44,5 +43,4 @@ else:
     return_code = subprocess.call(f"adb.exe shell monkey -p com.example.game 1", shell=True)
 
 if return_code != 0:
-    print(f"Error: adb.exe shell monkey -p {platform_arg} {configuration} {architecture} {precision} failed")
-    exit()
+    sys.exit(f"Error: adb.exe shell monkey -p {platform_arg} {configuration} {architecture} {precision} failed")

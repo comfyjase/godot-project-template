@@ -41,8 +41,7 @@ os.chdir(os.path.join("tools", "scripts"))
 
 return_code = subprocess.call(f"export.py {platform_arg} {configuration} {architecture} {precision}", shell=True)
 if return_code != 0:
-    print(f"Error: export.py {platform_arg} {configuration} {architecture} {precision} failed")
-    exit()
+    sys.exit(f"Error: export.py {platform_arg} {configuration} {architecture} {precision} failed")
 
 # ===============================================
 # Run exported project
@@ -53,5 +52,4 @@ elif platform_arg == "android":
     return_code = subprocess.call(f"python android_install_and_run.py {configuration} {architecture} {precision}", shell=True)
     
 if return_code != 0:
-    print(f"Error: Failed to run project for {platform_arg} {configuration} {architecture} {precision}")
-    exit()
+    sys.exit(f"Error: Failed to run project for {platform_arg} {configuration} {architecture} {precision}")

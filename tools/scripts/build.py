@@ -81,8 +81,7 @@ if configuration in ["editor", "editor_game"] or is_ci:
     print("Build Command: " + build_command)
     return_code = subprocess.call(build_command, shell=True)
     if return_code != 0:
-        print(f"Error: Failed to build godot for {platform_arg} {configuration} {architecture} {precision}")
-        exit()
+        sys.exit(f"Error: Failed to build godot for {platform_arg} {configuration} {architecture} {precision}")
     
     if platform_arg == "web" and configuration in ["editor", "editor_game"]:
         print(os.getcwd(), flush=True)
@@ -127,15 +126,13 @@ build_command += f"{godot_binary_file_name} --headless --dump-extension-api --du
 
 return_code = subprocess.call(build_command, shell=True)
 if return_code != 0:
-    print(f"Error: Failed to generate C++ extension api files from {godot_binary_file_name}")
-    exit()
+    sys.exit(f"Error: Failed to generate C++ extension api files from {godot_binary_file_name}")
 
 try:
     shutil.copy(os.path.join(f"{os.getcwd()}", "extension_api.json"), os.path.join(f"{project_directory}", "godot-cpp", "gdextension", "extension_api.json"))
     shutil.copy(os.path.join(f"{os.getcwd()}", "gdextension_interface.h"), os.path.join(f"{project_directory}", "godot-cpp", "gdextension", "gdextension_interface.h"))
 except IOError as e:
-    print(f"Error: Failed to copy extension api files from godot/bin -> godot_cpp/gdextension/ {e}")
-    exit()
+    sys.exit(f"Error: Failed to copy extension api files from godot/bin -> godot_cpp/gdextension/ {e}")
 
 # ===============================================
 # Build Game
@@ -163,8 +160,7 @@ if platform_arg == "web":
     
 return_code = subprocess.call(build_command, shell=True)
 if return_code != 0:
-    print(f"Error: Failed to build game for {platform_arg} {configuration} {architecture} {precision}")
-    exit()
+    sys.exit(f"Error: Failed to build game for {platform_arg} {configuration} {architecture} {precision}")
 
 # ===============================================
 # (Web Only) Zip Project

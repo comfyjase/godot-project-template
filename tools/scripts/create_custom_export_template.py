@@ -86,8 +86,7 @@ elif platform_arg == "android":
 print("Create Export Template Command: " + build_command)
 return_code = subprocess.call(build_command, shell=True)
 if return_code != 0:
-    print(f"Error: Failed to create godot export template for {platform_arg} {configuration} {architecture} {precision}")
-    exit()
+    sys.exit(f"Error: Failed to create godot export template for {platform_arg} {configuration} {architecture} {precision}")
 
 # ===============================================
 # Rename Files

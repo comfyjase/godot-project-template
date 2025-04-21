@@ -212,6 +212,8 @@ library = env.SharedLibrary(
 copy = env.Install("{}/bin/{}/".format(project_dir, env["platform"]), library)
 
 if env["vsproj"]:
+    init_msvs()
+    
     resource_files = []
     
     misc_files = get_all_files_recursive("godot-cpp/gdextension/", "*.h")

@@ -13,38 +13,36 @@ from SCons.Script import *
 # template_release - run the exported template_release executable and then attach the visual studio instance to it.
 # profile - run the exported template_release executable (should be exported using production=yes and debugging_symbols=yes) and then attach the visual studio instance to it.
 # production - run the exported template_release executable (should be exported using production=yes) and then attach the visual studio instance to it.
-
 configurations = ["editor", "editor_game", "template_debug", "template_release", "profile", "production"]
+
 vs_platforms = []
-
 is_os_64_bit = sys.maxsize > 2**32
-
 using_wsl = False
 
-# TODO: Abstract out specific platform logic, settings and values into separate python scripts and then reference in here...
+def init_msvs():
+    global vs_platforms
+    global using_wsl
+    
+    if platform.system() == "Linux":
+        vs_platforms = [ "linux" ]
+    elif platform.system() == "Darwin":
+        vs_platforms = [ "macos" ]
+    elif platform.system() == "Windows":
+        if is_os_64_bit:
+            vs_platforms = [ "Win32", "x64" ]
+            wsl_install_output = subprocess.check_output(f"wsl -l -v").decode('ascii').strip()
+            if "Windows subsystem for Linux has no installed distributions" not in wsl_install_output:
+                using_wsl = True
+                vs_platforms.append("linux")
+        else:
+            vs_platforms = [ "Win32" ]
 
-if platform.system() == "Linux":
-    vs_platforms = [ "linux" ]
-elif platform.system() == "Darwin":
-    vs_platforms = [ "macos" ]
-elif platform.system() == "Windows":
     if is_os_64_bit:
-        vs_platforms = [ "Win32", "x64" ]
-        wsl_install_output = subprocess.check_output(f"wsl -l -v").decode('ascii').strip()
-        if "Windows subsystem for Linux has no installed distributions" not in wsl_install_output:
-            using_wsl = True
-            vs_platforms.append("linux")
-    else:
-        vs_platforms = [ "Win32" ]
-
-if is_os_64_bit:
-    vs_platforms.append("web")
-
-is_android_setup = False
-if "ANDROID_HOME" in os.environ:
-    vs_platforms.append("android")
-    is_android_setup = True
-
+        vs_platforms.append("web")
+    
+    if "ANDROID_HOME" in os.environ:
+        vs_platforms.append("android")
+    
 def set_vs_environment_variables(env):
     if not env.get('MSVS'):
         env["MSVS"]["PROJECTSUFFIX"] = ".vcxproj"    

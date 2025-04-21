@@ -59,6 +59,12 @@ jobs:
           em-version: 3.1.62
           windows-compiler: msvc
           
+      - name: Setup Workflow Variables
+        id: vars
+        run: | 
+          echo "BUILD_TIME=$(date +'%Y.%m.%d-%H.%M.%S')" >> $env:GITHUB_OUTPUT
+          echo "SHA_SHORT=$(git rev-parse --short HEAD)" >> $env:GITHUB_OUTPUT
+    
       # Build GDExtension (with caches)
       - name: Cache .scons_cache
         uses: actions/cache@v4
@@ -104,15 +110,15 @@ jobs:
         if: ${{ matrix.target.platform == 'windows' }}
         shell: pwsh
         run: |
-          Remove-Item bin/* -Include *.exp,*.lib,*.pdb -Force
+          Remove-Item bin/${{ matrix.target.platform }}/* -Include *.exp,*.lib,*.pdb -Force
 
       # Upload the build
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: game-${{ matrix.target.platform }}-${{ matrix.target.arch }}-${{ matrix.float-precision }}-${{ matrix.target-type }}
+          name: game_${{ matrix.target.platform }}_${{ matrix.target-type }}_${{ matrix.target.arch }}_${{ matrix.float-precision }}_${{ steps.vars.outputs.BUILD_TIME }}_${{ github.ref_name }}_${{ steps.vars.outputs.SHA_SHORT }}
           path: |
-            ${{ github.workspace }}/bin/**
+            ${{ github.workspace }}/bin/${{ matrix.target.platform }}/**
 
   # Merges all the build artifacts together into a single godot-cpp-template artifact.
   # If you comment out this step, all the builds will be uploaded individually.
