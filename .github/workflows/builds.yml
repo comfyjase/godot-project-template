@@ -60,9 +60,11 @@ jobs:
           windows-compiler: msvc
       
       - name: Setup ImGui
+        shell: sh
         run: |
-          cd thirdparty/imgui
-          echo %cd%
+          pwd
+          cd ${{ github.workspace }}/thirdparty/imgui
+          pwd
           git checkout v1.91.6-docking
           
       # Build GDExtension (with caches)
