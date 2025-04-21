@@ -1,13 +1,9 @@
-name: Build GDExtension
+name: :video_game: Build Game Project
 on:
   workflow_call:
   push:
   pull_request:
   merge_group:
-
-# TODO: Split matrix out into separate build .yml files (similar to how godot is setup on CI)
-env:
-  SCONS_CACHE_MSVC_CONFIG: true
 
 jobs:
   build:
@@ -65,9 +61,14 @@ jobs:
           em-version: 3.1.62
           windows-compiler: msvc
           
+      - name: Windows - Environment Variables
+        if: ${{ matrix.target.platform == 'windows' }}
+        run: |
+            echo "SCONS_CACHE_MSVC_CONFIG=true" >> $env:GITHUB_ENV
+
       - name: Setup Workflow Variables
         id: vars
-        run: | 
+        run: |
           echo "BUILD_TIME=$(date +'%Y.%m.%d-%H.%M.%S')" >> $env:GITHUB_OUTPUT
           echo "SHA_SHORT=$(git rev-parse --short HEAD)" >> $env:GITHUB_OUTPUT
     
@@ -106,7 +107,7 @@ jobs:
           cache-name: ${{ matrix.target.platform }}_${{ matrix.target.arch }}_${{ matrix.float-precision }}_${{ matrix.target-type }}
       
       # Sign the binary (macOS only)
-      - name: Mac Sign
+      - name: Mac - Sign
         # Disable sign if secrets are not set
         if: ${{ matrix.target.platform == 'macos' && env.APPLE_CERT_BASE64 }}
         env:
