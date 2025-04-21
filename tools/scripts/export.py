@@ -18,6 +18,9 @@ platform_arg = sys.argv[1]
 configuration = sys.argv[2]
 architecture = sys.argv[3]
 precision = sys.argv[4]
+is_ci = False
+if len(sys.argv) == 6:
+    is_ci = sys.argv[5]
 
 # ===============================================
 # Visual Studio 2022 specific stuff
@@ -124,7 +127,7 @@ elif platform.system() == "Darwin":
 elif platform.system() == "Linux":
     godot_binary_file_name = f"godot.linuxbsd.editor.dev.{godot_engine_architecture}"
 
-if configuration in ["template_release", "profile", "production"]:
+if configuration in ["template_release", "profile", "production"] or is_ci:
     godot_binary_file_name = godot_binary_file_name.replace(".dev", "")
 
 if precision == "double":

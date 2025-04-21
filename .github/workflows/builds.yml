@@ -97,7 +97,7 @@ jobs:
       - name: Export Project
         shell: sh
         run: |
-          python tools/scripts/export.py ${{ matrix.target.platform }} ${{ matrix.target-type }} ${{ matrix.target.arch }} ${{ matrix.float-precision }}
+          python tools/scripts/export.py ${{ matrix.target.platform }} ${{ matrix.target-type }} ${{ matrix.target.arch }} ${{ matrix.float-precision }} True
       
       # Save scons cache
       - name: Save .scons_cache
