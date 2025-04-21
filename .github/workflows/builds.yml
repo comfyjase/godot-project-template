@@ -59,8 +59,8 @@ jobs:
           em-version: 3.1.62
       - name: Setup ImGui
         shell: sh
-        working-directory: ./thirdparty/imgui
         run: |
+          cd thirdparty/imgui
           git checkout v1.91.6-docking
           
       # Build GDExtension (with caches)
