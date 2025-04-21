@@ -63,7 +63,7 @@ jobs:
         shell: sh
         run: |
           pwd
-          cd ${{ github.workspace }}/thirdparty/imgui
+          cd thirdparty/imgui
           pwd
           git checkout v1.91.6-docking
           
