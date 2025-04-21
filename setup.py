@@ -74,12 +74,6 @@ if platform.system() == "Linux":
     
 # ======================================================
 # Submodules
-
-# ImGui checkout correct branch to match imgui-godot
-os.chdir("thirdparty/imgui")
-run_subprocess("git checkout v1.91.6-docking", "Error: Failed to checkout imgui at branch v1.91.6-docking, has submodule been initialized? Aborting!")
-os.chdir("..")
-
 # emsdk install and activate 
 os.chdir("emsdk")
 emsdk_version = "latest"

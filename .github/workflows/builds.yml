@@ -58,14 +58,6 @@ jobs:
           platform: ${{ matrix.target.platform }}
           em-version: 3.1.62
           windows-compiler: msvc
-      
-      - name: Setup ImGui
-        shell: sh
-        run: |
-          pwd
-          cd thirdparty/imgui
-          pwd
-          git checkout v1.91.6-docking
           
       # Build GDExtension (with caches)
       - name: Cache .scons_cache
