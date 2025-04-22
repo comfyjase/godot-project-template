@@ -27,12 +27,12 @@ windows.debug.x86_32.double = "./windows/game.windows.template_debug.double.x86_
 windows.release.x86_32 = "./windows/game.windows.template_release.x86_32.dll"
 windows.release.x86_32.double = "./windows/game.windows.template_release.double.x86_32.dll"
 
-windows.editor.x86_64 = "./windows/game.windows.editor.x86_64.dll"
-windows.editor.x86_64.double = "./windows/game.windows.editor.double.x86_64.dll"
-windows.debug.x86_64 = "./windows/game.windows.template_debug.x86_64.dll"
-windows.debug.x86_64.double = "./windows/game.windows.template_debug.double.x86_64.dll"
-windows.release.x86_64 = "./windows/game.windows.template_release.x86_64.dll"
-windows.release.x86_64.double = "./windows/game.windows.template_release.double.x86_64.dll"
+windows.editor.x86_64 = "res://bin/windows/game.windows.editor.x86_64.dll"
+windows.editor.x86_64.double = "res://bin/windows/game.windows.editor.double.x86_64.dll"
+windows.debug.x86_64 = "res://bin/windows/game.windows.template_debug.x86_64.dll"
+windows.debug.x86_64.double = "res://bin/windows/game.windows.template_debug.double.x86_64.dll"
+windows.release.x86_64 = "res://bin/windows/game.windows.template_release.x86_64.dll"
+windows.release.x86_64.double = "res://bin/windows/game.windows.template_release.double.x86_64.dll"
 
 linux.editor.x86_64 = "./linux/libgame.linux.editor.x86_64.so"
 linux.editor.x86_64.double = "./linux/libgame.linux.editor.double.x86_64.so"
