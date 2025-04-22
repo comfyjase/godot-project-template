@@ -136,6 +136,8 @@ os.chdir(os.path.join("..", "..", "game"))
 with open("export_presets.cfg", "r") as export_presets_read:
     export_template_file_path = os.path.join(project_directory, "godot", "bin", f"{platform_arg}.{configuration}.{architecture}{template_suffix}")
     export_template_file_path = os.path.normpath(export_template_file_path).replace("\\", "/")
+    if precision == "double":
+        export_template_file_path = export_template_file_path.replace(f"{architecture}", f"{precision}.{architecture}")
     all_lines=export_presets_read.readlines()
     
     found_export = False
