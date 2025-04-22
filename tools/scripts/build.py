@@ -163,26 +163,6 @@ if return_code != 0:
     sys.exit(f"Error: Failed to build game for {platform_arg} {configuration} {architecture} {precision}")
 
 # ===============================================
-# (CI Only) Import Assets
-if is_ci:
-    print("Importing Project Assets", flush=True)
-    
-    os.chdir(os.path.join("godot", "bin"))
-    
-    build_command = ""
-    if using_wsl:
-        build_command = "wsl "
-    
-    game_project_directory = os.path.join(project_directory, "game")
-    build_command += f"{godot_binary_file_name} --path {game_project_directory} --headless --import"
-    
-    return_code = subprocess.call(build_command, shell=True)
-    if return_code != 0:
-        sys.exit(f"Error: Failed to import godot project assets and resources for {game_project_directory} from {godot_binary_file_name}")
-    
-    os.chdir(os.path.join("..", ".."))
-
-# ===============================================
 # (Web Only) Zip Project
 if platform_arg == "web" and configuration == "editor":
     print("Zip Game Project For Web Editor", flush=True)
