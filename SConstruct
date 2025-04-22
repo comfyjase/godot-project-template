@@ -196,6 +196,11 @@ else:
 env.Append(CPPPATH=all_directories)
 env.Append(CPPDEFINES=cpp_defines)
 
+# Fixing warnings for LNK4099: PDB '' was not found with...
+# This is only needed for CI purposes but included in the main build
+# to avoid having to add extra CI build parameter in this script
+env.Append(LINKFLAGS=["/ignore:4099"])
+
 # .dev doesn't inhibit compatibility, so we don't need to key it.
 # .universal just means "compatible with all relevant arches" so we don't need to key it.
 suffix = env['suffix'].replace(".dev", "").replace(".universal", "")
