@@ -66,6 +66,12 @@ jobs:
         run: |
             echo "SCONS_CACHE_MSVC_CONFIG=true" >> $env:GITHUB_ENV
 
+      - name: Install Vulkan SDK
+        uses: humbletim/install-vulkan-sdk@v1.2
+        with:
+          version: 1.4.309.0
+          cache: true
+
       - name: Setup Workflow Variables
         id: vars
         run: |
