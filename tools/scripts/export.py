@@ -136,7 +136,7 @@ if precision == "double":
 if not os.path.exists(godot_binary_file_name):
     sys.exit(f"Error: godot editor {godot_binary_file_name} doesn't exist yet, please build the godot editor for your OS platform first before attempting to export.")
 
-export_command = f"{godot_binary_file_name} --path \"{os.path.join(project_directory, "game")}\" --rendering-driver vulkan --export-{export_command_type} \"{platform_arg} {configuration} {architecture} {precision}\" \"{os.path.join(project_directory, "bin", platform_arg, build_file_name_and_type)}\" --verbose"
+export_command = f"{godot_binary_file_name} --path \"{os.path.join(project_directory, "game")}\" --export-{export_command_type} \"{platform_arg} {configuration} {architecture} {precision}\" \"{os.path.join(project_directory, "bin", platform_arg, build_file_name_and_type)}\" --verbose"
 print(export_command, flush=True)
 return_code = subprocess.call(export_command, shell=True)
 if return_code != 0:
