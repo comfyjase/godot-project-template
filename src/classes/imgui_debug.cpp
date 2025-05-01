@@ -145,7 +145,7 @@ void godot::ImGuiDebug::draw_build_information(double delta)
 
 	const ImVec2 top_center = ImVec2(ImGui::GetMainViewport()->GetCenter().x, 0.0f);
 	ImGui::SetNextWindowPos(top_center, ImGuiCond_Appearing, ImVec2(0.5f, 0.0f));
-	ImGui::SetNextWindowSize({ 200, 150 }, ImGuiCond_Once);
+	ImGui::SetNextWindowSize({ 225, 150 }, ImGuiCond_Once);
 	ImGui::SetNextWindowBgAlpha(0.5f);
 
 	// General Build Information
