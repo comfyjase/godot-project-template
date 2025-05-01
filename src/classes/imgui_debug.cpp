@@ -180,7 +180,16 @@ void godot::ImGuiDebug::draw_build_information(double delta)
 		return;
 #endif
 
-		ImGui::Text("%s %s Build", platform.c_unescape().utf8().get_data(), configuration.c_unescape().utf8().get_data());
+		String precision = "None";
+#if REAL_T_IS_DOUBLE
+		precision = "Double";
+#else
+		precision = "Single";
+#endif
+
+		ImGui::Text("%s %s %s Build", platform.c_unescape().utf8().get_data(),
+			configuration.c_unescape().utf8().get_data(),
+			precision.c_unescape().utf8().get_data());
 		ImGui::Separator();
 
 		const double fps = 1.0 / delta;
