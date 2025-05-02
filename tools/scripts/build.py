@@ -122,6 +122,8 @@ if precision == "double":
 build_command = ""
 if using_wsl:
     build_command = "wsl ./"
+if platform.system() == "Linux":
+    subprocess.call(f"chmod +x {godot_binary_file_name}", shell=True)
 build_command += f"{godot_binary_file_name} --headless --dump-extension-api --dump-gdextension-interface"
 
 return_code = subprocess.call(build_command, shell=True)
