@@ -115,17 +115,17 @@ jobs:
         run: |
           python tools/scripts/create_custom_export_template.py ${{ matrix.target.platform }} ${{ matrix.target-type }} ${{ matrix.target.arch }} ${{ matrix.float-precision }} True
       
-      - name: Export Project
-        shell: sh
-        run: |
-          python tools/scripts/export.py ${{ matrix.target.platform }} ${{ matrix.target-type }} ${{ matrix.target.arch }} ${{ matrix.float-precision }} True
-      
       # Save scons cache
       - name: Save .scons_cache
         uses: ./godot-cpp/.github/actions/godot-cache-save
         with:
           scons-cache: ${{ github.workspace }}/.scons_cache/
           cache-name: ${{ matrix.target.platform }}_${{ matrix.target.arch }}_${{ matrix.float-precision }}_${{ matrix.target-type }}
+      
+      - name: Export Project
+        shell: sh
+        run: |
+          python tools/scripts/export.py ${{ matrix.target.platform }} ${{ matrix.target-type }} ${{ matrix.target.arch }} ${{ matrix.float-precision }} True
       
       # Sign the binary (macOS only)
       - name: Mac - Sign
