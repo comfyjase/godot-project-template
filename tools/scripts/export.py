@@ -41,7 +41,11 @@ using_wsl = (platform.system() == "Windows") and (platform_arg == "linux")
 
 # ===============================================
 # Export
-latest_git_commit_id = subprocess.check_output("git rev-parse --short HEAD").decode('ascii').strip()
+git_command = ""
+if platform.system() == "Linux":
+    git_command = "./"
+git_command += "git rev-parse --short HEAD"
+latest_git_commit_id = subprocess.check_output(git_command).decode('ascii').strip()
 
 os.chdir(os.path.join("godot", "bin"))
 
