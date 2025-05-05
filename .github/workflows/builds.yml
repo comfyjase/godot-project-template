@@ -88,10 +88,10 @@ jobs:
           libwayland-dev
 
       - name: Setup Workflow Variables
-        id: vars
         run: |
-          echo "BUILD_TIME=$(date +'%Y.%m.%d-%H.%M.%S')" >> $env:GITHUB_OUTPUT
-          echo "SHA_SHORT=$(git rev-parse --short HEAD)" >> $env:GITHUB_OUTPUT
+          python tools/scripts/write_to_github_actions_environment.py
+        #  echo "BUILD_TIME=$(date +'%Y.%m.%d-%H.%M.%S')" >> $env:GITHUB_OUTPUT
+        #  echo "SHA_SHORT=$(git rev-parse --short HEAD)" >> $env:GITHUB_OUTPUT
     
       # Restore .scons_cache        
       - name: Restore .scons_cache
@@ -154,7 +154,7 @@ jobs:
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: game_${{ matrix.target.platform }}_${{ matrix.target-type }}_${{ matrix.target.arch }}_${{ matrix.float-precision }}_${{ steps.vars.outputs.BUILD_TIME }}_${{ github.ref_name }}_${{ steps.vars.outputs.SHA_SHORT }}
+          name: game_${{ matrix.target.platform }}_${{ matrix.target-type }}_${{ matrix.target.arch }}_${{ matrix.float-precision }}_${{ env.BUILD_TIME }}_${{ github.ref_name }}_${{ env.SHA_SHORT }}
           path: |
             ${{ github.workspace }}/bin/${{ matrix.target.platform }}/**
 
