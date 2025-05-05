@@ -16,5 +16,5 @@ with open(env_file, "a") as file:
     git_command += "rev-parse --short HEAD"
     latest_git_commit_id = subprocess.check_output(git_command, shell=True).decode('ascii').strip()
     
-    file.write(f"BUILD_TIME={datetime.datetime.strftime(datetime.datetime.now(), '%m%d%Y_%H%M%S')}")
-    file.write(f"SHA_SHORT={latest_git_commit_id}")
+    file.write(f"BUILD_TIME={datetime.datetime.strftime(datetime.datetime.now(), '%m%d%Y_%H%M%S')}\n")
+    file.write(f"SHA_SHORT={latest_git_commit_id}\n")
