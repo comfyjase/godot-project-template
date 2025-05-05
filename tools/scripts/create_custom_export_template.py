@@ -121,7 +121,10 @@ elif platform_arg == "android":
         if os.path.isfile(f"android_release{template_suffix}"):
             os.rename(f"android_release{template_suffix}", f"android.{configuration}.{architecture}{template_suffix}")
 else:
-    godot_files = glob(f"godot.{platform_arg}.{godot_configuration}.*")
+    godot_platform_name = platform_arg
+    if platform_arg == "linux":
+        godot_platform_name = "linuxbsd"
+    godot_files = glob(f"godot.{godot_platform_name}.{godot_configuration}.*")
     print(godot_files, flush=True)
     for file in godot_files:
         old_name = file
@@ -134,8 +137,13 @@ os.chdir(os.path.join("..", "..", "game"))
 
 # TODO: Check what is needed for web/android here...
 with open("export_presets.cfg", "r") as export_presets_read:
-    export_template_file_path = os.path.join(project_directory, "godot", "bin", f"{platform_arg}.{configuration}.{architecture}{template_suffix}")
+    godot_platform_name = platform_arg
+    if platform_arg == "linux":
+        godot_platform_name = "linuxbsd"
+    export_template_file_path = os.path.join(project_directory, "godot", "bin", f"{godot_platform_name}.{configuration}.{architecture}{template_suffix}")
     export_template_file_path = os.path.normpath(export_template_file_path).replace("\\", "/")
+    if using_wsl:
+        export_template_file_path = "/mnt/" + export_template_file_path.replace(":", "").lower()
     if precision == "double":
         export_template_file_path = export_template_file_path.replace(f"{architecture}", f"{precision}.{architecture}")
     all_lines=export_presets_read.readlines()

@@ -42,10 +42,13 @@ using_wsl = (platform.system() == "Windows") and (platform_arg == "linux")
 # ===============================================
 # Export
 git_command = ""
-if platform.system() == "Linux":
-    git_command = "/usr/bin/git "
+if using_wsl:
+    git_command = "wsl /usr/bin/git "
 else:
-    git_command = "git "
+    if platform.system() == "Linux":
+        git_command = "/usr/bin/git "
+    else:
+        git_command = "git "
 git_command += "rev-parse --short HEAD"
 latest_git_commit_id = subprocess.check_output(git_command).decode('ascii').strip()
 
@@ -127,7 +130,10 @@ else:
 
 godot_binary_file_name = ""
 if platform.system() == "Windows":
-    godot_binary_file_name = f"godot.windows.editor.dev.{godot_engine_architecture}.exe"
+    if using_wsl:
+        godot_binary_file_name = f"godot.linuxbsd.editor.dev.{godot_engine_architecture}"
+    else:
+        godot_binary_file_name = f"godot.windows.editor.dev.{godot_engine_architecture}.exe"
 elif platform.system() == "Darwin":
     godot_binary_file_name = f"godot.macos.editor.dev.{godot_engine_architecture}"
 elif platform.system() == "Linux":
@@ -142,10 +148,17 @@ if precision == "double":
 if not os.path.exists(godot_binary_file_name):
     sys.exit(f"Error: godot editor {godot_binary_file_name} doesn't exist yet, please build the godot editor for your OS platform first before attempting to export.")
 
+project_path = f"{os.path.join(project_directory, "game")}".replace("\\", "/")
+build_output_path = f"{os.path.join(project_directory, "bin", platform_arg, build_file_name_and_type)}".replace("\\", "/")
 export_command = ""
-if platform.system() == "Linux":
+if using_wsl:
+    export_command += "wsl ./"
+    project_path = "/mnt/" + project_path.replace(":", "").lower()
+    build_output_path = "/mnt/" + build_output_path.replace(":", "").lower()
+elif platform.system() == "Linux":
     export_command += "./"
-export_command += f"{godot_binary_file_name} --path \"{os.path.join(project_directory, "game")}\" --headless --export-{export_command_type} \"{platform_arg} {configuration} {architecture} {precision}\" \"{os.path.join(project_directory, "bin", platform_arg, build_file_name_and_type)}\" --verbose"
+
+export_command += f"{godot_binary_file_name} --path \"{project_path}\" --headless --export-{export_command_type} \"{platform_arg} {configuration} {architecture} {precision}\" \"{build_output_path}\" --verbose"
 print(export_command, flush=True)
 return_code = subprocess.call(export_command, shell=True)
 if return_code != 0:
