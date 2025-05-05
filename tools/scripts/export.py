@@ -89,8 +89,7 @@ if platform_arg == "web":
 elif platform_arg == "android" and configuration == "editor_game":
     build_file_name_and_type = f"android_{configuration}{build_suffix}"
 else:
-    current_date_time_stamp = datetime.datetime.now()
-    date_time_stamp = f"{current_date_time_stamp.year}.{current_date_time_stamp.month}.{current_date_time_stamp.day}_{current_date_time_stamp.hour}.{current_date_time_stamp.minute}.{current_date_time_stamp.second}"
+    date_time_stamp = datetime.datetime.strftime(datetime.datetime.now(), '%m%d%Y_%H%M%S')
     build_file_name_and_type = f"game_{platform_arg}_{configuration}_{architecture}_{precision}_{date_time_stamp}_{latest_git_commit_id}{build_suffix}"
     print(f"Build Name: {build_file_name_and_type}", flush=True)
 
