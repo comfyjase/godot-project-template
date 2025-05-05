@@ -4,6 +4,8 @@ import sys
 
 from methods import *
 from msvs import *
+from tools.scripts.options import *
+from tools.scripts.system import *
 
 lib_name = "game"
 project_dir = "game"
@@ -14,89 +16,8 @@ customs = ["custom.py"]
 customs = [os.path.abspath(path) for path in customs]
 
 opts = Variables(customs, ARGUMENTS)
-
-platforms = ["linux", "macos", "windows", "android", "ios", "web"]
-
-# CPU architecture options.
-architecture_array = [
-    "",
-    "universal",
-    "x86_32",
-    "x86_64",
-    "arm32",
-    "arm64",
-    "rv64",
-    "ppc32",
-    "ppc64",
-    "wasm32",
-]
-
-architecture_aliases = {
-    "x64": "x86_64",
-    "amd64": "x86_64",
-    "armv7": "arm32",
-    "armv8": "arm64",
-    "arm64v8": "arm64",
-    "aarch64": "arm64",
-    "rv": "rv64",
-    "riscv": "rv64",
-    "riscv64": "rv64",
-    "ppcle": "ppc32",
-    "ppc": "ppc32",
-    "ppc64le": "ppc64",
-}
-
-if sys.platform.startswith("linux"):
-    default_platform = "linux"
-elif sys.platform == "darwin":
-    default_platform = "macos"
-elif sys.platform == "win32" or sys.platform == "msys":
-    default_platform = "windows"
-elif ARGUMENTS.get("platform", ""):
-    default_platform = ARGUMENTS.get("platform")
-else:
-    raise ValueError("Could not detect platform automatically, please specify with platform=<platform>")
-
-opts.Add(
-    EnumVariable(
-        key="platform",
-        help="Target platform",
-        default=local_env.get("platform", default_platform),
-        allowed_values=platforms,
-        ignorecase=2,
-    )
-)
-opts.Add(
-    EnumVariable(
-        key="target",
-        help="Compilation target",
-        default=local_env.get("target", configurations[0]),
-        allowed_values=(configurations),
-    )
-)
-opts.Add(
-    EnumVariable(
-        key="precision",
-        help="Set the floating-point precision level",
-        default=local_env.get("precision", "single"),
-        allowed_values=("single", "double"),
-    )
-)
-opts.Add(
-    EnumVariable(
-        key="arch",
-        help="CPU architecture",
-        default=local_env.get("arch", ""),
-        allowed_values=architecture_array,
-        map=architecture_aliases,
-    )
-)
-opts.Add(BoolVariable("vsproj", "Generate a Visual Studio solution", False))
-opts.Add("vsproj_name", "Name of the Visual Studio solution", lib_name)
-opts.Add(BoolVariable("debug_symbols", "Build with debugging symbols", True))
-opts.Add(BoolVariable("dev_build", "Developer build with dev-only debugging code (DEV_ENABLED)", False))
-opts.Add(BoolVariable("production", "Used for shipping a build", False))
-
+init_default_platform(ARGUMENTS)
+init_options(local_env, opts, lib_name)
 opts.Update(local_env)
 
 Help(opts.GenerateHelpText(local_env))

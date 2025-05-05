@@ -1,0 +1,58 @@
+#!/usr/bin/env python
+
+import platform
+import sys
+
+default_platform = ""
+platforms = ["linux", "macos", "windows", "android", "ios", "web"]
+
+# editor - run godot editor dev executable and pass --editor and --path
+# editor_game - run godot editor dev executable and just pass --path
+# template_debug - run the exported template_debug executable and then attach the visual studio instance to it.
+# template_release - run the exported template_release executable and then attach the visual studio instance to it.
+# profile - run the exported template_release executable (should be exported using production=yes and debugging_symbols=yes) and then attach the visual studio instance to it.
+# production - run the exported template_release executable (should be exported using production=yes) and then attach the visual studio instance to it.
+configurations = ["editor", "editor_game", "template_debug", "template_release", "profile", "production"]
+
+# CPU architecture options.
+architectures = [
+    "",
+    "universal",
+    "x86_32",
+    "x86_64",
+    "arm32",
+    "arm64",
+    "rv64",
+    "ppc32",
+    "ppc64",
+    "wasm32",
+]
+
+architecture_aliases = {
+    "x64": "x86_64",
+    "amd64": "x86_64",
+    "armv7": "arm32",
+    "armv8": "arm64",
+    "arm64v8": "arm64",
+    "aarch64": "arm64",
+    "rv": "rv64",
+    "riscv": "rv64",
+    "riscv64": "rv64",
+    "ppcle": "ppc32",
+    "ppc": "ppc32",
+    "ppc64le": "ppc64",
+}
+
+def init_default_platform(arguments):
+    global default_platform
+    
+    if sys.platform.startswith("linux"):
+        default_platform = "linux"
+    elif sys.platform == "darwin":
+        default_platform = "macos"
+    elif sys.platform == "win32" or sys.platform == "msys":
+        default_platform = "windows"
+    elif arguments.get("platform", ""):
+        default_platform = arguments.get("platform")
+    else:
+        raise ValueError("Could not detect platform automatically, please specify with platform=<platform>")
