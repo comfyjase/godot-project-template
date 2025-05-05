@@ -50,7 +50,7 @@ else:
     else:
         git_command = "git "
 git_command += "rev-parse --short HEAD"
-latest_git_commit_id = subprocess.check_output(git_command).decode('ascii').strip()
+latest_git_commit_id = subprocess.check_output(git_command, shell=True).decode('ascii').strip()
 
 os.chdir(os.path.join("godot", "bin"))
 
