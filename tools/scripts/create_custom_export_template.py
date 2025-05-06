@@ -6,7 +6,12 @@ import shutil
 import subprocess
 import sys
 
+script_path_to_append = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..")
+if script_path_to_append not in sys.path:
+    sys.path.append(script_path_to_append)
+
 from glob import glob
+from tools.scripts.system import *
 
 # Change to project directory if we are not already there
 project_directory = os.getcwd()
@@ -15,9 +20,9 @@ if not os.path.exists(os.path.join(f"{project_directory}", "game")):
     os.chdir("..")
 
 platform_arg = sys.argv[1]
-configuration = sys.argv[2]
-architecture = sys.argv[3]
-precision = sys.argv[4]
+configuration_arg = sys.argv[2]
+architecture_arg = sys.argv[3]
+precision_arg = sys.argv[4]
 is_ci = False
 if len(sys.argv) == 6:
     is_ci = sys.argv[5]
@@ -27,42 +32,42 @@ if len(sys.argv) == 6:
 if platform_arg == "Win32" or platform_arg == "x64":
     platform_arg = "windows"
 
-if architecture == platform_arg:
-    if architecture == "Win32":
-        architecture = "x86_32"
-    elif architecture == "x64" or architecture == "linux":
-        architecture = "x86_64"
-    elif architecture == "web":
-        architecture = "wasm32"
-    elif architecture == "android": # TODO: Add different android processor platforms? E.g. android_arm32, android_arm64, android_x86_32, android_x86_64?
-        architecture = "arm64"
+if architecture_arg == platform_arg:
+    if architecture_arg == "Win32":
+        architecture_arg = "x86_32"
+    elif architecture_arg == "x64" or architecture_arg == "linux":
+        architecture_arg = "x86_64"
+    elif architecture_arg == "web":
+        architecture_arg = "wasm32"
+    elif architecture_arg == "android": # TODO: Add different android processor platforms? E.g. android_arm32, android_arm64, android_x86_32, android_x86_64?
+        architecture_arg = "arm64"
     
-using_wsl = (platform.system() == "Windows") and (platform_arg == "linux")
+using_wsl = wsl_available and platform_arg == "linux"
 
 # ===============================================
 # Build Godot
 os.chdir("godot")
 
-godot_configuration = configuration
-if godot_configuration in ["profile", "production"]:
-    godot_configuration = "template_release"
-elif godot_configuration == "editor_game":
-    godot_configuration = "template_debug"
+godot_configuration_arg = configuration_arg
+if godot_configuration_arg in ["profile", "production"]:
+    godot_configuration_arg = "template_release"
+elif godot_configuration_arg == "editor_game":
+    godot_configuration_arg = "template_debug"
 
 build_command = ""
 if using_wsl:
     build_command = "wsl "
     
-if configuration == "production":
-    build_command += f"scons platform={platform_arg} target={godot_configuration} arch={architecture} precision={precision} production=yes"
-elif configuration == "profile":
-    build_command += f"scons platform={platform_arg} target={godot_configuration} arch={architecture} precision={precision} production=yes debug_symbols=yes"
+if configuration_arg == "production":
+    build_command += f"scons platform={platform_arg} target={godot_configuration_arg} arch={architecture_arg} precision_arg={precision_arg} production=yes"
+elif configuration_arg == "profile":
+    build_command += f"scons platform={platform_arg} target={godot_configuration_arg} arch={architecture_arg} precision_arg={precision_arg} production=yes debug_symbols=yes"
     if is_ci:
         build_command = build_command.replace(" debug_symbols=yes", "")
-elif configuration == "template_release":
-    build_command += f"scons platform={platform_arg} target={godot_configuration} arch={architecture} precision={precision}"
+elif configuration_arg == "template_release":
+    build_command += f"scons platform={platform_arg} target={godot_configuration_arg} arch={architecture_arg} precision_arg={precision_arg}"
 else:
-    build_command += f"scons platform={platform_arg} target={godot_configuration} arch={architecture} precision={precision} dev_build=yes dev_mode=yes"
+    build_command += f"scons platform={platform_arg} target={godot_configuration_arg} arch={architecture_arg} precision_arg={precision_arg} dev_build=yes dev_mode=yes"
     if is_ci:
         build_command = build_command.replace(" dev_build=yes dev_mode=yes", "")
 
@@ -70,13 +75,13 @@ if is_ci:
     build_command += " debug_symbols=no tests=yes"
 
 if platform_arg == "web":
-    if configuration in ["editor", "editor_game", "template_debug"]:
+    if configuration_arg in ["editor", "editor_game", "template_debug"]:
         build_command = build_command.replace(" dev_build=yes dev_mode=yes", "")
         if os.path.isdir(f"bin/.web_zip"):
             shutil.rmtree(f"bin/.web_zip", True)
     else:
-        if os.path.isdir(f"bin/web_{configuration}.zip"):
-            shutil.rmtree(f"bin/web_{configuration}.zip", True)
+        if os.path.isdir(f"bin/web_{configuration_arg}.zip"):
+            shutil.rmtree(f"bin/web_{configuration_arg}.zip", True)
             
     build_command += " dlink_enabled=yes threads=no"
         
@@ -86,7 +91,7 @@ elif platform_arg == "android":
 print("Create Export Template Command: " + build_command)
 return_code = subprocess.call(build_command, shell=True)
 if return_code != 0:
-    sys.exit(f"Error: Failed to create godot export template for {platform_arg} {configuration} {architecture} {precision}")
+    sys.exit(f"Error: Failed to create godot export template for {platform_arg} {configuration_arg} {architecture_arg} {precision_arg}")
 
 # ===============================================
 # Rename Files
@@ -108,27 +113,27 @@ elif platform_arg == "ios":
 
 godot_files = []
 if platform_arg == "web":
-    if configuration in ["editor", "editor_game"]:
-        shutil.copytree(".web_zip", f"web_{configuration}", dirs_exist_ok=True)
-        shutil.make_archive(f"web_{configuration}", "zip", f"web_{configuration}")
+    if configuration_arg in ["editor", "editor_game"]:
+        shutil.copytree(".web_zip", f"web_{configuration_arg}", dirs_exist_ok=True)
+        shutil.make_archive(f"web_{configuration_arg}", "zip", f"web_{configuration_arg}")
     else:
-        os.rename(f"godot.web.{godot_configuration}.{architecture}.nothreads.dlink{template_suffix}", f"web.{configuration}.{architecture}{template_suffix}")
+        os.rename(f"godot.web.{godot_configuration_arg}.{architecture_arg}.nothreads.dlink{template_suffix}", f"web.{configuration_arg}.{architecture_arg}{template_suffix}")
 elif platform_arg == "android":
-    if configuration in ["editor", "editor_game", "template_debug"]:
+    if configuration_arg in ["editor", "editor_game", "template_debug"]:
         if os.path.isfile(f"android_dev{template_suffix}"):
-            os.rename(f"android_dev{template_suffix}", f"android.{configuration}.{architecture}{template_suffix}")
+            os.rename(f"android_dev{template_suffix}", f"android.{configuration_arg}.{architecture_arg}{template_suffix}")
     else:
         if os.path.isfile(f"android_release{template_suffix}"):
-            os.rename(f"android_release{template_suffix}", f"android.{configuration}.{architecture}{template_suffix}")
+            os.rename(f"android_release{template_suffix}", f"android.{configuration_arg}.{architecture_arg}{template_suffix}")
 else:
     godot_platform_name = platform_arg
     if platform_arg == "linux":
         godot_platform_name = "linuxbsd"
-    godot_files = glob(f"godot.{godot_platform_name}.{godot_configuration}.*")
+    godot_files = glob(f"godot.{godot_platform_name}.{godot_configuration_arg}.*")
     print(godot_files, flush=True)
     for file in godot_files:
         old_name = file
-        new_name = file.replace("godot.", "").replace(f"{godot_configuration}", f"{configuration}")
+        new_name = file.replace("godot.", "").replace(f"{godot_configuration_arg}", f"{configuration_arg}")
         os.rename(old_name, new_name)
 
 # ===============================================
@@ -140,22 +145,22 @@ with open("export_presets.cfg", "r") as export_presets_read:
     godot_platform_name = platform_arg
     if platform_arg == "linux":
         godot_platform_name = "linuxbsd"
-    export_template_file_path = os.path.join(project_directory, "godot", "bin", f"{godot_platform_name}.{configuration}.{architecture}{template_suffix}")
+    export_template_file_path = os.path.join(project_directory, "godot", "bin", f"{godot_platform_name}.{configuration_arg}.{architecture_arg}{template_suffix}")
     export_template_file_path = os.path.normpath(export_template_file_path).replace("\\", "/")
     if using_wsl:
         export_template_file_path = "/mnt/" + export_template_file_path.replace(":", "").lower()
-    if precision == "double":
-        export_template_file_path = export_template_file_path.replace(f"{architecture}", f"{precision}.{architecture}")
+    if precision_arg == "double":
+        export_template_file_path = export_template_file_path.replace(f"{architecture_arg}", f"{precision_arg}.{architecture_arg}")
     all_lines=export_presets_read.readlines()
     
     found_export = False
     for index, line in enumerate(all_lines):
-        if line == f"name=\"{platform_arg} {configuration} {architecture} {precision}\"\n":
+        if line == f"name=\"{platform_arg} {configuration_arg} {architecture_arg} {precision_arg}\"\n":
             found_export = True
-            print(f"Found export preset for {platform_arg} {configuration} {architecture} {precision}", flush=True)
+            print(f"Found export preset for {platform_arg} {configuration_arg} {architecture_arg} {precision_arg}", flush=True)
             
         if found_export:
-            if configuration in ["editor", "editor_game", "template_debug"]:
+            if configuration_arg in ["editor", "editor_game", "template_debug"]:
                 if "custom_template/debug=" in line:
                     all_lines[index] = f"custom_template/debug=\"{export_template_file_path}\"\n"
                     print(f"Updating template debug to {export_template_file_path}", flush=True)

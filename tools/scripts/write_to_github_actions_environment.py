@@ -4,6 +4,11 @@ import datetime
 import os
 import platform
 import subprocess
+import sys
+
+script_path_to_append = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..")
+if script_path_to_append not in sys.path:
+    sys.path.append(script_path_to_append)
 
 env_file = os.getenv('GITHUB_ENV')
 

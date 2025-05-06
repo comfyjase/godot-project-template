@@ -5,16 +5,17 @@ import platform
 import subprocess
 import sys
 
+script_path_to_append = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..")
+if script_path_to_append not in sys.path:
+    sys.path.append(script_path_to_append)
+
 from SCons.Script import *
 from tools.scripts.system import *
 
 vs_platforms = []
-is_os_64_bit = sys.maxsize > 2**32
-using_wsl = False
 
 def init_msvs():
     global vs_platforms
-    global using_wsl
     
     if platform.system() == "Linux":
         vs_platforms = [ "linux" ]
@@ -23,9 +24,8 @@ def init_msvs():
     elif platform.system() == "Windows":
         if is_os_64_bit:
             vs_platforms = [ "Win32", "x64" ]
-            wsl_install_output = subprocess.check_output(f"wsl -l -v").decode('ascii').strip()
+            wsl_install_output = subprocess.check_output(f"wsl -l -v", shell=True).decode('ascii').strip()
             if "Windows subsystem for Linux has no installed distributions" not in wsl_install_output:
-                using_wsl = True
                 vs_platforms.append("linux")
         else:
             vs_platforms = [ "Win32" ]
@@ -46,6 +46,7 @@ def get_vs_variants():
     for (configuration) in configurations:
         for (vs_platform) in vs_platforms:
             vs_variants.append(configuration + '|' + vs_platform)
+            
     return vs_variants
 
 def get_vs_debug_settings():
@@ -88,7 +89,7 @@ def get_vs_debug_settings():
         
         android_command_arguments_to_install_and_run = "tools/scripts/android_install_and_run.py $(Configuration) arm64 single"
         
-        if using_wsl:            
+        if wsl_available:        
             wsl_command_arguments_to_open_project_in_editor = f"./godot/bin/{binary_file_names[2]} --editor --path \"game\""
             wsl_command_arguments_to_run_project_as_game = f"./godot/bin/{binary_file_names[2]} --path \"game\""
             
@@ -327,7 +328,7 @@ def get_vs_cpp_defines():
     vs_cpp_defines = []
     
     if is_os_64_bit:
-        if using_wsl:
+        if wsl_available:
             vs_cpp_defines.extend([
                 # Win32 editor
                 [
@@ -769,7 +770,7 @@ def get_vs_cpp_flags():
     vs_cpp_flags = []
     
     if is_os_64_bit:
-        if using_wsl:
+        if wsl_available:
             vs_cpp_flags.extend([
                 # Win32 editor
                 [
@@ -1066,7 +1067,7 @@ def update_vs_solution_file(target, source, env):
             for configuration in configurations:
                 for vs_platform in vs_platforms:
                     godot_platform = vs_platform
-                    if using_wsl:
+                    if wsl_available:
                         if godot_platform == "linux":
                             godot_platform = "x64"  # Convert to map to Win64 instead since the godot engine project doesn't have a windows -> linux config mapping
                     if godot_platform in ["web", "android"]:

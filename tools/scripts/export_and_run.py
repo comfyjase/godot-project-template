@@ -6,6 +6,10 @@ import os
 import subprocess
 import sys
 
+script_path_to_append = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..")
+if script_path_to_append not in sys.path:
+    sys.path.append(script_path_to_append)
+
 # Change to project directory if we are not already there
 current_directory = os.getcwd()
 if not os.path.exists(os.path.join(f"{current_directory}", "game")):

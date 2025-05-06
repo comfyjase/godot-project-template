@@ -9,7 +9,7 @@ if platform.system() == "Windows":
 elif platform.system() == "Darwin":
     generate_command = generate_command.replace("<p>", "macos")
 elif platform.system() == "Linux":
-    generate_command = generate_command.replace("<p>", "linuxbsd")
+    generate_command = generate_command.replace("<p>", "linux")
     
 return_code = subprocess.call(generate_command, shell=True)
 if return_code != 0:

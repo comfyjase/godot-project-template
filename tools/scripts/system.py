@@ -1,7 +1,13 @@
 #!/usr/bin/env python
 
+import os
 import platform
+import subprocess
 import sys
+
+script_path_to_append = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..")
+if script_path_to_append not in sys.path:
+    sys.path.append(script_path_to_append)
 
 default_platform = ""
 platforms = ["linux", "macos", "windows", "android", "ios", "web"]
@@ -43,7 +49,15 @@ architecture_aliases = {
     "ppc64le": "ppc64",
 }
 
-def init_default_platform(arguments):
+is_os_64_bit = sys.maxsize > 2**32
+
+wsl_available = False
+if sys.platform == "win32" or sys.platform == "msys":
+    wsl_install_output = subprocess.check_output(f"wsl -l -v", shell=True).decode('ascii').strip()
+    if "Windows subsystem for Linux has no installed distributions" not in wsl_install_output:
+        wsl_available = True
+            
+def init_system_variables(arguments):
     global default_platform
     
     if sys.platform.startswith("linux"):

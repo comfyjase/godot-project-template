@@ -4,6 +4,10 @@ import os
 import platform
 import sys
 
+script_path_to_append = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..")
+if script_path_to_append not in sys.path:
+    sys.path.append(script_path_to_append)
+
 from SCons.Variables import *
 from tools.scripts.system import *
 

@@ -3,7 +3,7 @@ import os
 import sys
 
 from methods import *
-from msvs import *
+from tools.scripts.msvs import *
 from tools.scripts.options import *
 from tools.scripts.system import *
 
@@ -16,7 +16,7 @@ customs = ["custom.py"]
 customs = [os.path.abspath(path) for path in customs]
 
 opts = Variables(customs, ARGUMENTS)
-init_default_platform(ARGUMENTS)
+init_system_variables(ARGUMENTS)
 init_options(local_env, opts, lib_name)
 opts.Update(local_env)
 

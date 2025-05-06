@@ -6,6 +6,12 @@ import shutil
 import subprocess
 import sys
 
+script_path_to_append = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..")
+if script_path_to_append not in sys.path:
+    sys.path.append(script_path_to_append)
+
+from tools.scripts.system import *
+
 # Change to project directory if we are not already there
 current_directory = os.getcwd()
 if not os.path.exists(os.path.join(f"{current_directory}", "game")):
@@ -15,9 +21,9 @@ if not os.path.exists(os.path.join(f"{current_directory}", "game")):
 project_directory = os.getcwd()
 
 platform_arg = sys.argv[1]
-configuration = sys.argv[2]
-architecture = sys.argv[3]
-precision = sys.argv[4]
+configuration_arg = sys.argv[2]
+architecture_arg = sys.argv[3]
+precision_arg = sys.argv[4]
 is_ci = False
 if len(sys.argv) == 6:
     is_ci = sys.argv[5]
@@ -27,41 +33,41 @@ if len(sys.argv) == 6:
 if platform_arg == "Win32" or platform_arg == "x64":
     platform_arg = "windows"
 
-# Visual Studio 2022 doesn't seem to have a separate setting for architecture, so it's bundled in with the platform.
+# Visual Studio 2022 doesn't seem to have a separate setting for architecture_arg, so it's bundled in with the platform.
 # Have to parse it out separately in these scripts to get the correct one.
 # E.g. windows_x86_64 -> x86_64
-if architecture == "Win32":
-    architecture = "x86_32"
-elif architecture == "x64" or architecture == "linux":
-    architecture = "x86_64"
-elif architecture == "web":
-    architecture = "wasm32"
-elif architecture == "android": # TODO: Add different android processor platforms? E.g. android_arm32, android_arm64, android_x86_32, android_x86_64?
-    architecture = "arm64"
+if architecture_arg == "Win32":
+    architecture_arg = "x86_32"
+elif architecture_arg == "x64" or architecture_arg == "linux":
+    architecture_arg = "x86_64"
+elif architecture_arg == "web":
+    architecture_arg = "wasm32"
+elif architecture_arg == "android": # TODO: Add different android processor platforms? E.g. android_arm32, android_arm64, android_x86_32, android_x86_64?
+    architecture_arg = "arm64"
     
-using_wsl = (platform.system() == "Windows") and (platform_arg == "linux")
+using_wsl = wsl_available and platform_arg == "linux"
 
 # ===============================================
 # Build Godot
 os.chdir("godot")
 
-if configuration in ["editor", "editor_game"] or is_ci:
+if configuration_arg in ["editor", "editor_game"] or is_ci:
     print("Build Godot Engine", flush=True)
     
     build_command = ""
     if using_wsl:
         build_command = "wsl "
     
-    if configuration == "production":
-        build_command += f"scons platform={platform_arg} target=editor arch={architecture} precision={precision} production=yes"
-    elif configuration == "profile":
-        build_command += f"scons platform={platform_arg} target=editor arch={architecture} precision={precision} production=yes debug_symbols=yes"
+    if configuration_arg == "production":
+        build_command += f"scons platform={platform_arg} target=editor arch={architecture_arg} precision_arg={precision_arg} production=yes"
+    elif configuration_arg == "profile":
+        build_command += f"scons platform={platform_arg} target=editor arch={architecture_arg} precision_arg={precision_arg} production=yes debug_symbols=yes"
         if is_ci:   # engine debug symbols are too large for CI
             build_command = build_command.replace(" debug_symbols=yes", "")
-    elif configuration == "template_release":
-        build_command += f"scons platform={platform_arg} target=editor arch={architecture} precision={precision}"
+    elif configuration_arg == "template_release":
+        build_command += f"scons platform={platform_arg} target=editor arch={architecture_arg} precision_arg={precision_arg}"
     else:
-        build_command += f"scons platform={platform_arg} target=editor arch={architecture} precision={precision} dev_build=yes dev_mode=yes"
+        build_command += f"scons platform={platform_arg} target=editor arch={architecture_arg} precision_arg={precision_arg} dev_build=yes dev_mode=yes"
         if is_ci:   # Same as above...
             build_command = build_command.replace(" dev_build=yes dev_mode=yes", "")
 
@@ -70,7 +76,7 @@ if configuration in ["editor", "editor_game"] or is_ci:
 
     # Removing dev_build/dev_mode from web editor because it doesn't compile (get emscripten errors...) and adding dlink_enabled
     if platform_arg == "web":
-        if configuration in ["editor", "editor_game", "template_debug"]:
+        if configuration_arg in ["editor", "editor_game", "template_debug"]:
             build_command = build_command.replace(" dev_build=yes dev_mode=yes", "")
         
         build_command += " dlink_enabled=yes threads=no"
@@ -81,9 +87,9 @@ if configuration in ["editor", "editor_game"] or is_ci:
     print("Build Command: " + build_command)
     return_code = subprocess.call(build_command, shell=True)
     if return_code != 0:
-        sys.exit(f"Error: Failed to build godot for {platform_arg} {configuration} {architecture} {precision}")
+        sys.exit(f"Error: Failed to build godot for {platform_arg} {configuration_arg} {architecture_arg} {precision_arg}")
     
-    if platform_arg == "web" and configuration in ["editor", "editor_game"]:
+    if platform_arg == "web" and configuration_arg in ["editor", "editor_game"]:
         print(os.getcwd(), flush=True)
         os.chdir(os.path.join("bin", ".web_zip"))
         
@@ -106,26 +112,25 @@ for (search_path,directory_names,files) in os.walk(os.getcwd(), topdown=True):
     for (file) in files:
         print(str(search_path_with_ending_slash + file), flush=True)
 
-godot_engine_architecture = ""
-is_os_64_bit = sys.maxsize > 2**32
+godot_engine_architecture_arg = ""
 if is_os_64_bit:
-    godot_engine_architecture = "x86_64"
+    godot_engine_architecture_arg = "x86_64"
 else:
-    godot_engine_architecture = "x86_32"
+    godot_engine_architecture_arg = "x86_32"
 
 godot_binary_file_name = ""
 if platform.system() == "Windows":
-    godot_binary_file_name = f"godot.windows.editor.dev.{godot_engine_architecture}.exe"
+    godot_binary_file_name = f"godot.windows.editor.dev.{godot_engine_architecture_arg}.exe"
 elif platform.system() == "Linux":
-    godot_binary_file_name = f"godot.linuxbsd.editor.dev.{godot_engine_architecture}"
+    godot_binary_file_name = f"godot.linuxbsd.editor.dev.{godot_engine_architecture_arg}"
 elif platform.system() == "Darwin":
-    godot_binary_file_name = f"godot.macos.editor.dev.{godot_engine_architecture}"
+    godot_binary_file_name = f"godot.macos.editor.dev.{godot_engine_architecture_arg}"
 
-if configuration in ["template_release", "profile", "production"] or is_ci:
+if configuration_arg in ["template_release", "profile", "production"] or is_ci:
     godot_binary_file_name = godot_binary_file_name.replace(".dev", "")
 
-if precision == "double":
-    godot_binary_file_name = godot_binary_file_name.replace(f"{godot_engine_architecture}", f"{precision}.{godot_engine_architecture}")
+if precision_arg == "double":
+    godot_binary_file_name = godot_binary_file_name.replace(f"{godot_engine_architecture_arg}", f"{precision_arg}.{godot_engine_architecture_arg}")
 
 build_command = ""
 if using_wsl:
@@ -156,27 +161,27 @@ build_command = ""
 if using_wsl:
     build_command = "wsl "
     
-if configuration == "production":
-    build_command += f"scons platform={platform_arg} target={configuration} arch={architecture} precision={precision} production=yes"
-elif configuration == "profile":
-    build_command += f"scons platform={platform_arg} target={configuration} arch={architecture} precision={precision} production=yes debug_symbols=yes"
-elif configuration == "template_release":
-    build_command += f"scons platform={platform_arg} target={configuration} arch={architecture} precision={precision}"
+if configuration_arg == "production":
+    build_command += f"scons platform={platform_arg} target={configuration_arg} arch={architecture_arg} precision_arg={precision_arg} production=yes"
+elif configuration_arg == "profile":
+    build_command += f"scons platform={platform_arg} target={configuration_arg} arch={architecture_arg} precision_arg={precision_arg} production=yes debug_symbols=yes"
+elif configuration_arg == "template_release":
+    build_command += f"scons platform={platform_arg} target={configuration_arg} arch={architecture_arg} precision_arg={precision_arg}"
 else:
-    build_command += f"scons platform={platform_arg} target={configuration} arch={architecture} precision={precision} dev_build=yes dev_mode=yes"
+    build_command += f"scons platform={platform_arg} target={configuration_arg} arch={architecture_arg} precision_arg={precision_arg} dev_build=yes dev_mode=yes"
 
 if platform_arg == "web":
-    if configuration in ["editor", "editor_game", "template_debug"]:
+    if configuration_arg in ["editor", "editor_game", "template_debug"]:
         build_command = build_command.replace(" dev_build=yes dev_mode=yes", "")
     build_command += " threads=no"
     
 return_code = subprocess.call(build_command, shell=True)
 if return_code != 0:
-    sys.exit(f"Error: Failed to build game for {platform_arg} {configuration} {architecture} {precision}")
+    sys.exit(f"Error: Failed to build game for {platform_arg} {configuration_arg} {architecture_arg} {precision_arg}")
 
 # ===============================================
 # (Web Only) Zip Project
-if platform_arg == "web" and configuration == "editor":
+if platform_arg == "web" and configuration_arg == "editor":
     print("Zip Game Project For Web Editor", flush=True)
     
     # Remove the old folder
