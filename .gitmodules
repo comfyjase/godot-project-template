@@ -13,3 +13,6 @@
 	path = godot-cpp
 	url = https://github.com/comfyjase/godot-cpp.git
 	branch = 4.4
+[submodule "thirdparty/osxcross"]
+	path = thirdparty/osxcross
+	url = https://github.com/tpoechtrager/osxcross.git
