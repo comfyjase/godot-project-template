@@ -90,15 +90,10 @@ jobs:
 
       - name: MacOS - Install Vulkan
         if: ${{ matrix.target.platform == 'macos' }}
+        shell: sh
         id: vulkan-sdk
         run: |
-          sh godot/misc/scripts/install_vulkan_sdk_macos.sh; then
-            echo "VULKAN_ENABLED=yes" >> "$GITHUB_OUTPUT"
-          else
-            echo "::warning::macOS: Vulkan SDK installation failed, building without Vulkan support."
-            echo "VULKAN_ENABLED=no" >> "$GITHUB_OUTPUT"
-          fi
-        continue-on-error: true
+          ./godot/misc/scripts/install_vulkan_sdk_macos.sh
           
       - name: Setup Workflow Variables
         run: |
