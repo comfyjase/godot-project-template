@@ -64,7 +64,7 @@ build_suffix = ""
 if platform_arg == "windows":
     build_suffix = ".exe"
 elif platform_arg == "macos":
-    build_suffix = ".dmg"
+    build_suffix = ".zip"
 elif platform_arg == "linux":
     build_suffix = ""
 elif platform_arg == "web":
@@ -86,7 +86,7 @@ elif platform_arg == "web":
 elif platform_arg == "android":
     library_suffix = ".so"
 elif platform_arg == "ios":
-    library_suffix = ".so"
+    library_suffix = ".dylib"
 
 build_file_name_and_type = ""
 
@@ -119,6 +119,8 @@ if precision_arg == "double":
 
 if platform_arg == "web":
     necessary_file_path = necessary_file_path.replace(f"{architecture_arg}", f"{architecture_arg}.nothreads")
+elif platform_arg == "macos":
+    necessary_file_path = necessary_file_path.replace(f".{architecture_arg}", "")
 
 if configuration_arg in ["editor", "editor_game", "template_debug"]:
     necessary_file_path = necessary_file_path.replace(".dev", "")
@@ -159,13 +161,15 @@ if using_wsl:
     export_command += "wsl ./"
     project_path = "/mnt/" + project_path.replace(":", "").lower()
     build_output_path = "/mnt/" + build_output_path.replace(":", "").lower()
-elif platform.system() == "Linux":
+elif platform.system() == "Linux" or platform.system() == "Darwin":
     export_command += "./"
+    project_path = project_path.lower()
+    build_output_path = build_output_path.lower()
 
 export_command += f"{godot_binary_file_name} --path \"{project_path}\" --headless --export-{export_command_type} \"{platform_arg} {configuration_arg} {architecture_arg} {precision_arg}\" \"{build_output_path}\" --verbose"
 print(export_command, flush=True)
 return_code = subprocess.call(export_command, shell=True)
 if return_code != 0:
     sys.exit(f"Error: Failed to export game for {platform_arg} {configuration_arg} {architecture_arg} {precision_arg} from godot binary {godot_binary_file_name}")
-    
+
 print("Done")

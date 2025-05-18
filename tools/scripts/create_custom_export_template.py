@@ -59,22 +59,30 @@ if using_wsl:
     build_command = "wsl "
     
 if configuration_arg == "production":
-    build_command += f"scons platform={platform_arg} target={godot_configuration_arg} arch={architecture_arg} precision_arg={precision_arg} production=yes"
+    build_command += f"scons platform={platform_arg} target={godot_configuration_arg} arch={architecture_arg} precision={precision_arg} production=yes"
 elif configuration_arg == "profile":
-    build_command += f"scons platform={platform_arg} target={godot_configuration_arg} arch={architecture_arg} precision_arg={precision_arg} production=yes debug_symbols=yes"
+    build_command += f"scons platform={platform_arg} target={godot_configuration_arg} arch={architecture_arg} precision={precision_arg} production=yes debug_symbols=yes"
     if is_ci:
         build_command = build_command.replace(" debug_symbols=yes", "")
 elif configuration_arg == "template_release":
-    build_command += f"scons platform={platform_arg} target={godot_configuration_arg} arch={architecture_arg} precision_arg={precision_arg}"
+    build_command += f"scons platform={platform_arg} target={godot_configuration_arg} arch={architecture_arg} precision={precision_arg}"
 else:
-    build_command += f"scons platform={platform_arg} target={godot_configuration_arg} arch={architecture_arg} precision_arg={precision_arg} dev_build=yes dev_mode=yes"
+    build_command += f"scons platform={platform_arg} target={godot_configuration_arg} arch={architecture_arg} precision={precision_arg} dev_build=yes dev_mode=yes"
     if is_ci:
         build_command = build_command.replace(" dev_build=yes dev_mode=yes", "")
 
 if is_ci:
     build_command += " debug_symbols=no tests=yes"
 
-if platform_arg == "web":
+if platform_arg == "macos":
+    if is_ci:
+        build_command += " vulkan=yes"
+    elif platform.system() == "Linux":
+        build_command += " vulkan_sdk_path=$HOME/VulkanSDK"
+        if platform.system() == "Linux":
+            build_command += " osxcross_sdk=darwin24.4"        
+    build_command += " generate_bundle=yes"
+elif platform_arg == "web":
     if configuration_arg in ["editor", "editor_game", "template_debug"]:
         build_command = build_command.replace(" dev_build=yes dev_mode=yes", "")
         if os.path.isdir(f"bin/.web_zip"):
@@ -83,8 +91,7 @@ if platform_arg == "web":
         if os.path.isdir(f"bin/web_{configuration_arg}.zip"):
             shutil.rmtree(f"bin/web_{configuration_arg}.zip", True)
             
-    build_command += " dlink_enabled=yes threads=no"
-        
+    build_command += " dlink_enabled=yes threads=no"        
 elif platform_arg == "android":
     build_command += " generate_apk=yes"
 
@@ -101,7 +108,7 @@ template_suffix = ""
 if platform_arg == "windows":
     template_suffix = ".exe"
 elif platform_arg == "macos":
-    template_suffix = ".dmg"
+    template_suffix = ".zip"
 elif platform_arg == "linux":
     template_suffix = ""
 elif platform_arg == "web":
@@ -112,19 +119,29 @@ elif platform_arg == "ios":
     template_suffix = ".zip"
 
 godot_files = []
+suffix = f"{configuration_arg}.{architecture_arg}{template_suffix}"
+if precision_arg == "double":
+    suffix = suffix.replace(f"{architecture_arg}", f"{precision_arg}.{architecture_arg}")
 if platform_arg == "web":
     if configuration_arg in ["editor", "editor_game"]:
         shutil.copytree(".web_zip", f"web_{configuration_arg}", dirs_exist_ok=True)
         shutil.make_archive(f"web_{configuration_arg}", "zip", f"web_{configuration_arg}")
     else:
-        os.rename(f"godot.web.{godot_configuration_arg}.{architecture_arg}.nothreads.dlink{template_suffix}", f"web.{configuration_arg}.{architecture_arg}{template_suffix}")
+        os.rename(f"godot.web.{godot_configuration_arg}.{architecture_arg}.nothreads.dlink{template_suffix}", f"web.{suffix}")
 elif platform_arg == "android":
     if configuration_arg in ["editor", "editor_game", "template_debug"]:
         if os.path.isfile(f"android_dev{template_suffix}"):
-            os.rename(f"android_dev{template_suffix}", f"android.{configuration_arg}.{architecture_arg}{template_suffix}")
+            os.rename(f"android_dev{template_suffix}", f"android.{suffix}")
     else:
         if os.path.isfile(f"android_release{template_suffix}"):
-            os.rename(f"android_release{template_suffix}", f"android.{configuration_arg}.{architecture_arg}{template_suffix}")
+            os.rename(f"android_release{template_suffix}", f"android.{suffix}")
+elif platform_arg == "macos":
+    if configuration_arg in ["editor", "editor_game", "template_debug"]:
+        if os.path.isfile(f"godot_macos_dev{template_suffix}"):
+            os.rename(f"godot_macos_dev{template_suffix}", f"macos.{suffix}")
+    else:
+        if os.path.isfile(f"godot_macos{template_suffix}"):
+            os.rename(f"godot_macos{template_suffix}", f"macos.{suffix}")
 else:
     godot_platform_name = platform_arg
     if platform_arg == "linux":
@@ -145,12 +162,14 @@ with open("export_presets.cfg", "r") as export_presets_read:
     godot_platform_name = platform_arg
     if platform_arg == "linux":
         godot_platform_name = "linuxbsd"
-    export_template_file_path = os.path.join(project_directory, "godot", "bin", f"{godot_platform_name}.{configuration_arg}.{architecture_arg}{template_suffix}")
+    export_template_file_path = os.path.join(project_directory, "godot", "bin", f"{godot_platform_name}.{suffix}")
     export_template_file_path = os.path.normpath(export_template_file_path).replace("\\", "/")
     if using_wsl:
         export_template_file_path = "/mnt/" + export_template_file_path.replace(":", "").lower()
-    if precision_arg == "double":
-        export_template_file_path = export_template_file_path.replace(f"{architecture_arg}", f"{precision_arg}.{architecture_arg}")
+    elif platform.system() == "Linux" or platform.system() == "Darwin":
+        export_template_file_path = export_template_file_path.lower()
+        print(f"Called chmod +x {export_template_file_path}", flush=True)
+        subprocess.call(f"chmod +x {export_template_file_path}", shell=True)
     all_lines=export_presets_read.readlines()
     
     found_export = False

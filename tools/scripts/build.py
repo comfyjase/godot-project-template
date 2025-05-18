@@ -59,23 +59,30 @@ if configuration_arg in ["editor", "editor_game"] or is_ci:
         build_command = "wsl "
     
     if configuration_arg == "production":
-        build_command += f"scons platform={platform_arg} target=editor arch={architecture_arg} precision_arg={precision_arg} production=yes"
+        build_command += f"scons platform={platform_arg} target=editor arch={architecture_arg} precision={precision_arg} production=yes"
     elif configuration_arg == "profile":
-        build_command += f"scons platform={platform_arg} target=editor arch={architecture_arg} precision_arg={precision_arg} production=yes debug_symbols=yes"
+        build_command += f"scons platform={platform_arg} target=editor arch={architecture_arg} precision={precision_arg} production=yes debug_symbols=yes"
         if is_ci:   # engine debug symbols are too large for CI
             build_command = build_command.replace(" debug_symbols=yes", "")
     elif configuration_arg == "template_release":
-        build_command += f"scons platform={platform_arg} target=editor arch={architecture_arg} precision_arg={precision_arg}"
+        build_command += f"scons platform={platform_arg} target=editor arch={architecture_arg} precision={precision_arg}"
     else:
-        build_command += f"scons platform={platform_arg} target=editor arch={architecture_arg} precision_arg={precision_arg} dev_build=yes dev_mode=yes"
+        build_command += f"scons platform={platform_arg} target=editor arch={architecture_arg} precision={precision_arg} dev_build=yes dev_mode=yes"
         if is_ci:   # Same as above...
             build_command = build_command.replace(" dev_build=yes dev_mode=yes", "")
 
     if is_ci:
         build_command += " debug_symbols=no tests=yes"
-
+    
+    if platform_arg == "macos":
+        if is_ci:
+            build_command += " vulkan=yes"
+        elif platform.system() == "Linux":
+            build_command += " vulkan_sdk_path=$HOME/VulkanSDK"
+            if platform.system() == "Linux":
+                build_command += " osxcross_sdk=darwin24.4"
     # Removing dev_build/dev_mode from web editor because it doesn't compile (get emscripten errors...) and adding dlink_enabled
-    if platform_arg == "web":
+    elif platform_arg == "web":
         if configuration_arg in ["editor", "editor_game", "template_debug"]:
             build_command = build_command.replace(" dev_build=yes dev_mode=yes", "")
         
@@ -120,7 +127,10 @@ else:
 
 godot_binary_file_name = ""
 if platform.system() == "Windows":
-    godot_binary_file_name = f"godot.windows.editor.dev.{godot_engine_architecture_arg}.exe"
+    if platform_arg == "linux":
+        f"godot.linuxbsd.editor.dev.{godot_engine_architecture_arg}"
+    else:
+        godot_binary_file_name = f"godot.windows.editor.dev.{godot_engine_architecture_arg}.exe"
 elif platform.system() == "Linux":
     godot_binary_file_name = f"godot.linuxbsd.editor.dev.{godot_engine_architecture_arg}"
 elif platform.system() == "Darwin":
@@ -135,7 +145,7 @@ if precision_arg == "double":
 build_command = ""
 if using_wsl:
     build_command = "wsl ./"
-if platform.system() == "Linux":
+if platform.system() == "Linux" or platform.system() == "Darwin":
     print(f"Called chmod +x {godot_binary_file_name}", flush=True)
     subprocess.call(f"chmod +x {godot_binary_file_name}", shell=True)
     build_command += "./"
@@ -160,24 +170,34 @@ os.chdir("..")
 build_command = ""
 if using_wsl:
     build_command = "wsl "
+game_architecture = architecture_arg
+if platform_arg == "macos" and architecture_arg != "universal":
+    game_architecture = "universal"
     
 if configuration_arg == "production":
-    build_command += f"scons platform={platform_arg} target={configuration_arg} arch={architecture_arg} precision_arg={precision_arg} production=yes"
+    build_command += f"scons platform={platform_arg} target={configuration_arg} arch={game_architecture} precision={precision_arg} production=yes"
 elif configuration_arg == "profile":
-    build_command += f"scons platform={platform_arg} target={configuration_arg} arch={architecture_arg} precision_arg={precision_arg} production=yes debug_symbols=yes"
+    build_command += f"scons platform={platform_arg} target={configuration_arg} arch={game_architecture} precision={precision_arg} production=yes debug_symbols=yes"
 elif configuration_arg == "template_release":
-    build_command += f"scons platform={platform_arg} target={configuration_arg} arch={architecture_arg} precision_arg={precision_arg}"
+    build_command += f"scons platform={platform_arg} target={configuration_arg} arch={game_architecture} precision={precision_arg}"
 else:
-    build_command += f"scons platform={platform_arg} target={configuration_arg} arch={architecture_arg} precision_arg={precision_arg} dev_build=yes dev_mode=yes"
+    build_command += f"scons platform={platform_arg} target={configuration_arg} arch={game_architecture} precision={precision_arg} dev_build=yes dev_mode=yes"
 
-if platform_arg == "web":
+if platform_arg == "macos":
+    if is_ci:
+        build_command += " vulkan=yes"
+    elif platform.system() == "Linux":
+        build_command += " vulkan_sdk_path=$HOME/VulkanSDK"
+        if platform.system() == "Linux":
+            build_command += " osxcross_sdk=darwin24.4"
+elif platform_arg == "web":
     if configuration_arg in ["editor", "editor_game", "template_debug"]:
         build_command = build_command.replace(" dev_build=yes dev_mode=yes", "")
     build_command += " threads=no"
     
 return_code = subprocess.call(build_command, shell=True)
 if return_code != 0:
-    sys.exit(f"Error: Failed to build game for {platform_arg} {configuration_arg} {architecture_arg} {precision_arg}")
+    sys.exit(f"Error: Failed to build game for {platform_arg} {configuration_arg} {game_architecture} {precision_arg}")
 
 # ===============================================
 # (Web Only) Zip Project

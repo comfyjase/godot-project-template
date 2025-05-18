@@ -126,8 +126,10 @@ if env["platform"] == "windows":
 # .dev doesn't inhibit compatibility, so we don't need to key it.
 # .universal just means "compatible with all relevant arches" so we don't need to key it.
 suffix = env['suffix'].replace(".dev", "").replace(".universal", "")
-
-lib_filename = "{}{}{}{}".format(env.subst('$SHLIBPREFIX'), lib_name, suffix, env.subst('$SHLIBSUFFIX'))
+library_suffix = env.subst('$SHLIBSUFFIX')
+if platform.system() == "Linux" and env["platform"] == "macos":
+    library_suffix = ".dylib"
+lib_filename = "{}{}{}{}".format(env.subst('$SHLIBPREFIX'), lib_name, suffix, library_suffix)
 if env["platform"] in ["web", "android"]:
     lib_filename = "lib" + lib_filename
 

@@ -6,19 +6,19 @@ reloadable=true
 
 [libraries]
 ; Relative paths ensure that our GDExtension can be placed anywhere in the project directory.
-macos.editor = "./macos/macos.framework/libgame.macos.editor.universal"
-macos.editor.double = "./macos/macos.framework/libgame.macos.editor.double.universal"
-macos.debug = "./macos/macos.framework/libgame.macos.template_debug.universal"
-macos.debug.double = "./macos/macos.framework/libgame.macos.template_debug.double.universal"
-macos.release = "./macos/macos.framework/libgame.macos.template_release.universal"
-macos.release.double = "./macos/macos.framework/libgame.macos.template_release.double.universal"
+macos.editor = "./macos/libgame.macos.editor.dylib"
+macos.editor.double = "./macos/libgame.macos.editor.double.dylib"
+macos.debug = "./macos/libgame.macos.template_debug.dylib"
+macos.debug.double = "./macos/libgame.macos.template_debug.double.dylib"
+macos.release = "./macos/libgame.macos.template_release.dylib"
+macos.release.double = "./macos/libgame.macos.template_release.double.dylib"
 
-ios.editor = "./ios/ios.framework/libgame.ios.editor.arm64"
-ios.editor.double = "./ios/ios.framework/libgame.ios.editor.double.arm64"
-ios.debug = "./ios/ios.framework/libgame.ios.template_debug.arm64"
-ios.debug.double = "./ios/ios.framework/libgame.ios.template_debug.double.arm64"
-ios.release = "./ios/ios.framework/libgame.ios.template_release.arm64"
-ios.release.double = "./ios/ios.framework/libgame.ios.template_release.double.arm64"
+ios.editor = "./ios/libgame.ios.editor.dylib"
+ios.editor.double = "./ios/libgame.ios.editor.double.dylib"
+ios.debug = "./ios/libgame.ios.template_debug.dylib"
+ios.debug.double = "./ios/libgame.ios.template_debug.double.dylib"
+ios.release = "./ios/libgame.ios.template_release.dylib"
+ios.release.double = "./ios/libgame.ios.template_release.double.dylib"
 
 windows.editor.x86_32 = "res://bin/windows/game.windows.editor.x86_32.dll"
 windows.editor.x86_32.double = "res://bin/windows/game.windows.editor.double.x86_32.dll"
