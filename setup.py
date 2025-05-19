@@ -76,7 +76,7 @@ if platform.system() == "Linux":
 # Submodules
 # emsdk install and activate 
 os.chdir("thirdparty/emsdk")
-emsdk_version = "latest"
+emsdk_version = "3.1.62"
 if platform.system() == "Windows":
     run_subprocess(f"emsdk.bat install {emsdk_version}", f"Error: Failed to install emsdk version {emsdk_version}, has submodule been initialized? Aborting!")
     run_subprocess(f"emsdk.bat activate {emsdk_version} --permanent", f"Error: Failed to activate emsdk version {emsdk_version}, has submodule been initialized? Aborting!")

@@ -78,7 +78,7 @@ if clean_engine:
     elif platform_arg == "web":
         if configuration_arg in ["editor", "editor_game", "template_debug"]:
             clean_command = clean_command.replace(" dev_build=yes dev_mode=yes", "")
-        clean_command += " dlink_enabled=yes threads=no"
+        clean_command += " dlink_enabled=yes threads=no use_closure_compiler=yes"
         
     clean_command += " -c"
     return_code = subprocess.call(clean_command, shell=True)
@@ -109,7 +109,7 @@ if platform_arg == "macos":
 elif platform_arg == "web":
     if configuration_arg in ["editor", "editor_game", "template_debug"]:
         clean_command = clean_command.replace(" dev_build=yes dev_mode=yes", "")
-    clean_command += " threads=no"
+    clean_command += " threads=no use_closure_compiler=yes"
 
 clean_command += " -c"
 return_code = subprocess.call(clean_command, shell=True)
