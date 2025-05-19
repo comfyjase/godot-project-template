@@ -131,21 +131,23 @@ if configuration_arg in ["editor", "editor_game", "template_debug"]:
 
 if not os.path.exists(necessary_file_path):
     sys.exit(f"Error: {necessary_file_path} file is missing, please build project for {platform_arg} template_{export_command_type} {architecture_arg} {precision_arg}")
-if not os.path.exists(imgui_file_path):
-    # TEMP DEBUGGING CI
-    imgui_godot_binary_folder_name = os.path.dirname(os.path.abspath(imgui_file_path))
-    print(f"imgui-godot binary files: {imgui_godot_binary_folder_name}: ", flush=True)
-    for (search_path,directory_names,files) in os.walk(imgui_godot_binary_folder_name, topdown=True):
-        search_path_with_ending_slash = os.path.join(search_path, '').replace('\\', '/')
-    
-        for (file) in files:
-            print(str(search_path_with_ending_slash + file), flush=True)
-    sys.exit(f"Error: {imgui_file_path} file is missing, please check the game/addons/imgui-godot/bin folder for relevant binary files and make sure permissions are granted {export_command_type} {platform_arg} {configuration_arg} {architecture_arg} {precision_arg}")
+if platform_arg not in ["web", "android", "ios"]:
+    if not os.path.exists(imgui_file_path):
+        # TEMP DEBUGGING CI
+        imgui_godot_binary_folder_name = os.path.dirname(os.path.abspath(imgui_file_path))
+        print(f"imgui-godot binary files: {imgui_godot_binary_folder_name}: ", flush=True)
+        for (search_path,directory_names,files) in os.walk(imgui_godot_binary_folder_name, topdown=True):
+            search_path_with_ending_slash = os.path.join(search_path, '').replace('\\', '/')
+        
+            for (file) in files:
+                print(str(search_path_with_ending_slash + file), flush=True)
+        sys.exit(f"Error: {imgui_file_path} file is missing, please check the game/addons/imgui-godot/bin folder for relevant binary files and make sure permissions are granted {export_command_type} {platform_arg} {configuration_arg} {architecture_arg} {precision_arg}")
     
 if platform.system() == "Linux" or platform.system() == "Darwin":
     print(f"Called chmod +xr {necessary_file_path}", flush=True)
     subprocess.call(f"chmod +xr {necessary_file_path}", shell=True)
-    subprocess.call(f"chmod +xr {imgui_file_path}", shell=True)
+    if platform_arg not in ["web", "android", "ios"]:
+        subprocess.call(f"chmod +xr {imgui_file_path}", shell=True)
 
 godot_engine_architecture_arg = ""
 if is_os_64_bit:
