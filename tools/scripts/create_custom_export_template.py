@@ -153,6 +153,14 @@ else:
         new_name = file.replace("godot.", "").replace(f"{godot_configuration_arg}", f"{configuration_arg}")
         os.rename(old_name, new_name)
 
+# TEMP DEBUGGING CI
+print(f"Current Working Directory: {os.getcwd()} has files: ", flush=True)
+for (search_path,directory_names,files) in os.walk(os.getcwd(), topdown=True):
+    search_path_with_ending_slash = os.path.join(search_path, '').replace('\\', '/')
+    
+    for (file) in files:
+        print(str(search_path_with_ending_slash + file), flush=True)
+
 # ===============================================
 # Update export_presets.cfg with this template
 os.chdir(os.path.join("..", "..", "game"))

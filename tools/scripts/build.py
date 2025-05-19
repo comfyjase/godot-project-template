@@ -111,14 +111,6 @@ if configuration_arg in ["editor", "editor_game"] or is_ci:
 print("Generate C++ extension api files", flush=True)
 os.chdir("bin")
 
-# TEMP DEBUGGING CI
-print(f"Current Working Directory: {os.getcwd()} has files: ", flush=True)
-for (search_path,directory_names,files) in os.walk(os.getcwd(), topdown=True):
-    search_path_with_ending_slash = os.path.join(search_path, '').replace('\\', '/')
-    
-    for (file) in files:
-        print(str(search_path_with_ending_slash + file), flush=True)
-
 godot_engine_architecture_arg = ""
 if is_os_64_bit:
     godot_engine_architecture_arg = "x86_64"
