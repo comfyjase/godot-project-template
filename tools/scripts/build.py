@@ -58,16 +58,29 @@ if configuration_arg in ["editor", "editor_game"] or is_ci:
     if using_wsl:
         build_command = "wsl "
     
+    godot_platform = platform_arg
+    godot_architecture = architecture_arg
+    # For CI, need to make sure there's some native os version of the godot editor for the next step
+    # Generating the cpp bindings needs a godot binary file.
+    if is_ci:
+        if godot_platform not in ["windows", "linux", "macos"]:
+            godot_platform = platform.system().lower()
+            if godot_platform == "windows" or godot_platform == "linux" or godot_platform == "darwin":
+                godot_architecture = "x86_64"
+            if godot_platform == "darwin":
+                godot_platform = "macos"
+            print(f"Building godot engine for native os {godot_platform} {godot_architecture}", flush=True)
+    
     if configuration_arg == "production":
-        build_command += f"scons platform={platform_arg} target=editor arch={architecture_arg} precision={precision_arg} production=yes"
+        build_command += f"scons platform={godot_platform} target=editor arch={godot_architecture} precision={precision_arg} production=yes"
     elif configuration_arg == "profile":
-        build_command += f"scons platform={platform_arg} target=editor arch={architecture_arg} precision={precision_arg} production=yes debug_symbols=yes"
+        build_command += f"scons platform={godot_platform} target=editor arch={godot_architecture} precision={precision_arg} production=yes debug_symbols=yes"
         if is_ci:   # engine debug symbols are too large for CI
             build_command = build_command.replace(" debug_symbols=yes", "")
     elif configuration_arg == "template_release":
-        build_command += f"scons platform={platform_arg} target=editor arch={architecture_arg} precision={precision_arg}"
+        build_command += f"scons platform={godot_platform} target=editor arch={godot_architecture} precision={precision_arg}"
     else:
-        build_command += f"scons platform={platform_arg} target=editor arch={architecture_arg} precision={precision_arg} dev_build=yes dev_mode=yes"
+        build_command += f"scons platform={godot_platform} target=editor arch={godot_architecture} precision={precision_arg} dev_build=yes dev_mode=yes"
         if is_ci:   # Same as above...
             build_command = build_command.replace(" dev_build=yes dev_mode=yes", "")
 
@@ -83,13 +96,14 @@ if configuration_arg in ["editor", "editor_game"] or is_ci:
                 build_command += " osxcross_sdk=darwin24.4"
     # Removing dev_build/dev_mode from web editor because it doesn't compile (get emscripten errors...) and adding dlink_enabled
     elif platform_arg == "web":
-        if configuration_arg in ["editor", "editor_game", "template_debug"]:
-            build_command = build_command.replace(" dev_build=yes dev_mode=yes", "")
-        
-        build_command += " dlink_enabled=yes threads=no"
-        
+        if not is_ci:
+            if configuration_arg in ["editor", "editor_game", "template_debug"]:
+                build_command = build_command.replace(" dev_build=yes dev_mode=yes", "")
+            
+            build_command += " dlink_enabled=yes threads=no"
     elif platform_arg == "android":
-        build_command += " generate_apk=yes"
+        if not is_ci:
+            build_command += " generate_apk=yes"
         
     print("Build Command: " + build_command)
     return_code = subprocess.call(build_command, shell=True)
