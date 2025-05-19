@@ -136,12 +136,19 @@ elif platform_arg == "android":
         if os.path.isfile(f"android_release{template_suffix}"):
             os.rename(f"android_release{template_suffix}", f"android.{suffix}")
 elif platform_arg == "macos":
-    if configuration_arg in ["editor", "editor_game", "template_debug"]:
-        if os.path.isfile(f"godot_macos_dev{template_suffix}"):
-            os.rename(f"godot_macos_dev{template_suffix}", f"macos.{suffix}")
-    else:
-        if os.path.isfile(f"godot_macos{template_suffix}"):
-            os.rename(f"godot_macos{template_suffix}", f"macos.{suffix}")
+    old_name = f"godot_macos{template_suffix}"
+    new_name = f"macos.{suffix}"
+    
+    if (configuration_arg in ["editor", "editor_game", "template_debug"]) and not is_ci:
+        old_name = old_name.replace("macos", "macos_dev")
+        if precision_arg == "double":
+            old_name = old_name.replace("macos_dev", "macos_dev_double")
+    
+    if precision_arg == "double":
+        old_name = old_name.replace("macos", "macos_double")
+        
+    if os.path.isfile(f"{old_name}"):
+        os.rename(f"{old_name}", f"{new_name}")
 else:
     godot_platform_name = platform_arg
     if platform_arg == "linux":
