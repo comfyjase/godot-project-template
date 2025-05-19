@@ -54,13 +54,14 @@ is_os_64_bit = sys.maxsize > 2**32
 
 wsl_available = False
 if (shutil.which("wsl") is not None):
-    wsl_install_output = subprocess.check_output(f"wsl.exe -l -v", shell=True).decode('ascii').strip()
-    if "Windows subsystem for Linux has no installed distributions" not in wsl_install_output:
-        wsl_available = True
-        print("WSL is available", flush=True)
-    else:
-        print("WSL is not available", flush=True)
-
+    return_code = subprocess.call("wsl -l -v", shell=True)
+    if return_code == 0:
+        wsl_install_output = subprocess.check_output(f"wsl -l -v", shell=True).decode('ascii').strip()
+        if "Windows subsystem for Linux has no installed distributions" not in wsl_install_output:
+            wsl_available = True
+            print("WSL is available", flush=True)
+        else:
+            print("WSL is not available", flush=True)
 def init_system_variables(arguments):
     global default_platform
     
