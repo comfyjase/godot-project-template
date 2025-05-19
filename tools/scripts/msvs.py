@@ -14,7 +14,8 @@ from SCons.Script import *
 from tools.scripts.system import *
 
 import tools.scripts.platform.windows.msvs
-import tools.scripts.platform.wsl.msvs
+if wsl_available:
+    import tools.scripts.platform.wsl.msvs
 import tools.scripts.platform.web.msvs
 import tools.scripts.platform.android.msvs
 
@@ -24,7 +25,8 @@ def init_msvs():
     global vs_platforms
     
     vs_platforms.extend(tools.scripts.platform.windows.msvs.get_platforms())
-    vs_platforms.extend(tools.scripts.platform.wsl.msvs.get_platforms())
+    if wsl_available:
+        vs_platforms.extend(tools.scripts.platform.wsl.msvs.get_platforms())
     vs_platforms.extend(tools.scripts.platform.web.msvs.get_platforms())
     vs_platforms.extend(tools.scripts.platform.android.msvs.get_platforms())
 
@@ -37,7 +39,8 @@ def get_vs_variants():
     vs_variants = []
     
     vs_variants.extend(tools.scripts.platform.windows.msvs.get_vs_variants())
-    vs_variants.extend(tools.scripts.platform.wsl.msvs.get_vs_variants())
+    if wsl_available:
+        vs_variants.extend(tools.scripts.platform.wsl.msvs.get_vs_variants())
     vs_variants.extend(tools.scripts.platform.web.msvs.get_vs_variants())
     vs_variants.extend(tools.scripts.platform.android.msvs.get_vs_variants())
     
@@ -47,7 +50,8 @@ def get_vs_debug_settings():
     vs_debug_settings = []
     
     vs_debug_settings.extend(tools.scripts.platform.windows.msvs.get_vs_debug_settings())
-    vs_debug_settings.extend(tools.scripts.platform.wsl.msvs.get_vs_debug_settings())
+    if wsl_available:
+        vs_debug_settings.extend(tools.scripts.platform.wsl.msvs.get_vs_debug_settings())
     vs_debug_settings.extend(tools.scripts.platform.web.msvs.get_vs_debug_settings())
     vs_debug_settings.extend(tools.scripts.platform.android.msvs.get_vs_debug_settings())
     
@@ -57,7 +61,8 @@ def get_vs_cpp_defines():
     vs_cpp_defines = []
     
     vs_cpp_defines.extend(tools.scripts.platform.windows.msvs.get_vs_cpp_defines())
-    vs_cpp_defines.extend(tools.scripts.platform.wsl.msvs.get_vs_cpp_defines())
+    if wsl_available:
+        vs_cpp_defines.extend(tools.scripts.platform.wsl.msvs.get_vs_cpp_defines())
     vs_cpp_defines.extend(tools.scripts.platform.web.msvs.get_vs_cpp_defines())
     vs_cpp_defines.extend(tools.scripts.platform.android.msvs.get_vs_cpp_defines())
     
@@ -67,7 +72,8 @@ def get_vs_cpp_flags():
     vs_cpp_flags = []
     
     vs_cpp_flags.extend(tools.scripts.platform.windows.msvs.get_vs_cpp_flags())
-    vs_cpp_flags.extend(tools.scripts.platform.wsl.msvs.get_vs_cpp_flags())
+    if wsl_available:
+        vs_cpp_flags.extend(tools.scripts.platform.wsl.msvs.get_vs_cpp_flags())
     vs_cpp_flags.extend(tools.scripts.platform.web.msvs.get_vs_cpp_flags())
     vs_cpp_flags.extend(tools.scripts.platform.android.msvs.get_vs_cpp_flags())
     
