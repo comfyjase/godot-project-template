@@ -91,7 +91,7 @@ elif platform_arg == "web":
         if os.path.isdir(f"bin/web_{configuration_arg}.zip"):
             shutil.rmtree(f"bin/web_{configuration_arg}.zip", True)
             
-    build_command += " dlink_enabled=yes threads=no use_closure_compiler=yes"        
+    build_command += " dlink_enabled=yes threads=no"        
 elif platform_arg == "android":
     build_command += " generate_apk=yes"
 

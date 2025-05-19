@@ -61,7 +61,7 @@ jobs:
         uses: ./godot-cpp/.github/actions/setup-godot-cpp
         with:
           platform: ${{ matrix.target.platform }}
-          em-version: 3.1.64
+          em-version: latest
           windows-compiler: msvc
           
       - name: Windows - Environment Variables
@@ -92,7 +92,6 @@ jobs:
       - name: MacOS - Install Vulkan
         if: ${{ matrix.target.platform == 'macos' }}
         shell: sh
-        id: vulkan-sdk
         run: |
           ./godot/misc/scripts/install_vulkan_sdk_macos.sh
           

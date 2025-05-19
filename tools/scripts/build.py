@@ -86,7 +86,7 @@ if configuration_arg in ["editor", "editor_game"] or is_ci:
         if configuration_arg in ["editor", "editor_game", "template_debug"]:
             build_command = build_command.replace(" dev_build=yes dev_mode=yes", "")
         
-        build_command += " dlink_enabled=yes threads=no use_closure_compiler=yes"
+        build_command += " dlink_enabled=yes threads=no"
         
     elif platform_arg == "android":
         build_command += " generate_apk=yes"
@@ -185,7 +185,7 @@ if platform_arg == "macos":
 elif platform_arg == "web":
     if configuration_arg in ["editor", "editor_game", "template_debug"]:
         build_command = build_command.replace(" dev_build=yes dev_mode=yes", "")
-    build_command += " threads=no use_closure_compiler=yes"
+    build_command += " threads=no"
     
 return_code = subprocess.call(build_command, shell=True)
 if return_code != 0:
