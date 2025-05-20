@@ -127,7 +127,11 @@ if platform_arg == "web":
         shutil.copytree(".web_zip", f"web_{configuration_arg}", dirs_exist_ok=True)
         shutil.make_archive(f"web_{configuration_arg}", "zip", f"web_{configuration_arg}")
     else:
-        os.rename(f"godot.web.{godot_configuration_arg}.{architecture_arg}.nothreads.dlink{template_suffix}", f"web.{suffix}")
+        old_name = f"godot.web.{godot_configuration_arg}.{architecture_arg}.nothreads.dlink{template_suffix}"
+        if precision_arg == "double":
+            old_name = old_name.replace(f"{architecture_arg}", f"{precision_arg}.{architecture_arg}")
+        new_name = f"web.{suffix}"
+        os.rename(f"{old_name}", f"{new_name}")
 elif platform_arg == "android":
     if configuration_arg in ["editor", "editor_game", "template_debug"]:
         if os.path.isfile(f"android_dev{template_suffix}"):
