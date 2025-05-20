@@ -98,7 +98,7 @@ jobs:
       - name: Web - emsdk
         if: ${{ matrix.target.platform == 'web' }}
         run: |
-          thirdparty/emsdk/emsdk.bat install latest --build=Release
+          thirdparty/emsdk/emsdk.bat install latest --build=Release -j1
           thirdparty/emsdk/emsdk.bat activate latest
     
       - name: Setup Workflow Variables
