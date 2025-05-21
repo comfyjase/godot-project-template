@@ -93,7 +93,7 @@ elif platform_arg == "web":
             
     build_command += " dlink_enabled=yes threads=no"
     if is_ci:
-        build_command += " -j1"
+        build_command += " lto=none"
 elif platform_arg == "android":
     build_command += " generate_apk=yes"
 

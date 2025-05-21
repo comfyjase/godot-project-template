@@ -51,7 +51,8 @@ using_wsl = wsl_available and platform_arg == "linux"
 # Build Godot
 os.chdir("godot")
 
-if configuration_arg in ["editor", "editor_game"] or is_ci:
+build_engine = (configuration_arg in ["editor", "editor_game"] or is_ci)
+if build_engine:
     print("Build Godot Engine", flush=True)
     
     build_command = ""
