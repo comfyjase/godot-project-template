@@ -13,11 +13,6 @@ jobs:
         with:
           submodules: recursive
 
-      # This needs to happen before Python and npm execution; it must happen before any extra files are written.
-      - name: .gitignore checks (gitignore_check.sh)
-        run: |
-          bash ./godot/misc/scripts/gitignore_check.sh
-
       - name: Get changed files
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -29,6 +24,18 @@ jobs:
           fi
           files=$(echo "$files" | xargs -I {} sh -c 'echo "\"./{}\""' | tr '\n' ' ')
           echo "CHANGED_FILES=$files" >> $GITHUB_ENV
+      
+      # Removing other thirdparty folders locally so /godot/* and /src/* are the only ones considered
+      - name: Cleanup Files
+        run: |
+          rm -r thirdparty/emsdk
+          rm -r thirdparty/imgui
+          rm -r thirdparty/osxcross
+
+      # This needs to happen before Python and npm execution; it must happen before any extra files are written.
+      - name: .gitignore checks (gitignore_check.sh)
+        run: |
+          bash ./godot/misc/scripts/gitignore_check.sh
 
       - name: Style checks via pre-commit
         uses: pre-commit/action@v3.0.1
