@@ -16,6 +16,7 @@ jobs:
       # This needs to happen before Python and npm execution; it must happen before any extra files are written.
       - name: .gitignore checks (gitignore_check.sh)
         run: |
+          bash chmod +x ./godot/misc/scripts/gitignore_check.sh
           bash ./godot/misc/scripts/gitignore_check.sh
 
       - name: Get changed files
