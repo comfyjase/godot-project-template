@@ -11,13 +11,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          fetch-depth: 2
+          submodules: recursive
 
       # This needs to happen before Python and npm execution; it must happen before any extra files are written.
       - name: .gitignore checks (gitignore_check.sh)
         run: |
-          chmod +x ./godot/misc/scripts/gitignore_check.sh
-          ./godot/misc/scripts/gitignore_check.sh
+          bash ./godot/misc/scripts/gitignore_check.sh
 
       - name: Get changed files
         env:
