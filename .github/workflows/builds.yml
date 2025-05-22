@@ -19,7 +19,7 @@ jobs:
     uses: ./.github/workflows/linux_builds.yml
     
   macos-build:
-    name: 🍎 macOS
+    name: 🍎 MacOS
     needs: static-checks
     uses: ./.github/workflows/macos_builds.yml
 
