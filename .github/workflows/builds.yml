@@ -1,184 +1,34 @@
-name: Build Game Project
-on:
-  workflow_call:
-  push:
-  pull_request:
-  merge_group:
+name: Build + Export Game Project
+on: [push, pull_request, merge_group]
 
+concurrency:
+  group: ${{ github.workflow }}|${{ github.ref_name }}
+  cancel-in-progress: true
+  
 jobs:
-  build:
-    # Comment back in after first cache has been built?
-    #timeout-minutes: 120
-    strategy:
-      fail-fast: false
-      matrix:
-        # A build is made for every possible combination of parameters
-        # You can add or remove entries from the arrays of each parameter to custimize which builds you want to run
-        # See https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/running-variations-of-jobs-in-a-workflow
-        #target:
-        #  [
-            #{ platform: linux, arch: x86_64, os: ubuntu-22.04 },
-            #{ platform: windows, arch: x86_64, os: windows-latest },
-            #{ platform: windows, arch: x86_32, os: windows-latest },
-            #{ platform: macos, arch: universal, os: macos-latest },
-            #{ platform: android, arch: arm64, os: ubuntu-22.04 },
-            #{ platform: android, arch: arm32, os: ubuntu-22.04 },
-            #{ platform: android, arch: x86_64, os: ubuntu-22.04 },
-            #{ platform: android, arch: x86_32, os: ubuntu-22.04 },
-            #{ platform: ios, arch: arm64, os: macos-latest },
-            #{ platform: web, arch: wasm32, os: ubuntu-22.04 }
-        #  ]
-        target:
-          [
-            { platform: linux, arch: x86_64, os: ubuntu-22.04 },
-            { platform: windows, arch: x86_64, os: windows-latest },
-            { platform: macos, arch: x86_64, os: macos-latest },
-            { platform: web, arch: wasm32, os: windows-latest }
-          ]
-        target-type: [template_debug, template_release, profile, production]
-        float-precision: [single, double]
+  # First stage: Only static checks, fast and prevent expensive builds from running.
+  static-checks:
+    if: ${{ !vars.DISABLE_GODOT_CI || github.run_attempt > 1 }}
+    name: 📊 Static checks
+    uses: ./.github/workflows/static_checks.yml
 
-    runs-on: ${{ matrix.target.os }}
-    steps:
-      # Clone this repository
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          submodules: recursive
-
-      # Lint
-      #- name: Setup clang-format
-      #  shell: bash
-      #  run: |
-      #    python -m pip install clang-format
-      #- name: Run clang-format
-      #  shell: bash
-      #  run: |
-      #    clang-format src/** --dry-run --Werror
-
-      # Setup dependencies
-      - name: Setup godot-cpp
-        uses: ./godot-cpp/.github/actions/setup-godot-cpp
-        with:
-          platform: ${{ matrix.target.platform }}
-          em-version: latest
-          windows-compiler: msvc
-          
-      - name: Windows - Environment Variables
-        if: ${{ matrix.target.platform == 'windows' }}
-        run: |
-            echo "SCONS_CACHE_MSVC_CONFIG=true" >> $env:GITHUB_ENV
-
-      - name: Linux - Dependencies
-        if: ${{ matrix.target.platform == 'linux' }}
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y \
-          build-essential \
-          scons \
-          pkg-config \
-          libx11-dev \
-          libxcursor-dev \
-          libxinerama-dev \
-          libgl1-mesa-dev \
-          libglu1-mesa-dev \
-          libasound2-dev \
-          libpulse-dev \
-          libudev-dev \
-          libxi-dev \
-          libxrandr-dev \
-          libwayland-dev
-
-      - name: MacOS - Install Vulkan
-        if: ${{ matrix.target.platform == 'macos' }}
-        shell: sh
-        run: |
-          ./godot/misc/scripts/install_vulkan_sdk_macos.sh
+  # Second stage: Run all the builds
+  linux-build:
+    name: 🐧 Linux
+    needs: static-checks
+    uses: ./.github/workflows/linux_builds.yml
     
-      - name: Web - emsdk
-        if: ${{ matrix.target.platform == 'web' }}
-        run: |
-          thirdparty/emsdk/emsdk.bat install latest --build=Release
-          thirdparty/emsdk/emsdk.bat activate latest
-    
-      - name: Setup Workflow Variables
-        run: |
-          python tools/scripts/write_to_github_actions_environment.py
-    
-      # Restore .scons_cache
-      - name: Restore .scons_cache
-        uses: ./godot-cpp/.github/actions/godot-cache-restore
-        with:
-          scons-cache: ${{ github.workspace }}/.scons_cache/
-          cache-name: ${{ matrix.target.platform }}_${{ matrix.target.arch }}_${{ matrix.float-precision }}_${{ matrix.target-type }}
-      
-      # Build GDExtension (with caches)
-      - name: Build Project
-        shell: sh
-        env:
-          SCONS_CACHE: ${{ github.workspace }}/.scons_cache/
-        run: |
-          python tools/scripts/build.py ${{ matrix.target.platform }} ${{ matrix.target-type }} ${{ matrix.target.arch }} ${{ matrix.float-precision }} True
-      
-      - name: Create Custom Export Template
-        shell: sh
-        env:
-          SCONS_CACHE: ${{ github.workspace }}/.scons_cache/
-        run: |
-          python tools/scripts/create_custom_export_template.py ${{ matrix.target.platform }} ${{ matrix.target-type }} ${{ matrix.target.arch }} ${{ matrix.float-precision }} True
-      
-      # Save scons cache
-      - name: Save .scons_cache
-        uses: ./godot-cpp/.github/actions/godot-cache-save
-        with:
-          scons-cache: ${{ github.workspace }}/.scons_cache/
-          cache-name: ${{ matrix.target.platform }}_${{ matrix.target.arch }}_${{ matrix.float-precision }}_${{ matrix.target-type }}
-      
-      - name: Export Project
-        shell: sh
-        run: |
-          python tools/scripts/export.py ${{ matrix.target.platform }} ${{ matrix.target-type }} ${{ matrix.target.arch }} ${{ matrix.float-precision }} True
-      
-      # Sign the binary (macOS only)
-      - name: Mac - Sign
-        # Disable sign if secrets are not set
-        if: ${{ matrix.target.platform == 'macos' && env.APPLE_CERT_BASE64 }}
-        env:
-          APPLE_CERT_BASE64: ${{ secrets.APPLE_CERT_BASE64 }}
-        uses: ./.github/actions/sign
-        with:
-          FRAMEWORK_PATH: bin/macos/macos.framework
-          APPLE_CERT_BASE64: ${{ secrets.APPLE_CERT_BASE64 }}
-          APPLE_CERT_PASSWORD: ${{ secrets.APPLE_CERT_PASSWORD }}
-          APPLE_DEV_PASSWORD: ${{ secrets.APPLE_DEV_PASSWORD }}
-          APPLE_DEV_ID: ${{ secrets.APPLE_DEV_ID }}
-          APPLE_DEV_TEAM_ID: ${{ secrets.APPLE_DEV_TEAM_ID }}
-          APPLE_DEV_APP_ID: ${{ secrets.APPLE_DEV_APP_ID }}
+  macos-build:
+    name: 🍎 macOS
+    needs: static-checks
+    uses: ./.github/workflows/macos_builds.yml
 
-      # Clean up compilation files
-      - name: Windows - Delete compilation files
-        if: ${{ matrix.target.platform == 'windows' }}
-        shell: pwsh
-        run: |
-          Remove-Item bin/${{ matrix.target.platform }}/* -Include *.exp,*.lib,*.pdb -Force
-
-      # Upload the build
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: game_${{ matrix.target.platform }}_${{ matrix.target-type }}_${{ matrix.target.arch }}_${{ matrix.float-precision }}_${{ env.BUILD_TIME }}_${{ github.ref_name }}_${{ env.SHA_SHORT }}
-          path: |
-            ${{ github.workspace }}/bin/${{ matrix.target.platform }}/**
-
-  # Merges all the build artifacts together into a single godot-cpp-template artifact.
-  # If you comment out this step, all the builds will be uploaded individually.
-  #merge:
-  #  runs-on: ubuntu-22.04
-  #  needs: build
-  #  steps:
-  #    - name: Merge Artifacts
-  #      uses: actions/upload-artifact/merge@v4
-  #      with:
-  #        name: godot-cpp-template
-  #        pattern: godot-cpp-template-*
-  #        delete-merged: true
+  windows-build:
+    name: 🪟 Windows
+    needs: static-checks
+    uses: ./.github/workflows/windows_builds.yml
+  
+  web-build:
+    name: 🌐 Web
+    needs: static-checks
+    uses: ./.github/workflows/web_builds.yml
