@@ -28,6 +28,7 @@ jobs:
       # Removing other thirdparty folders locally so /godot/* and /src/* are the only ones considered
       - name: Cleanup Files
         run: |
+          rm -r godot-cpp/test
           rm -r thirdparty/emsdk
           rm -r thirdparty/imgui
           rm -r thirdparty/osxcross
