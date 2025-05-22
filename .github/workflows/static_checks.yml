@@ -6,7 +6,7 @@ jobs:
   static-checks:
     name: Code style, file formatting, and docs
     runs-on: ubuntu-24.04
-    #timeout-minutes: 30
+    timeout-minutes: 30
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -26,7 +26,7 @@ jobs:
           echo "CHANGED_FILES=$files" >> $GITHUB_ENV
       
       # Removing other thirdparty folders locally so /godot/* and /src/* are the only ones considered
-      - name: Cleanup Files
+      - name: Cleanup files
         run: |
           rm -r bin
           rm -r game/bin

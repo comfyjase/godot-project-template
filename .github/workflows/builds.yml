@@ -1,4 +1,4 @@
-name: Build + Export Game Project
+name: 🎮 Build & Export Game
 on: [push, pull_request, merge_group]
 
 concurrency:
