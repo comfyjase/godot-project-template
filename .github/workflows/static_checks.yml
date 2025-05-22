@@ -50,8 +50,8 @@ jobs:
         run: |
           sudo apt update
           sudo apt install -y libxml2-utils
-          xmllint --quiet --noout --schema doc/class.xsd doc/classes/*.xml modules/*/doc_classes/*.xml platform/*/doc_classes/*.xml
+          xmllint --quiet --noout --schema godot/doc/class.xsd godot/doc/classes/*.xml godot/modules/*/doc_classes/*.xml godot/platform/*/doc_classes/*.xml
 
       - name: Run C compiler on `gdextension_interface.h`
         run: |
-          gcc -c core/extension/gdextension_interface.h
+          gcc -c godot/core/extension/gdextension_interface.h
