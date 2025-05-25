@@ -59,6 +59,8 @@ run_subprocess("python -m ensurepip --upgrade", "Error: Failed to install pip, h
 
 # scons
 run_subprocess("pip install scons", "Error: Failed to install scons somehow... aborting!")
+run_subprocess("pip install customtkinter", "Error: Failed to install customtkinter... aborting!")
+run_subprocess("pip install pillow", "Error: Failed to install pillow... aborting!")
 
 # (Windows Only) WSL
 if platform.system() == "Windows":

@@ -45,7 +45,7 @@ elif architecture_arg == "web":
 elif architecture_arg == "android": # TODO: Add different android processor platforms? E.g. android_arm32, android_arm64, android_x86_32, android_x86_64?
     architecture_arg = "arm64"
     
-using_wsl = wsl_available and platform_arg == "linux"
+using_wsl = wsl_available and (platform_arg == "linux" or platform_arg == "macos")
 
 # ===============================================
 # Build Godot
@@ -126,6 +126,8 @@ if build_engine:
 print("Generate C++ extension api files", flush=True)
 os.chdir("bin")
 
+print(f"Detected System Platform: {platform.system()}", flush=True)
+
 godot_engine_architecture_arg = ""
 if is_os_64_bit:
     godot_engine_architecture_arg = "x86_64"
@@ -135,7 +137,7 @@ else:
 godot_binary_file_name = ""
 if platform.system() == "Windows":
     if platform_arg == "linux":
-        f"godot.linuxbsd.editor.dev.{godot_engine_architecture_arg}"
+        godot_binary_file_name = f"godot.linuxbsd.editor.dev.{godot_engine_architecture_arg}"
     else:
         godot_binary_file_name = f"godot.windows.editor.dev.{godot_engine_architecture_arg}.exe"
 elif platform.system() == "Linux":
@@ -193,15 +195,14 @@ else:
 if platform_arg == "macos":
     if is_ci:
         build_command += " vulkan=yes"
-    elif platform.system() == "Linux":
-        build_command += " vulkan_sdk_path=$HOME/VulkanSDK"
-        if platform.system() == "Linux":
-            build_command += " osxcross_sdk=darwin24.4"
+    elif platform.system() == "Linux" or using_wsl:
+        build_command += " vulkan_sdk_path=$HOME/VulkanSDK osxcross_sdk=darwin24.4"
 elif platform_arg == "web":
     if configuration_arg in ["editor", "editor_game", "template_debug"]:
         build_command = build_command.replace(" dev_build=yes dev_mode=yes", "")
     build_command += " threads=no"
     
+print(f"Command: {build_command}", flush=True)
 return_code = subprocess.call(build_command, shell=True)
 if return_code != 0:
     sys.exit(f"Error: Failed to build game for {platform_arg} {configuration_arg} {game_architecture} {precision_arg}")
