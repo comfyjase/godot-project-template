@@ -366,7 +366,7 @@ class App(customtkinter.CTk):
         return_code = subprocess.call(f"git add {selected_files}", shell=True)
         if return_code != 0:
             self.error_messages.clear()
-            self.error_messages.append("git add *")
+            self.error_messages.append(f"git add {selected_files}")
             self.error_messages.append("Failed to add all unstaged files, please review changed in github desktop or other similar software.")
             self.display_error_messages_window()
             return
@@ -376,11 +376,8 @@ class App(customtkinter.CTk):
         
         commit_title = self.commit_title_textbox.get("0.0", "end").strip()
         commit_message_arr = self.commit_message_textbox.get("0.0", "end").strip().split("\n")
-        #print(commit_message_arr)
         commit_message = "".join(f"-m \"{w}\" " for w in commit_message_arr).replace("-m \"\"", "-m \" \"")
-        #commit_message = "".join(f"-m \"{w}\"" for w in commit_message_arr).replace("-m \"\"", " ")
         commit_message += f"-m \"{commit_checker_tag}\""
-        #print(commit_message)
         
         git_command = f"git commit -m \"{commit_title}\" {commit_message}"
         print(f"git command:\n{git_command}")
@@ -592,7 +589,7 @@ class App(customtkinter.CTk):
         thread.start()
         
     async def async_wait_and_close_down(self):
-        await asyncio.sleep(5)
+        await asyncio.sleep(3)
         print("CommitChecker finished and closing now")
         self.quit()
         
