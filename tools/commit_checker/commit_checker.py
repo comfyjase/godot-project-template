@@ -372,7 +372,7 @@ class App(customtkinter.CTk):
         
         commit_title = self.commit_title_textbox.get("0.0", "end")
         commit_message = self.commit_message_textbox.get("0.0", "end") + f"\n\n{commit_checker_tag}"
-        return_code = subprocess.call(f"git commit -m \"{commit_title}\" -m $\"{commit_message}\"", shell=True)
+        return_code = subprocess.call(f"git commit -m \"{commit_title}\" -m $'{commit_message}'", shell=True)
         if return_code != 0:
             self.error_messages.clear()
             #self.error_messages.append(f"git commit -m \"{commit_title}\" -m \"{commit_message}\"")
@@ -385,9 +385,14 @@ class App(customtkinter.CTk):
         commit_status_label = customtkinter.CTkLabel(self.commit_message_frame, text="", image=commit_passed_image)
         commit_status_label.grid(row=4, column=1, padx=20, pady=(10, 0), sticky="e")
         
-        time.sleep(2)
+        # TEMP TO SEE IF STUFF WORKS AFTER COMMITTING...
+        self.refresh_changed_files_list()
+        self.commit_title_textbox.delete("0.0", "end")
+        self.commit_message_textbox.delete("0.0", "end")
         
-        self.quit()
+        #time.sleep(2)
+        
+        #self.quit()
         
     def start_rotating_loading_image(self, loading_image_label):
         thread = threading.Thread(target=asyncio.run, args=(self.async_rotate_loading_image(loading_image_label),))
