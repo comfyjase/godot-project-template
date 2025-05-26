@@ -49,13 +49,8 @@ using_wsl = wsl_available and platform_arg == "linux"
 # Export
 git_command = ""
 if using_wsl:
-    git_command = "wsl /usr/bin/git "
-else:
-    if platform.system() == "Linux":
-        git_command = "/usr/bin/git "
-    else:
-        git_command = "git "
-git_command += "rev-parse --short HEAD"
+    git_command = "wsl "
+git_command += "git rev-parse --short HEAD"
 latest_git_commit_id = subprocess.check_output(git_command, shell=True).decode('ascii').strip()
 
 os.chdir(os.path.join("godot", "bin"))

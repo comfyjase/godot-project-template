@@ -2,17 +2,22 @@
 	path = godot
 	url = https://github.com/comfyjase/godot.git
 	branch = 4.4
+	ignore = dirty
 [submodule "thirdparty/imgui"]
 	path = thirdparty/imgui
 	url = https://github.com/ocornut/imgui
 	branch = docking
+	ignore = dirty
 [submodule "thirdparty/emsdk"]
 	path = thirdparty/emsdk
 	url = https://github.com/emscripten-core/emsdk.git
+	ignore = dirty
 [submodule "godot-cpp"]
 	path = godot-cpp
 	url = https://github.com/comfyjase/godot-cpp.git
 	branch = 4.4
+	ignore = dirty
 [submodule "thirdparty/osxcross"]
 	path = thirdparty/osxcross
 	url = https://github.com/tpoechtrager/osxcross.git
+	ignore = dirty

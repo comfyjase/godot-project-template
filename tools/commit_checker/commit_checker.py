@@ -9,6 +9,7 @@ import platform
 import subprocess
 import sys
 import threading
+import time
 
 # Change to project directory if we are not already there
 current_directory = os.getcwd()
@@ -109,6 +110,7 @@ class App(customtkinter.CTk):
         self.select_frame_by_name("perform_checks")
         
         self.error_messages_window = None
+        self.error_messages = []
         self.number_of_commands = 0
         self.should_animate_loading_icon = False
         self.animation_interval = (1 / 120)
@@ -207,46 +209,160 @@ class App(customtkinter.CTk):
         self.log_output_label.grid_forget()
         
         # Images
-        images_folder_path = os.path.join(project_directory, "tools", "commit_checker", "assets", "images")
-        loading_image_file_path = os.path.join(images_folder_path, "loading_cog.png")
-        passed_image_file_path = os.path.join(images_folder_path, "green_tick.png")
-        failed_image_file_path = os.path.join(images_folder_path, "red_cross.png")
+        self.images_folder_path = os.path.join(project_directory, "tools", "commit_checker", "assets", "images")
+        loading_image_file_path = os.path.join(self.images_folder_path, "loading_cog.png")
+        passed_image_file_path = os.path.join(self.images_folder_path, "green_tick.png")
+        failed_image_file_path = os.path.join(self.images_folder_path, "red_cross.png")
         
         self.loading_image_object = Image.open(loading_image_file_path)
         self.passed_image_object = Image.open(passed_image_file_path)
         self.failed_image_object = Image.open(failed_image_file_path)
         
-        self.image_size = (26, 26)
+        self.image_size = (20, 20)
         self.loading_image = customtkinter.CTkImage(self.loading_image_object, size=self.image_size)
         self.passed_image = customtkinter.CTkImage(self.passed_image_object, size=self.image_size)
         self.failed_image = customtkinter.CTkImage(self.failed_image_object, size=self.image_size)
 
     def create_commit_message_frame(self):
+        # Images
+        git_icon_added_image_file_path = os.path.join(self.images_folder_path, "git_icon_added.png")
+        git_icon_deleted_image_file_path = os.path.join(self.images_folder_path, "git_icon_deleted.png")
+        git_icon_modified_image_file_path = os.path.join(self.images_folder_path, "git_icon_modified.png")
+        
+        git_icon_added_image_object = Image.open(git_icon_added_image_file_path)
+        git_icon_deleted_image_object = Image.open(git_icon_deleted_image_file_path)
+        git_icon_modified_image_object = Image.open(git_icon_modified_image_file_path)
+        
+        self.image_size = (20, 20)
+        self.git_icon_added_image = customtkinter.CTkImage(git_icon_added_image_object, size=self.image_size)
+        self.git_icon_deleted_image = customtkinter.CTkImage(git_icon_deleted_image_object, size=self.image_size)
+        self.git_icon_modified_image = customtkinter.CTkImage(git_icon_modified_image_object, size=self.image_size)
+        
         # Commit Frame
         self.commit_message_frame = customtkinter.CTkFrame(self, corner_radius=0)
-        self.commit_message_frame.grid(row=0, column=1, rowspan=4, sticky="nsew")
-        self.commit_message_frame.grid_columnconfigure(0, weight=0)
-        self.commit_message_frame.grid_columnconfigure(1, weight=1)
-        self.commit_message_frame.grid_rowconfigure((0, 1, 2), weight=1)
+        self.commit_message_frame.grid(row=0, column=1, sticky="nesw")
+        self.commit_message_frame.grid_columnconfigure((1, 2), weight=1)
+        self.commit_message_frame.grid_columnconfigure(3, weight=0)
         self.commit_message_frame.configure(fg_color="transparent")
         
         # Commit Title Textbox
-        self.commit_title_label = customtkinter.CTkLabel(self.commit_message_frame, text="Commit Title:")
-        self.commit_title_label.grid(row=0, column=1, padx=(20,20), pady=(20, 0), sticky="w")
+        self.commit_title_label = customtkinter.CTkLabel(self.commit_message_frame, text="Commit Title")
+        self.commit_title_label.grid(row=0, column=1, padx=20, pady=(10, 0), sticky="w")
+        self.commit_title_label.cget("font").configure(size=16)
+        self.commit_title_label.cget("font").configure(weight="bold")
         
-        self.commit_title_textbox = customtkinter.CTkTextbox(self.commit_message_frame, width=250, height=10)
-        self.commit_title_textbox.grid(row=0, column=1, columnspan=2, padx=(130, 20), pady=(20, 0), sticky="ew")
+        self.commit_title_textbox = customtkinter.CTkTextbox(self.commit_message_frame, height=10)
+        self.commit_title_textbox.grid(row=1, column=1, padx=20, sticky="ew")
         
         # Commit Message Textbox
-        self.commit_message_label = customtkinter.CTkLabel(self.commit_message_frame, text="Commit Message:")
-        self.commit_message_label.grid(row=1, column=1, padx=(20,20), pady=(20, 0), sticky="nw")      
+        self.commit_message_label = customtkinter.CTkLabel(self.commit_message_frame, text="Commit Message")
+        self.commit_message_label.grid(row=2, column=1, padx=20, pady=(10, 0), sticky="w")      
+        self.commit_message_label.cget("font").configure(size=16)
+        self.commit_message_label.cget("font").configure(weight="bold")
         
-        self.commit_message_textbox = customtkinter.CTkTextbox(self.commit_message_frame, width=250, height=200)
-        self.commit_message_textbox.grid(row=1, column=1, columnspan=2, padx=(130, 20), pady=(20, 0), sticky="new")
+        self.commit_message_textbox = customtkinter.CTkTextbox(self.commit_message_frame, height=200)
+        self.commit_message_textbox.grid(row=3, column=1, padx=20, sticky="ew")
+        
+        # Changed files frame
+        self.changed_files_label = customtkinter.CTkLabel(self.commit_message_frame, text="Changes")
+        self.changed_files_label.grid(row=2, column=2, padx=20, pady=(10, 10), sticky="w")      
+        self.changed_files_label.cget("font").configure(size=16)
+        self.changed_files_label.cget("font").configure(weight="bold")
+        
+        self.changed_files_refresh_button = customtkinter.CTkButton(self.commit_message_frame, text="Refresh", command=self.refresh_changed_files_list)
+        self.changed_files_refresh_button.grid(row=2, column=2, padx=20, pady=(10, 0), sticky="e")
+        
+        self.changed_files_frame = customtkinter.CTkScrollableFrame(self.commit_message_frame, corner_radius=0)
+        self.changed_files_frame.grid(row=3, column=2, padx=20, sticky="nesw")
+        self.changed_files_frame.grid_columnconfigure(0, weight=1)
+        
+        self.changed_files_status_labels = []
+        self.changed_files_checkboxes = []
+        self.create_changed_files_list()
         
         # Commit Button
-        self.commit_button = customtkinter.CTkButton(self.commit_message_frame, text="Commit", height=50)
-        self.commit_button.grid(row=2, column=1, columnspan=2, padx=(130, 20), pady=(0, 0), sticky="n")
+        self.commit_button = customtkinter.CTkButton(self.commit_message_frame, text="Commit", height=50, command=self.commit_changed_files_and_close)
+        self.commit_button.grid(row=4, column=1, padx=20, pady=(10, 0), sticky="w")
+        
+    def create_changed_files_list(self):
+        changed_files = self.get_changed_files()
+        for i, changed_file in enumerate(changed_files):
+            status_and_file_arr = changed_file.strip().split()
+            status = status_and_file_arr[0]
+            file = status_and_file_arr[1]
+            
+            # Default to modified status
+            status_image = self.git_icon_modified_image
+            if status == "??" or status == "A":
+                status_image = self.git_icon_added_image
+            elif status == "D":
+                status_image = self.git_icon_deleted_image
+            
+            checkbox = customtkinter.CTkCheckBox(self.changed_files_frame, text=f"{file}")
+            checkbox.grid(row=i+1, column=0, padx=10, pady=(10, 0), sticky="w")
+            checkbox.select()
+            self.changed_files_checkboxes.append(checkbox)
+            
+            label = customtkinter.CTkLabel(self.changed_files_frame, text="", image=status_image)
+            label.grid(row=i+1, column=0, padx=(0, 0), pady=(10, 0), sticky="e")
+            self.changed_files_status_labels.append(label)
+        
+    def refresh_changed_files_list(self):
+        self.changed_files_refresh_button.configure(state="disabled")
+        
+        for i, changed_file_status in enumerate(self.changed_files_status_labels):
+            self.changed_files_status_labels[i].configure(image=None)
+            self.changed_files_checkboxes[i].configure(text="")
+            self.changed_files_status_labels[i].grid_forget()
+            self.changed_files_checkboxes[i].grid_forget()
+            
+        self.changed_files_status_labels.clear()
+        self.changed_files_checkboxes.clear()
+        
+        self.create_changed_files_list()
+        
+        self.changed_files_refresh_button.configure(state="normal")
+        
+    def get_changed_files(self):
+        changed_files = []
+        
+        changed_files_str = subprocess.check_output("git status --short", shell=True).decode('ascii').strip()
+        changed_files = changed_files_str.split("\n")
+        
+        print(f"Changed Files: {changed_files}")
+        
+        return changed_files
+        
+    def commit_changed_files_and_close(self):
+        return_code = subprocess.call("git add *", shell=True)
+        if return_code != 0:
+            self.error_messages.clear()
+            self.error_messages.append("git add *")
+            self.error_messages.append("Failed to add all unstaged files, please review changed in github desktop or other similar software.")
+            self.display_error_messages_window()
+            return
+        
+        # TODO: Automatically update github issues (use github syntax e.g. Fixes #6)
+        commit_checker_tag = "[CommitChecker]"
+        
+        commit_title = self.commit_title_textbox.get("0.0", "end")
+        commit_message = self.commit_message_textbox.get("0.0", "end") + f"\n\n{commit_checker_tag}"
+        return_code = subprocess.call(f"git commit -m \"{commit_title}\" -m \"{commit_message}\"", shell=True)
+        if return_code != 0:
+            self.error_messages.clear()
+            #self.error_messages.append(f"git commit -m \"{commit_title}\" -m \"{commit_message}\"")
+            self.error_messages.append("Failed to commit files.")
+            self.display_error_messages_window()
+            return
+        
+        commit_passed_image_size = (30, 30)
+        commit_passed_image = customtkinter.CTkImage(self.passed_image_object, size=commit_passed_image_size)
+        commit_status_label = customtkinter.CTkLabel(self.commit_message_frame, text="", image=commit_passed_image)
+        commit_status_label.grid(row=4, column=1, padx=20, pady=(10, 0), sticky="e")
+        
+        time.sleep(2)
+        
+        self.quit()
         
     def start_rotating_loading_image(self, loading_image_label):
         thread = threading.Thread(target=asyncio.run, args=(self.async_rotate_loading_image(loading_image_label),))
@@ -282,7 +398,6 @@ class App(customtkinter.CTk):
         thread.start()
         
     async def async_run_checklist_subprocesses(self, commands):        
-        self.error_messages = []
         self.show_error_messages_button.grid_forget()
         self.log_output_label.grid_forget()
         
