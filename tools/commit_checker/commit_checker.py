@@ -254,6 +254,17 @@ class App(customtkinter.CTk):
         self.commit_title_textbox = customtkinter.CTkTextbox(self.commit_message_frame, height=10)
         self.commit_title_textbox.grid(row=1, column=1, padx=20, sticky="ew")
         
+        # Branch Name
+        self.branch_name_title_label = customtkinter.CTkLabel(self.commit_message_frame, text=f"Branch")
+        self.branch_name_title_label.grid(row=0, column=2, padx=20, pady=(10, 0), sticky="w")
+        self.branch_name_title_label.cget("font").configure(size=16)
+        self.branch_name_title_label.cget("font").configure(weight="bold")
+        
+        self.branch_name_label = customtkinter.CTkLabel(self.commit_message_frame, text=f"{self.get_branch_name()}")
+        self.branch_name_label.grid(row=1, column=2, padx=20, pady=(10, 10), sticky="w")
+        self.branch_name_label.cget("font").configure(size=16)
+        self.branch_name_label.cget("font").configure(weight="bold")
+        
         # Commit Message Textbox
         self.commit_message_label = customtkinter.CTkLabel(self.commit_message_frame, text="Commit Message")
         self.commit_message_label.grid(row=2, column=1, padx=20, pady=(10, 0), sticky="w")      
@@ -284,6 +295,10 @@ class App(customtkinter.CTk):
         self.commit_button = customtkinter.CTkButton(self.commit_message_frame, text="Commit", height=50, command=self.commit_changed_files_and_close)
         self.commit_button.grid(row=4, column=1, padx=20, pady=(10, 0), sticky="w")
         
+    def get_branch_name(self):
+        branch_name = subprocess.check_output("git branch --show-current", shell=True).decode('ascii').strip()
+        return branch_name
+        
     def create_changed_files_list(self):
         changed_files = self.get_changed_files()
         for i, changed_file in enumerate(changed_files):
@@ -298,7 +313,7 @@ class App(customtkinter.CTk):
             elif status == "D":
                 status_image = self.git_icon_deleted_image
             
-            checkbox = customtkinter.CTkCheckBox(self.changed_files_frame, text=f"{file}")
+            checkbox = customtkinter.CTkCheckBox(self.changed_files_frame, text=f"{file}", command=self.get_selected_changed_files)
             checkbox.grid(row=i+1, column=0, padx=10, pady=(10, 0), sticky="w")
             checkbox.select()
             self.changed_files_checkboxes.append(checkbox)
@@ -333,8 +348,18 @@ class App(customtkinter.CTk):
         
         return changed_files
         
+    def get_selected_changed_files(self):
+        selected_changed_files = ""
+        for checkbox in self.changed_files_checkboxes:
+            if checkbox.get() == 1:
+                selected_changed_files += f"{checkbox.cget("text")} "
+        
+        print(selected_changed_files)
+        return selected_changed_files
+        
     def commit_changed_files_and_close(self):
-        return_code = subprocess.call("git add *", shell=True)
+        selected_files = self.get_selected_changed_files()
+        return_code = subprocess.call(f"git add {selected_files}", shell=True)
         if return_code != 0:
             self.error_messages.clear()
             self.error_messages.append("git add *")
@@ -347,7 +372,7 @@ class App(customtkinter.CTk):
         
         commit_title = self.commit_title_textbox.get("0.0", "end")
         commit_message = self.commit_message_textbox.get("0.0", "end") + f"\n\n{commit_checker_tag}"
-        return_code = subprocess.call(f"git commit -m \"{commit_title}\" -m \"{commit_message}\"", shell=True)
+        return_code = subprocess.call(f"git commit -m \"{commit_title}\" -m $\"{commit_message}\"", shell=True)
         if return_code != 0:
             self.error_messages.clear()
             #self.error_messages.append(f"git commit -m \"{commit_title}\" -m \"{commit_message}\"")
