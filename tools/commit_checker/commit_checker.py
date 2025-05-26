@@ -88,6 +88,8 @@ class App(customtkinter.CTk):
     def __init__(self):
         super().__init__()
 
+        print("CommitChecker starting up")
+
         # App Window
         self.title("Commit Checker")
         self.geometry(f"{1100}x{580}")
@@ -370,29 +372,19 @@ class App(customtkinter.CTk):
         # TODO: Automatically update github issues (use github syntax e.g. Fixes #6)
         commit_checker_tag = "[CommitChecker]"
         
-        commit_title = self.commit_title_textbox.get("0.0", "end")
-        commit_message = self.commit_message_textbox.get("0.0", "end") + f"\n\n{commit_checker_tag}"
-        return_code = subprocess.call(f"git commit -m \"{commit_title}\" -m $'{commit_message}'", shell=True)
+        commit_title = self.commit_title_textbox.get("0.0", "end").strip()
+        commit_message = self.commit_message_textbox.get("0.0", "end").strip() + f"\n\n{commit_checker_tag}"
+        #commit_message = self.commit_message_textbox.get("0.0", "end").strip().replace("\n", "\" -m \"") + f"-m \"{commit_checker_tag}\""
+        
+        print(f"git command:\ngit commit -m \"{commit_title}\" -m \"{commit_message}\"")
+        return_code = subprocess.call(f"git commit -m \"{commit_title}\" -m \"{commit_message}\"", shell=True)
         if return_code != 0:
             self.error_messages.clear()
-            #self.error_messages.append(f"git commit -m \"{commit_title}\" -m \"{commit_message}\"")
             self.error_messages.append("Failed to commit files.")
             self.display_error_messages_window()
             return
         
-        commit_passed_image_size = (30, 30)
-        commit_passed_image = customtkinter.CTkImage(self.passed_image_object, size=commit_passed_image_size)
-        commit_status_label = customtkinter.CTkLabel(self.commit_message_frame, text="", image=commit_passed_image)
-        commit_status_label.grid(row=4, column=1, padx=20, pady=(10, 0), sticky="e")
-        
-        # TEMP TO SEE IF STUFF WORKS AFTER COMMITTING...
-        self.refresh_changed_files_list()
-        self.commit_title_textbox.delete("0.0", "end")
-        self.commit_message_textbox.delete("0.0", "end")
-        
-        #time.sleep(2)
-        
-        #self.quit()
+        self.on_post_commit()
         
     def start_rotating_loading_image(self, loading_image_label):
         thread = threading.Thread(target=asyncio.run, args=(self.async_rotate_loading_image(loading_image_label),))
@@ -582,6 +574,20 @@ class App(customtkinter.CTk):
         compile_precision = "single"
         
         return f"python tools/scripts/build.py {compile_platform} {compile_target} {compile_architecture} {compile_precision}"
+        
+    def on_post_commit(self):
+        commit_passed_image_size = (30, 30)
+        commit_passed_image = customtkinter.CTkImage(self.passed_image_object, size=commit_passed_image_size)
+        commit_status_label = customtkinter.CTkLabel(self.commit_message_frame, text="", image=commit_passed_image)
+        commit_status_label.grid(row=4, column=1, padx=20, pady=(10, 0), sticky="e")
+        
+        thread = threading.Thread(target=asyncio.run, args=(self.async_wait_and_close_down(),))
+        thread.start()
+        
+    async def async_wait_and_close_down(self):
+        await asyncio.sleep(5)
+        print("CommitChecker finished and closing now")
+        self.quit()
         
     def change_appearance_mode_event(self, new_appearance_mode: str):
         customtkinter.set_appearance_mode(new_appearance_mode)
