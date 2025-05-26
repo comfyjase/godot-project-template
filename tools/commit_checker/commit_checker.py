@@ -375,11 +375,16 @@ class App(customtkinter.CTk):
         commit_checker_tag = "[CommitChecker]"
         
         commit_title = self.commit_title_textbox.get("0.0", "end").strip()
-        commit_message = self.commit_message_textbox.get("0.0", "end").strip()# + f"\n\n{commit_checker_tag}"
-        #commit_message = self.commit_message_textbox.get("0.0", "end").strip().replace("\n", "\" -m \"") + f"-m \"{commit_checker_tag}\""
+        commit_message_arr = self.commit_message_textbox.get("0.0", "end").strip().split("\n")
+        #print(commit_message_arr)
+        commit_message = "".join(f"-m \"{w}\" " for w in commit_message_arr).replace("-m \"\"", "-m \" \"")
+        #commit_message = "".join(f"-m \"{w}\"" for w in commit_message_arr).replace("-m \"\"", " ")
+        commit_message += f"-m \"{commit_checker_tag}\""
+        #print(commit_message)
         
-        print(f"git command:\ngit commit -m \"{commit_title}\" -m \"{commit_message}\"")
-        return_code = subprocess.call(f"git commit -m \"{commit_title}\" -m \"{commit_message}\"", shell=True)
+        git_command = f"git commit -m \"{commit_title}\" {commit_message}"
+        print(f"git command:\n{git_command}")
+        return_code = subprocess.call(git_command, shell=True)
         if return_code != 0:
             self.error_messages.clear()
             self.error_messages.append("Failed to commit files.")
