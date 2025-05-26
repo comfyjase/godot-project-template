@@ -360,6 +360,8 @@ class App(customtkinter.CTk):
         return selected_changed_files
         
     def commit_changed_files_and_close(self):
+        self.commit_button.configure(state="disabled")
+        
         selected_files = self.get_selected_changed_files()
         return_code = subprocess.call(f"git add {selected_files}", shell=True)
         if return_code != 0:
@@ -373,7 +375,7 @@ class App(customtkinter.CTk):
         commit_checker_tag = "[CommitChecker]"
         
         commit_title = self.commit_title_textbox.get("0.0", "end").strip()
-        commit_message = self.commit_message_textbox.get("0.0", "end").strip() + f"\n\n{commit_checker_tag}"
+        commit_message = self.commit_message_textbox.get("0.0", "end").strip()# + f"\n\n{commit_checker_tag}"
         #commit_message = self.commit_message_textbox.get("0.0", "end").strip().replace("\n", "\" -m \"") + f"-m \"{commit_checker_tag}\""
         
         print(f"git command:\ngit commit -m \"{commit_title}\" -m \"{commit_message}\"")
