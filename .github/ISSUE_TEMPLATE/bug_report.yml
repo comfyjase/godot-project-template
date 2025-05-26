@@ -1,44 +1,53 @@
-name: Bug report
-description: Report a bug with the godot-cpp template
-body:
+name: Bug Report
+description: Report a bug with the game
+title: "[BUG] - Describe bug briefly"
+labels: [bug, triage]
 
+body:
 - type: markdown
   attributes:
     value: |
       - Write a descriptive issue title above.
-      - Search [open](https://github.com/godotengine/godot-cpp-template/issues) and [closed](https://github.com/godotengine/godot-cpp-template/issues?q=is%3Aissue+is%3Aclosed) issues to ensure it has not already been reported.
-- type: input
-  attributes:
-    label: Godot version
-    description: >
-      Specify the Git commit hash of your Godot build.
-    placeholder: v4.0.stable.official [92bee43ad]
-  validations:
-    required: true
+      - Search [open](https://github.com/comfyjase/godot-cpp-template/issues) and [closed](https://github.com/comfyjase/godot-cpp-template/issues?q=is%3Aissue+is%3Aclosed) issues to ensure it has not already been reported.
 
 - type: input
   attributes:
-    label: godot-cpp version
-    description: >
-      Specify the Git commit hash of the godot-cpp submodule in your project. You can run `git status` inside the folder to check it.
-    placeholder: v4.0.stable.official [9d1c396c5]
-  validations:
-    required: true
-
-- type: input
-  attributes:
-    label: System information
+    label: System Information
     description: |
-      Specify the OS version.
+      - Specify the platform you saw this bug on.
     placeholder: Windows 10
+  validations:
+    required: true
+    
+- type: input
+  attributes:
+    label: Build Information
+    description: |
+      - Specify the build you played (the name of the artifact you downloaded from Github Actions).
+    placeholder: game_linux_template_debug_x86_64_single_05262025_224744_main_7ac79ff
   validations:
     required: true
 
 - type: textarea
   attributes:
-    label: Issue description
+    label: Describe the Bug
     description: |
-      Describe your issue briefly. What doesn't work, and how do you expect it to work instead?
-      You can include images or videos with drag and drop, and format code blocks or logs with <code>```</code> tags.
+      - List of clear steps to reproduce the bug.
+      - What is the expected result?
+      - What is the actual result?
+      - Please include any videos/screenshots (max 10MB) below. **NOTE: Do not select another field until your files are finished uploading.**
+    placeholder: |
+      Example:
+        Reproduction steps:
+            1. Start the game.
+            2. Play through naturally or use debug commands to start level 2.
+            3. Wait for cutscene to finish.
+            4. Observe the player character is invisible.
+        
+        Expected result:
+        Player character should be visible after the cutscene has finished.
+        
+        Actual result:
+        Player character remains invisible.
   validations:
     required: true
