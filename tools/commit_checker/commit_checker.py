@@ -363,7 +363,8 @@ class App(customtkinter.CTk):
         self.commit_button.configure(state="disabled")
         
         selected_files = self.get_selected_changed_files()
-        return_code = subprocess.call(f"git add {selected_files}", shell=True)
+        git_command = f"git add {selected_files}"
+        return_code = subprocess.call(git_command, shell=True)
         if return_code != 0:
             self.error_messages.clear()
             self.error_messages.append(f"git add {selected_files}")
@@ -385,6 +386,14 @@ class App(customtkinter.CTk):
         if return_code != 0:
             self.error_messages.clear()
             self.error_messages.append("Failed to commit files.")
+            self.display_error_messages_window()
+            return
+        
+        git_command = f"git push"
+        return_code = subprocess.call(git_command, shell=True)
+        if return_code != 0:
+            self.error_messages.clear()
+            self.error_messages.append("Failed to push files to repository.")
             self.display_error_messages_window()
             return
         
