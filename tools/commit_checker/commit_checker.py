@@ -92,7 +92,7 @@ class App(customtkinter.CTk):
 
         # App Window
         self.title("Commit Checker")
-        self.geometry(f"{1100}x{580}")
+        self.geometry(f"{1100}x{600}")
 
         # Grid Layout
         self.grid_columnconfigure(0, weight=0)
@@ -278,12 +278,12 @@ class App(customtkinter.CTk):
         
         # Changed files frame
         self.changed_files_label = customtkinter.CTkLabel(self.commit_message_frame, text="Changes")
-        self.changed_files_label.grid(row=2, column=2, padx=20, pady=(10, 10), sticky="w")      
+        self.changed_files_label.grid(row=2, column=2, padx=20, pady=(10, 0), sticky="w")      
         self.changed_files_label.cget("font").configure(size=16)
         self.changed_files_label.cget("font").configure(weight="bold")
         
         self.changed_files_refresh_button = customtkinter.CTkButton(self.commit_message_frame, text="Refresh", command=self.refresh_changed_files_list)
-        self.changed_files_refresh_button.grid(row=2, column=2, padx=20, pady=(10, 0), sticky="e")
+        self.changed_files_refresh_button.grid(row=2, column=2, padx=20, pady=(10, 10), sticky="e")
         
         self.changed_files_frame = customtkinter.CTkScrollableFrame(self.commit_message_frame, corner_radius=0)
         self.changed_files_frame.grid(row=3, column=2, padx=20, sticky="nesw")
@@ -293,14 +293,35 @@ class App(customtkinter.CTk):
         self.changed_files_checkboxes = []
         self.create_changed_files_list()
         
+        # Issues list
+        self.issues_label = customtkinter.CTkLabel(self.commit_message_frame, text="Issues")
+        self.issues_label.grid(row=4, column=2, padx=20, pady=(10, 0), sticky="w")
+        self.issues_label.cget("font").configure(size=16)
+        self.issues_label.cget("font").configure(weight="bold")
+        
+        self.issues_list_refresh_button = customtkinter.CTkButton(self.commit_message_frame, text="Refresh", command=self.refresh_issues_list)
+        self.issues_list_refresh_button.grid(row=4, column=2, padx=20, pady=(10, 0), sticky="e")
+        
+        self.issues_frame = customtkinter.CTkScrollableFrame(self.commit_message_frame, height=120, corner_radius=0)
+        self.issues_frame._scrollbar.configure(height=0)
+        self.issues_frame.grid(row=5, column=2, padx=20, pady=(10, 0), sticky="ew")
+        self.issues_frame.grid_columnconfigure(0, weight=1)
+        
+        self.issues_checkboxes = []
+        self.create_issues_list()
+        
+        # Resolve issues on commit checkbox
+        self.resolve_issues_on_commit_checkbox = customtkinter.CTkCheckBox(self.commit_message_frame, text=f"Resolve selected issues on commit")
+        self.resolve_issues_on_commit_checkbox.grid(row=6, column=2, padx=20, pady=(10, 0), sticky="w")
+        
         # Commit Button
         self.commit_button = customtkinter.CTkButton(self.commit_message_frame, text="Commit", height=50, command=self.commit_changed_files_and_close)
-        self.commit_button.grid(row=4, column=1, padx=20, pady=(10, 0), sticky="w")
+        self.commit_button.grid(row=4, column=1, rowspan=2, padx=20, pady=(10, 0), sticky="nw")
         
     def get_branch_name(self):
         branch_name = subprocess.check_output("git branch --show-current", shell=True).decode('ascii').strip()
         return branch_name
-        
+    
     def create_changed_files_list(self):
         changed_files = self.get_changed_files()
         for i, changed_file in enumerate(changed_files):
@@ -342,12 +363,9 @@ class App(customtkinter.CTk):
         
     def get_changed_files(self):
         changed_files = []
-        
         changed_files_str = subprocess.check_output("git status --short", shell=True).decode('ascii').strip()
         changed_files = changed_files_str.split("\n")
-        
         print(f"Changed Files: {changed_files}")
-        
         return changed_files
         
     def get_selected_changed_files(self):
@@ -359,6 +377,51 @@ class App(customtkinter.CTk):
         print(selected_changed_files)
         return selected_changed_files
         
+    def create_issues_list(self):
+        issues = self.get_issues()
+        for i, issue in enumerate(issues):            
+            issue_str_arr = issue.strip().split("\t")
+            issue_number = issue_str_arr[0]
+            issue_title = issue_str_arr[2]
+            
+            print(f"Number: #{issue_number} Title: {issue_title}")
+            
+            checkbox = customtkinter.CTkCheckBox(self.issues_frame, text=f"#{issue_number} {issue_title}", command=self.get_selected_issues)
+            checkbox.grid(row=i+1, column=0, padx=10, pady=(10, 0), sticky="w")
+            self.issues_checkboxes.append(checkbox)
+    
+    def refresh_issues_list(self):
+        self.issues_list_refresh_button.configure(state="disabled")
+        
+        for i, issue_checkbox in enumerate(self.issues_checkboxes):
+            issue_checkbox.configure(text="")
+            issue_checkbox.grid_forget()
+            
+        self.issues_checkboxes.clear()
+        self.create_issues_list()
+        self.issues_list_refresh_button.configure(state="normal")
+       
+    def get_issues(self):
+        issues = []
+        issues_str = subprocess.check_output("gh issue list", shell=True).decode('ascii').strip()
+        issues = issues_str.split("\n")
+        issues.reverse()
+        print(f"Issues: {issues}")   
+        return issues
+       
+    def get_selected_issues(self):
+        selected_issues = ""
+        for checkbox in self.issues_checkboxes:
+            if checkbox.get() == 1:
+                if (self.resolve_issues_on_commit_checkbox.get() == 1):
+                    selected_issues += f"Resolves {checkbox.cget("text")}, "
+                else:
+                    selected_issues += f"Updates {checkbox.cget("text")}, "
+        
+        selected_issues = selected_issues.removesuffix(", ")
+        print(selected_issues)
+        return selected_issues
+            
     def commit_changed_files_and_close(self):
         self.commit_button.configure(state="disabled")
         
@@ -372,13 +435,17 @@ class App(customtkinter.CTk):
             self.display_error_messages_window()
             return
         
-        # TODO: Automatically update github issues (use github syntax e.g. Fixes #6)
+        selected_issues = self.get_selected_issues()
         commit_checker_tag = "[CommitChecker]"
-        
+        commit_message_suffix = f"-m \" \" -m \"{commit_checker_tag}\""
+        if selected_issues != "":
+            commit_message_suffix += f" -m \"{selected_issues}\""
+            
         commit_title = self.commit_title_textbox.get("0.0", "end").strip()
         commit_message_arr = self.commit_message_textbox.get("0.0", "end").strip().split("\n")
-        commit_message = "".join(f"-m \"{w}\" " for w in commit_message_arr).replace("-m \"\"", "-m \" \"")
-        commit_message += f"-m \"{commit_checker_tag}\""
+        commit_message = "".join(f"-m \"{w}\" " for w in commit_message_arr)
+        commit_message += commit_message_suffix
+        commit_message = commit_message.replace("-m \"\"", "-m \" \"")
         
         git_command = f"git commit -m \"{commit_title}\" {commit_message}"
         print(f"git command:\n{git_command}")

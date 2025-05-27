@@ -62,18 +62,32 @@ run_subprocess("pip install scons", "Error: Failed to install scons somehow... a
 run_subprocess("pip install customtkinter", "Error: Failed to install customtkinter... aborting!")
 run_subprocess("pip install pillow", "Error: Failed to install pillow... aborting!")
 
-# (Windows Only) WSL
+# (Windows Only)
 if platform.system() == "Windows":
     wsl_install_output = subprocess.check_output(f"wsl -l -v").decode('ascii').strip()
     if "Windows subsystem for Linux has no installed distributions" in wsl_install_output:
         run_subprocess("wsl --install", "Error: Failed to install WSL, aborting!")
-
-# (Linux Only) Libraries 
-if platform.system() == "Linux":
+    run_subprocess("winget install --id GitHub.cli", "Error: Failed to install Github CLI (gh) using winget. Aborting!")
+# (Linux Only) 
+elif platform.system() == "Linux":
     run_subprocess("sudo apt-get update", "Error: Failed to update linux somehow, aborting!")
     run_subprocess("sudo apt-get install -y build-essential scons pkg-config libx11-dev libxcursor-dev libxinerama-dev libgl1-mesa-dev libglu1-mesa-dev libasound2-dev libpulse-dev libudev-dev libxi-dev libxrandr-dev libwayland-dev", "Error: Failed to install linux libraries, aborting!")
-    run_subprocess("sudo apt-get install -y libembree-dev libenet-dev libfreetype-dev libpng-dev zlib1g-dev libgraphite2-dev libharfbuzz-dev libogg-dev libtheora-dev libvorbis-dev libwebp-dev libmbedtls-dev libminiupnpc-dev libpcre2-dev libzstd-dev libsquish-dev libicu-dev", "Error: Failed to update linux somehow, aborting!") 
+    run_subprocess("sudo apt-get install -y libembree-dev libenet-dev libfreetype-dev libpng-dev zlib1g-dev libgraphite2-dev libharfbuzz-dev libogg-dev libtheora-dev libvorbis-dev libwebp-dev libmbedtls-dev libminiupnpc-dev libpcre2-dev libzstd-dev libsquish-dev libicu-dev", "Error: Failed to update linux somehow, aborting!")   
+    run_subprocess("(type -p wget >/dev/null || (sudo apt update && sudo apt-get install wget -y)) \
+	&& sudo mkdir -p -m 755 /etc/apt/keyrings \
+    && out=$(mktemp) && wget -nv -O$out https://cli.github.com/packages/githubcli-archive-keyring.gpg \
+    && cat $out | sudo tee /etc/apt/keyrings/githubcli-archive-keyring.gpg > /dev/null \
+	&& sudo chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg \
+	&& echo \"deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main\" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
+	&& sudo apt update \
+	&& sudo apt install gh -y", "Error: Failed to install Github CLI (gh). Aborting!")
+# (MacOS Only)
+elif platform.system() == "Darwin":
+    run_subprocess("/bin/bash -c \"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)\"", "Error: Failed to install brew. Aborting!")
+    run_subprocess("brew install gh", "Error: Failed to install Github CLI (gh) using brew. Aborting!")
     
+run_subprocess("gh auth login", "Error: Failed Github CLI auth login, might need to restart the terminal for the install to take effect? Aborting!")
+
 # ======================================================
 # Submodules
 # emsdk install and activate 
