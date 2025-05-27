@@ -1,0 +1,113 @@
+name: 🤖 Android
+on:
+  workflow_call:
+
+jobs:
+  build:
+    #timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      matrix:
+        target:
+          [
+            { platform: android, arch: arm64, os: ubuntu-22.04 }
+          ]
+        target-type: [template_debug, template_release, profile, production]
+        float-precision: [single, double]
+
+    runs-on: ${{ matrix.target.os }}
+    steps:
+      # Clone this repository
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      # Setup dependencies
+      - name: Setup godot-cpp
+        uses: ./godot-cpp/.github/actions/setup-godot-cpp
+        with:
+          platform: ${{ matrix.target.platform }}
+
+      - name: Setup Linux Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+          build-essential \
+          scons \
+          pkg-config \
+          libx11-dev \
+          libxcursor-dev \
+          libxinerama-dev \
+          libgl1-mesa-dev \
+          libglu1-mesa-dev \
+          libasound2-dev \
+          libpulse-dev \
+          libudev-dev \
+          libxi-dev \
+          libxrandr-dev \
+          libwayland-dev
+          
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+  
+      - name: Download pre-built Android Swappy Frame Pacing Library
+        uses: dsaltares/fetch-gh-release-asset@1.1.2
+        with:
+          repo: godotengine/godot-swappy
+          version: tags/from-source-2025-01-31
+          file: godot-swappy.7z
+          target: swappy/godot-swappy.7z
+
+      - name: Extract pre-built Android Swappy Frame Pacing Library
+        run: 7za x -y swappy/godot-swappy.7z -o${{github.workspace}}/godot/thirdparty/swappy-frame-pacing
+  
+      - name: Setup Workflow Variables
+        run: |
+          python tools/scripts/write_to_github_actions_environment.py
+    
+      # Restore .scons_cache
+      - name: Restore .scons_cache
+        uses: ./godot-cpp/.github/actions/godot-cache-restore
+        with:
+          scons-cache: ${{ github.workspace }}/.scons_cache/
+          cache-name: ${{ matrix.target.platform }}_${{ matrix.target.arch }}_${{ matrix.float-precision }}_${{ matrix.target-type }}
+      
+      # Build Engine + GDExtension (with caches)
+      - name: Build Project
+        shell: sh
+        env:
+          SCONS_CACHE: ${{ github.workspace }}/.scons_cache/
+        run: |
+          python tools/scripts/build.py ${{ matrix.target.platform }} ${{ matrix.target-type }} ${{ matrix.target.arch }} ${{ matrix.float-precision }} True
+      
+      - name: Create Custom Export Template
+        shell: sh
+        env:
+          SCONS_CACHE: ${{ github.workspace }}/.scons_cache/
+        run: |
+          python tools/scripts/create_custom_export_template.py ${{ matrix.target.platform }} ${{ matrix.target-type }} ${{ matrix.target.arch }} ${{ matrix.float-precision }} True
+      
+      # Save scons cache
+      - name: Save .scons_cache
+        uses: ./godot-cpp/.github/actions/godot-cache-save
+        with:
+          scons-cache: ${{ github.workspace }}/.scons_cache/
+          cache-name: ${{ matrix.target.platform }}_${{ matrix.target.arch }}_${{ matrix.float-precision }}_${{ matrix.target-type }}
+      
+      # Temporarily leaving these commented out whilst I figure out a way to automate the keystore setup.
+      #- name: Export Project
+      #  shell: sh
+      #  run: |
+      #    python tools/scripts/export.py ${{ matrix.target.platform }} ${{ matrix.target-type }} ${{ matrix.target.arch }} ${{ matrix.float-precision }} True
+
+      # Upload the build
+      #- name: Upload Artifact
+      #  uses: actions/upload-artifact@v4
+      #  with:
+      #    name: game_${{ matrix.target.platform }}_${{ matrix.target-type }}_${{ matrix.target.arch }}_${{ matrix.float-precision }}_${{ env.BUILD_TIME }}_${{ github.ref_name }}_${{ env.SHA_SHORT }}
+      #    path: |
+      #      ${{ github.workspace }}/bin/${{ matrix.target.platform }}/**
