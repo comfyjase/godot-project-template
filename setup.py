@@ -92,7 +92,7 @@ run_subprocess("gh auth login", "Error: Failed Github CLI auth login, might need
 # Submodules
 # emsdk install and activate 
 os.chdir("thirdparty/emsdk")
-emsdk_version = "3.1.64"
+emsdk_version = "latest"
 if platform.system() == "Windows":
     run_subprocess(f"emsdk.bat install {emsdk_version}", f"Error: Failed to install emsdk version {emsdk_version}, has submodule been initialized? Aborting!")
     run_subprocess(f"emsdk.bat activate {emsdk_version} --permanent", f"Error: Failed to activate emsdk version {emsdk_version}, has submodule been initialized? Aborting!")
@@ -129,7 +129,7 @@ if platform.system() == "Windows":
         
         shutil.copytree(x64_bit_platform_folder, new_platform_folder, dirs_exist_ok=True)
     
-    new_platforms_to_add = [ "linux", "web", "android" ]
+    new_platforms_to_add = [ "linux", "macos", "web", "android" ]
     for (new_platform in new_platforms_to_add):
         create_new_vs_platform(new_platform)
 
