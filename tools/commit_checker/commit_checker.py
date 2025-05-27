@@ -405,8 +405,9 @@ class App(customtkinter.CTk):
     def get_issues(self):
         issues = []
         issues_str = subprocess.check_output("gh issue list", shell=True).decode('ascii').strip()
-        issues = issues_str.split("\n")
-        issues.reverse()
+        if ("no open issues" in issues_str) or (issues_str != ""):
+            issues = issues_str.split("\n")
+            issues.reverse()
         print(f"Issues: {issues}")   
         return issues
        
