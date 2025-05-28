@@ -77,10 +77,7 @@ def init_system_variables(arguments):
     else:
         raise ValueError("Could not detect platform automatically, please specify with platform=<platform>")
 
-def print_files(directory = os.getcwd()):
-    print(f"Files in {directory}: ")
-    for (search_path,directory_names,files) in os.walk(directory, topdown=True):
-        search_path_with_ending_slash = os.path.join(search_path, '').replace('\\', '/')
-    
-        for (file) in files:
-            print("\t" + str(search_path_with_ending_slash + file), flush=True)
+def print_files(directory = "."):
+    files = [f for f in os.listdir(directory) if os.path.isfile(os.path.join(directory, f))]
+    for f in files:
+        print(f"\t{f}", flush=True)
