@@ -128,7 +128,6 @@ if not os.path.exists(necessary_file_path):
     sys.exit(f"Error: {necessary_file_path} file is missing, please build project for {platform_arg} template_{export_command_type} {architecture_arg} {precision_arg}")
 if platform_arg not in ["web", "android", "ios"]:
     if not os.path.exists(imgui_file_path):
-        # TEMP DEBUGGING CI
         imgui_godot_binary_folder_name = os.path.dirname(os.path.abspath(imgui_file_path))
         print(f"imgui-godot binary files: {imgui_godot_binary_folder_name}: ", flush=True)
         print_files(imgui_godot_binary_folder_name)
@@ -138,6 +137,7 @@ if platform.system() == "Linux" or platform.system() == "Darwin":
     print(f"Called chmod +xr {necessary_file_path}", flush=True)
     subprocess.call(f"chmod +xr {necessary_file_path}", shell=True)
     if platform_arg not in ["web", "android", "ios"]:
+        print(f"Called chmod +xr {imgui_file_path}", flush=True)
         subprocess.call(f"chmod +xr {imgui_file_path}", shell=True)
 
 godot_engine_architecture_arg = ""
