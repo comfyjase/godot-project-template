@@ -186,8 +186,8 @@ if is_ci:
         all_lines = game_extension_file_read.readlines()
         for index, line in enumerate(all_lines):
             # Commenting out any gdextension file that isn't for this platform and export type.
-            if f"{platform_arg}" in line:
-                if f"{export_command_type}" not in line:
+            if platform_arg in line:
+                if export_command_type not in line and precision_arg not in line:
                     all_lines[index] = "; " + line
                     print(f"Removing {line} from game.gdextension file since it's not needed for this export.", flush=True)
                 
