@@ -197,7 +197,7 @@ if is_ci:
     # TEMP DEBUGGING CI
     with open(f"{gdextension_file_path}", "r") as game_extension_file_read:
         all_lines = game_extension_file_read.readlines()
-        print(f"game.gdextension file: \n{all_lines}", flush=True)
+        print(*all_lines, sep="\n", flush=True)
 
 # Export Game
 export_command += f"{godot_binary_file_name} --path \"{project_path}\" --headless --export-{export_command_type} \"{platform_arg} {configuration_arg} {architecture_arg} {precision_arg}\" \"{build_output_path}\" --verbose"
