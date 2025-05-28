@@ -62,6 +62,7 @@ if (shutil.which("wsl") is not None):
             print("WSL is available", flush=True)
         else:
             print("WSL is not available", flush=True)
+
 def init_system_variables(arguments):
     global default_platform
     
@@ -75,3 +76,11 @@ def init_system_variables(arguments):
         default_platform = arguments.get("platform")
     else:
         raise ValueError("Could not detect platform automatically, please specify with platform=<platform>")
+
+def print_files(directory = os.getcwd()):
+    print(f"Files in {directory}: ")
+    for (search_path,directory_names,files) in os.walk(directory, topdown=True):
+        search_path_with_ending_slash = os.path.join(search_path, '').replace('\\', '/')
+    
+        for (file) in files:
+            print("\t" + str(search_path_with_ending_slash + file), flush=True)

@@ -131,11 +131,7 @@ if platform_arg not in ["web", "android", "ios"]:
         # TEMP DEBUGGING CI
         imgui_godot_binary_folder_name = os.path.dirname(os.path.abspath(imgui_file_path))
         print(f"imgui-godot binary files: {imgui_godot_binary_folder_name}: ", flush=True)
-        for (search_path,directory_names,files) in os.walk(imgui_godot_binary_folder_name, topdown=True):
-            search_path_with_ending_slash = os.path.join(search_path, '').replace('\\', '/')
-        
-            for (file) in files:
-                print(str(search_path_with_ending_slash + file), flush=True)
+        print_files(imgui_godot_binary_folder_name)
         sys.exit(f"Error: {imgui_file_path} file is missing, please check the game/addons/imgui-godot/bin folder for relevant binary files and make sure permissions are granted {export_command_type} {platform_arg} {configuration_arg} {architecture_arg} {precision_arg}")
     
 if platform.system() == "Linux" or platform.system() == "Darwin":

@@ -135,12 +135,20 @@ if platform_arg == "web":
         new_name = f"web.{suffix}"
         os.rename(f"{old_name}", f"{new_name}")
 elif platform_arg == "android":
-    if configuration_arg in ["editor", "editor_game", "template_debug"]:
+    if (configuration_arg in ["editor", "editor_game", "template_debug"]) and not is_ci:
         if os.path.isfile(f"android_dev{template_suffix}"):
             os.rename(f"android_dev{template_suffix}", f"android.{suffix}")
+            print(f"Renaming android_dev{template_suffix} to android.{suffix}", flush=True)
+        else:
+            print(f"android_dev{template_suffix} custom export template file not found, here are the available files: ", flush=True)
+            print_files()
     else:
         if os.path.isfile(f"android_release{template_suffix}"):
             os.rename(f"android_release{template_suffix}", f"android.{suffix}")
+            print(f"Renaming android_release{template_suffix} to android.{suffix}", flush=True)
+        else:
+            print(f"android_release{template_suffix} custom export template file not found, here are the available files: ", flush=True)
+            print_files()
 elif platform_arg == "macos":
     old_name = f"godot_macos{template_suffix}"
     new_name = f"macos.{suffix}"
@@ -155,12 +163,13 @@ elif platform_arg == "macos":
         
     if os.path.isfile(f"{old_name}"):
         os.rename(f"{old_name}", f"{new_name}")
+    else:
+        print_files()
 else:
     godot_platform_name = platform_arg
     if platform_arg == "linux":
         godot_platform_name = "linuxbsd"
     godot_files = glob(f"godot.{godot_platform_name}.{godot_configuration_arg}.*")
-    print(godot_files, flush=True)
     for file in godot_files:
         old_name = file
         new_name = file.replace("godot.", "").replace(f"{godot_configuration_arg}", f"{configuration_arg}")
