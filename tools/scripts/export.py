@@ -169,39 +169,30 @@ if not os.path.exists(godot_binary_file_name):
 project_path = f"{os.path.join(project_directory, "game")}".replace("\\", "/")
 build_output_path = f"{os.path.join(project_directory, "bin", platform_arg, build_file_name_and_type)}".replace("\\", "/")
 export_command = ""
+import_command = ""
 if using_wsl:
+    import_command += "wsl ./"
     export_command += "wsl ./"
     project_path = "/mnt/" + project_path.replace(":", "").lower()
     build_output_path = "/mnt/" + build_output_path.replace(":", "").lower()
 elif platform.system() == "Linux" or platform.system() == "Darwin":
+    import_command += "./"
     export_command += "./"
     project_path = project_path.lower()
     build_output_path = build_output_path.lower()
 
-# (CI Only) Update GDExtension File
-if is_ci:
-    gdextension_file_path = os.path.join(project_path, "bin", "game.gdextension").replace("\\", "/")
-    all_lines = []
-    with open(f"{gdextension_file_path}", "r") as game_extension_file_read:
-        all_lines = game_extension_file_read.readlines()
-        for index, line in enumerate(all_lines):
-            # Commenting out any gdextension file that isn't for this platform and export type.
-            if platform_arg in line:
-                if architecture_arg not in line or precision_arg not in line or export_command_type not in line:
-                    all_lines[index] = "; " + line
-                    print(f"Removing {line} from game.gdextension file since it's not needed for this export.", flush=True)
-                
-    with open(f"{gdextension_file_path}", "w") as game_extension_file_write:
-        game_extension_file_write.writelines(all_lines)
-        
-    # TEMP DEBUGGING CI
-    with open(f"{gdextension_file_path}", "r") as game_extension_file_read:
-        all_lines = game_extension_file_read.readlines()
-        print(*all_lines, sep="\n", flush=True)
+# Import Assets
+import_command += f"{godot_binary_file_name} --path \"{project_path}\" --headless --import"
+print("Importing Project Assets", flush=True)
+print(f"{import_command}", flush=True)
+return_code = subprocess.call(import_command, shell=True)
+if return_code != 0:
+    sys.exit(f"Error: Failed to import godot project assets and resources for {project_path} from {godot_binary_file_name}")
 
 # Export Game
 export_command += f"{godot_binary_file_name} --path \"{project_path}\" --headless --export-{export_command_type} \"{platform_arg} {configuration_arg} {architecture_arg} {precision_arg}\" \"{build_output_path}\" --verbose"
-print(export_command, flush=True)
+print("Exporting Game", flush=True)
+print(f"{export_command}", flush=True)
 return_code = subprocess.call(export_command, shell=True)
 if return_code != 0:
     sys.exit(f"Error: Failed to export game for {platform_arg} {configuration_arg} {architecture_arg} {precision_arg} from godot binary {godot_binary_file_name}")
