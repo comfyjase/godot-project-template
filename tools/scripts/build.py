@@ -86,7 +86,10 @@ if build_engine:
             build_command = build_command.replace(" dev_build=yes dev_mode=yes", "")
 
     if is_ci:
-        build_command += " debug_symbols=no tests=yes"
+        build_command += " debug_symbols=no"
+    
+    if configuration_arg == "template_debug":
+        build_command += " tests=yes"
     
     if platform_arg == "macos":
         if is_ci:
@@ -106,7 +109,7 @@ if build_engine:
         if not is_ci:
             build_command += " generate_apk=yes"
         
-    print("Build Command: " + build_command)
+    print("Build Command: " + build_command, flush=True)
     return_code = subprocess.call(build_command, shell=True)
     if return_code != 0:
         sys.exit(f"Error: Failed to build godot for {platform_arg} {configuration_arg} {architecture_arg} {precision_arg}")

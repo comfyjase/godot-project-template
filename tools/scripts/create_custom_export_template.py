@@ -72,8 +72,10 @@ else:
         build_command = build_command.replace(" dev_build=yes dev_mode=yes", "")
 
 if is_ci:
-    build_command += " debug_symbols=no tests=yes"
-
+    build_command += " debug_symbols=no"
+if configuration_arg == "template_debug":
+    build_command += " tests=yes"
+    
 if platform_arg == "macos":
     if is_ci:
         build_command += " vulkan=yes"
@@ -97,7 +99,7 @@ elif platform_arg == "web":
 elif platform_arg == "android":
     build_command += " generate_apk=yes"
 
-print("Create Export Template Command: " + build_command)
+print("Create Export Template Command: " + build_command, flush=True)
 return_code = subprocess.call(build_command, shell=True)
 if return_code != 0:
     sys.exit(f"Error: Failed to create godot export template for {platform_arg} {configuration_arg} {architecture_arg} {precision_arg}")
