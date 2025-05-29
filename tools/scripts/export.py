@@ -193,16 +193,10 @@ def update_gdextension_file(gdextension_file_path):
             if found_libraries_section:
                 if platform_arg in line:
                     new_line = re.sub('\"(.+?)\"', f"\"res://bin/{platform_arg}/{os.path.basename(necessary_file_path)}\"", line, flags=re.DOTALL)
-                    print(new_line, flush=True)
                     all_lines[index] = new_line
                 
     with open(f"{gdextension_file_path}", "w") as gdextension_file_write:
         gdextension_file_write.writelines(all_lines)
-        
-    # TEMP DEBUGGING CI
-    with open(f"{gdextension_file_path}", "r") as gdextension_file_read:
-        all_lines = gdextension_file_read.readlines()
-        print(*all_lines, sep="\n", flush=True)
 
 # (CI Only) Update GDExtension File
 if is_ci:
