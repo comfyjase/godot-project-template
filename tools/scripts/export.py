@@ -178,6 +178,31 @@ elif platform.system() == "Linux" or platform.system() == "Darwin":
     project_path = project_path.lower()
     build_output_path = build_output_path.lower()
 
+# (CI Only) Update GDExtension File
+if is_ci:
+    gdextension_file_path = os.path.join(project_path, "bin", "game.gdextension").replace("\\", "/")
+    all_lines = []
+    with open(f"{gdextension_file_path}", "r") as game_extension_file_read:
+        all_lines = game_extension_file_read.readlines()
+        
+        found_libraries_section = False
+        for index, line in enumerate(all_lines):
+            if "libraries" in line:
+                found_libraries_section = True
+                
+            if found_libraries_section:
+                if platform_arg not in line or architecture_arg not in line or precision_arg not in line or export_command_type not in line:
+                    all_lines[index] = "; " + line
+                    print(f"Removing {line} from game.gdextension file since it's not needed for this export.", flush=True)
+                
+    with open(f"{gdextension_file_path}", "w") as game_extension_file_write:
+        game_extension_file_write.writelines(all_lines)
+        
+    # TEMP DEBUGGING CI
+    with open(f"{gdextension_file_path}", "r") as game_extension_file_read:
+        all_lines = game_extension_file_read.readlines()
+        print(*all_lines, sep="\n", flush=True)
+        
 # Export Game
 export_command += f"{godot_binary_file_name} --path \"{project_path}\" --headless --export-{export_command_type} \"{platform_arg} {configuration_arg} {architecture_arg} {precision_arg}\" \"{build_output_path}\" --verbose"
 print("Exporting Game", flush=True)
