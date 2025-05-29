@@ -189,6 +189,7 @@ if is_ci:
         for index, line in enumerate(all_lines):
             if "libraries" in line:
                 found_libraries_section = True
+                continue
                 
             if found_libraries_section:
                 if platform_arg not in line or architecture_arg not in line or precision_arg not in line or export_command_type not in line:
