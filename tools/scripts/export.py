@@ -3,6 +3,7 @@
 import datetime
 import platform
 import os
+import re
 import subprocess
 import sys
 
@@ -191,14 +192,9 @@ def update_gdextension_file(gdextension_file_path):
                 
             if found_libraries_section:
                 if platform_arg in line:
-                    new_line = f"{platform_arg}.{architecture_arg}.{precision_arg}.{export_command_type} = \"res://bin/{platform_arg}/{os.path.basename(necessary_file_path)}\""
-                    if platform_arg == "macos":
-                        new_line = new_line.replace(f".{architecture_arg}", "")
-                    all_lines[index] = f"{new_line}\n"
-                        
-                #if platform_arg not in line or (platform_arg != "macos" and architecture_arg not in line) or precision_arg not in line or export_command_type not in line:
-                #    all_lines[index] = "; " + line
-                #    print(f"Commenting out {line} from game.gdextension file since it's not needed for this export.", flush=True)
+                    new_line = re.sub('\"(.+?)\"', f"\"res://bin/{platform_arg}/{os.path.basename(necessary_file_path)}\"", line, flags=re.DOTALL)
+                    print(new_line, flush=True)
+                    all_lines[index] = new_line
                 
     with open(f"{gdextension_file_path}", "w") as gdextension_file_write:
         gdextension_file_write.writelines(all_lines)
@@ -210,10 +206,7 @@ def update_gdextension_file(gdextension_file_path):
 
 # (CI Only) Update GDExtension File
 if is_ci:
-    #imgui_godot_gdextension_file_path = os.path.join(project_path, "addons", "imgui-godot", "imgui-godot-native.gdextension").replace("\\", "/")
     game_gdextension_file_path = os.path.join(project_path, "bin", "game.gdextension").replace("\\", "/")
-    
-    #update_gdextension_file(imgui_godot_gdextension_file_path)
     update_gdextension_file(game_gdextension_file_path)
         
 # Export Game
