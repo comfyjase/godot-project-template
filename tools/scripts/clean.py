@@ -21,7 +21,10 @@ platform_arg = sys.argv[1]
 configuration_arg = sys.argv[2]
 architecture_arg = sys.argv[3]
 precision_arg = sys.argv[4]
-
+is_ci = False
+if len(sys.argv) == 6:
+    is_ci = sys.argv[5]
+    
 # ===============================================
 # Visual Studio 2022 specific stuff
 if platform_arg == "Win32" or platform_arg == "x64":
@@ -39,7 +42,7 @@ elif architecture_arg == "web":
 elif architecture_arg == "android": # TODO: Add different android processor platforms? E.g. android_arm32, android_arm64, android_x86_32, android_x86_64?
     architecture_arg = "arm64"
     
-using_wsl = wsl_available and platform_arg == "linux"
+using_wsl = wsl_available and (platform_arg == "linux" or platform_arg == "macos")
 
 # ===============================================
 # SCons Clean
@@ -57,9 +60,10 @@ if using_wsl:
 # Engine Clean
 
 # Switch to True if you want to clean engine symbols too...
-clean_engine = False
+clean_engine = True
 
 if clean_engine:
+    print(f"Cleaning Engine Files {platform.system()}", flush=True)
     os.chdir("godot")
         
     if configuration_arg == "production":
@@ -72,15 +76,22 @@ if clean_engine:
         clean_command += f"scons platform={platform_arg} target={godot_configuration_arg} arch={architecture_arg} precision={precision_arg} dev_build=yes dev_mode=yes"
     
     if platform_arg == "macos":
-        clean_command += " vulkan_sdk_path=$HOME/VulkanSDK"
-        if platform.system() == "Linux":
-            clean_command += " osxcross_sdk=darwin24.4"
+        if is_ci:
+            clean_command += " vulkan=yes"
+        elif platform.system() == "Linux" or platform.system() == "Windows":
+            clean_command += " vulkan_sdk_path=$HOME/VulkanSDK osxcross_sdk=darwin24.4"
     elif platform_arg == "web":
-        if configuration_arg in ["editor", "editor_game", "template_debug"]:
-            clean_command = clean_command.replace(" dev_build=yes dev_mode=yes", "")
-        clean_command += " dlink_enabled=yes threads=no use_closure_compiler=yes"
+        if not is_ci:
+            if configuration_arg in ["editor", "editor_game", "template_debug"]:
+                clean_command = clean_command.replace(" dev_build=yes dev_mode=yes", "")
+            
+            clean_command += " dlink_enabled=yes threads=no"
+    elif platform_arg == "android":
+        if not is_ci:
+            clean_command += " generate_apk=yes"
         
     clean_command += " -c"
+    print(clean_command, flush=True)
     return_code = subprocess.call(clean_command, shell=True)
     if return_code != 0:
         sys.exit(f"Error: Failed to clean engine using scons for {platform_arg} {godot_configuration_arg} {architecture_arg} {precision_arg}")
@@ -89,10 +100,16 @@ if clean_engine:
     
 # ===============================================
 # Project Clean
+print("Cleaning Game Project Files", flush=True)
+
 game_architecture = architecture_arg
 if platform_arg == "macos" and architecture_arg != "universal":
     game_architecture = "universal"
 
+clean_command = ""
+if using_wsl:
+    clean_command = "wsl "
+    
 if configuration_arg == "production":
     clean_command += f"scons platform={platform_arg} target={godot_configuration_arg} arch={game_architecture} precision={precision_arg} production=yes"
 elif configuration_arg == "profile":
@@ -103,15 +120,17 @@ else:
     clean_command += f"scons platform={platform_arg} target={godot_configuration_arg} arch={game_architecture} precision={precision_arg} dev_build=yes dev_mode=yes"
 
 if platform_arg == "macos":
-    build_command += " vulkan_sdk_path=$HOME/VulkanSDK"
-    if platform.system() == "Linux":
-        build_command += " osxcross_sdk=darwin24.4"
+    if is_ci:
+        clean_command += " vulkan=yes"
+    elif platform.system() == "Linux" or using_wsl:
+        clean_command += " vulkan_sdk_path=$HOME/VulkanSDK osxcross_sdk=darwin24.4"
 elif platform_arg == "web":
     if configuration_arg in ["editor", "editor_game", "template_debug"]:
         clean_command = clean_command.replace(" dev_build=yes dev_mode=yes", "")
-    clean_command += " threads=no use_closure_compiler=yes"
+    clean_command += " threads=no"
 
 clean_command += " -c"
+print(clean_command, flush=True)
 return_code = subprocess.call(clean_command, shell=True)
 if return_code != 0:
     sys.exit(f"Error: Failed to clean project using scons for {platform_arg} {godot_configuration_arg} {game_architecture} {precision_arg}")
