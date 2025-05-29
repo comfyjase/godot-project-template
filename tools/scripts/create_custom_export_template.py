@@ -202,16 +202,13 @@ with open("export_presets.cfg", "r") as export_presets_read:
             print(f"Found export preset for {platform_arg} {configuration_arg} {architecture_arg} {precision_arg}", flush=True)
             
         if found_export:
-            if configuration_arg in ["editor", "editor_game", "template_debug"]:
-                if "custom_template/debug=" in line:
-                    all_lines[index] = f"custom_template/debug=\"{export_template_file_path}\"\n"
-                    print(f"Updating template debug to {export_template_file_path}", flush=True)
-                    break
-            else:
-                if "custom_template/release=" in line:
-                    all_lines[index] = f"custom_template/release=\"{export_template_file_path}\"\n"
-                    print(f"Updating template release to {export_template_file_path}", flush=True)
-                    break
+            if "custom_template/debug=" in line:
+                all_lines[index] = f"custom_template/debug=\"{export_template_file_path}\"\n"
+                print(f"Updating template debug to {export_template_file_path}", flush=True)
+            elif "custom_template/release=" in line:
+                all_lines[index] = f"custom_template/release=\"{export_template_file_path}\"\n"
+                print(f"Updating template release to {export_template_file_path}", flush=True)
+                break
 
     with open("export_presets.cfg", "w") as export_presets_write:
         export_presets_write.writelines(all_lines)
