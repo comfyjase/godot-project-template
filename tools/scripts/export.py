@@ -169,25 +169,14 @@ if not os.path.exists(godot_binary_file_name):
 project_path = f"{os.path.join(project_directory, "game")}".replace("\\", "/")
 build_output_path = f"{os.path.join(project_directory, "bin", platform_arg, build_file_name_and_type)}".replace("\\", "/")
 export_command = ""
-import_command = ""
 if using_wsl:
-    import_command += "wsl ./"
     export_command += "wsl ./"
     project_path = "/mnt/" + project_path.replace(":", "").lower()
     build_output_path = "/mnt/" + build_output_path.replace(":", "").lower()
 elif platform.system() == "Linux" or platform.system() == "Darwin":
-    import_command += "./"
     export_command += "./"
     project_path = project_path.lower()
     build_output_path = build_output_path.lower()
-
-# Import Assets
-import_command += f"{godot_binary_file_name} --path \"{project_path}\" --headless --import"
-print("Importing Project Assets", flush=True)
-print(f"{import_command}", flush=True)
-return_code = subprocess.call(import_command, shell=True)
-if return_code != 0:
-    sys.exit(f"Error: Failed to import godot project assets and resources for {project_path} from {godot_binary_file_name}")
 
 # Export Game
 export_command += f"{godot_binary_file_name} --path \"{project_path}\" --headless --export-{export_command_type} \"{platform_arg} {configuration_arg} {architecture_arg} {precision_arg}\" \"{build_output_path}\" --verbose"
