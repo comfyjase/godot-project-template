@@ -6,10 +6,10 @@ reloadable=true
 
 [libraries]
 ; Relative paths ensure that our GDExtension can be placed anywhere in the project directory.
-macos.x86_64.single.debug = "res://bin/macos/libgame.macos.template_debug.dylib"
-macos.x86_64.double.debug = "res://bin/macos/libgame.macos.template_debug.double.dylib"
-macos.x86_64.single.release = "res://bin/macos/libgame.macos.template_release.dylib"
-macos.x86_64.double.release = "res://bin/macos/libgame.macos.template_release.double.dylib"
+macos.single.debug = "res://bin/macos/libgame.macos.template_debug.dylib"
+macos.double.debug = "res://bin/macos/libgame.macos.template_debug.double.dylib"
+macos.single.release = "res://bin/macos/libgame.macos.template_release.dylib"
+macos.double.release = "res://bin/macos/libgame.macos.template_release.double.dylib"
 
 ios.arm64.single.debug = "res://bin/ios/libgame.ios.template_debug.dylib"
 ios.arm64.double.debug = "res://bin/ios/libgame.ios.template_debug.double.dylib"

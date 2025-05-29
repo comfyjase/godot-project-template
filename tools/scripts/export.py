@@ -190,7 +190,7 @@ def update_gdextension_file(gdextension_file_path):
                 continue
                 
             if found_libraries_section:
-                if platform_arg not in line or architecture_arg not in line or precision_arg not in line or export_command_type not in line:
+                if platform_arg not in line or (platform_arg != "macos" and architecture_arg not in line) or precision_arg not in line or export_command_type not in line:
                     all_lines[index] = "; " + line
                     print(f"Commenting out {line} from game.gdextension file since it's not needed for this export.", flush=True)
                 
