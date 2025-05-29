@@ -95,9 +95,7 @@ if build_engine:
         if is_ci:
             build_command += " vulkan=yes"
         elif platform.system() == "Linux":
-            build_command += " vulkan_sdk_path=$HOME/VulkanSDK"
-            if platform.system() == "Linux":
-                build_command += " osxcross_sdk=darwin24.4"
+            build_command += " vulkan_sdk_path=$HOME/VulkanSDK osxcross_sdk=darwin24.4"
     # Removing dev_build/dev_mode from web editor because it doesn't compile (get emscripten errors...) and adding dlink_enabled
     elif platform_arg == "web":
         if not is_ci:
@@ -209,6 +207,20 @@ print(f"Command: {build_command}", flush=True)
 return_code = subprocess.call(build_command, shell=True)
 if return_code != 0:
     sys.exit(f"Error: Failed to build game for {platform_arg} {configuration_arg} {game_architecture} {precision_arg}")
+
+# ===============================================
+# (Web / Android / IOS Only)
+# Need to do one more build here for non-native OS platforms.
+# Generated file will be used later during exports.
+if is_ci:
+    if platform_arg in ["web", "android", "ios"]:
+        build_command = build_command.replace(f"{platform_arg}", f"{platform.system().lower()}")
+        build_command = build_command.replace(f"{configuration_arg}", "template_debug")
+        build_command = build_command.replace(f"{architecture_arg}", f"{godot_engine_architecture_arg}")
+        print(f"Extra Command: {build_command}", flush=True)
+        return_code = subprocess.call(build_command, shell=True)
+        if return_code != 0:
+            sys.exit(f"Error: Failed to build game for {platform_arg} {configuration_arg} {game_architecture} {precision_arg}")
 
 # ===============================================
 # (Web Only) Zip Project
