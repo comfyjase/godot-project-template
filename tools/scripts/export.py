@@ -178,12 +178,10 @@ elif platform.system() == "Linux" or platform.system() == "Darwin":
     project_path = project_path.lower()
     build_output_path = build_output_path.lower()
 
-# (CI Only) Update GDExtension File
-if is_ci:
-    gdextension_file_path = os.path.join(project_path, "bin", "game.gdextension").replace("\\", "/")
+def update_gdextension_file(gdextension_file_path):
     all_lines = []
-    with open(f"{gdextension_file_path}", "r") as game_extension_file_read:
-        all_lines = game_extension_file_read.readlines()
+    with open(f"{gdextension_file_path}", "r") as gdextension_file_read:
+        all_lines = gdextension_file_read.readlines()
         
         found_libraries_section = False
         for index, line in enumerate(all_lines):
@@ -194,15 +192,23 @@ if is_ci:
             if found_libraries_section:
                 if platform_arg not in line or architecture_arg not in line or precision_arg not in line or export_command_type not in line:
                     all_lines[index] = "; " + line
-                    print(f"Removing {line} from game.gdextension file since it's not needed for this export.", flush=True)
+                    print(f"Commenting out {line} from game.gdextension file since it's not needed for this export.", flush=True)
                 
-    with open(f"{gdextension_file_path}", "w") as game_extension_file_write:
-        game_extension_file_write.writelines(all_lines)
+    with open(f"{gdextension_file_path}", "w") as gdextension_file_write:
+        gdextension_file_write.writelines(all_lines)
         
     # TEMP DEBUGGING CI
-    with open(f"{gdextension_file_path}", "r") as game_extension_file_read:
-        all_lines = game_extension_file_read.readlines()
+    with open(f"{gdextension_file_path}", "r") as gdextension_file_read:
+        all_lines = gdextension_file_read.readlines()
         print(*all_lines, sep="\n", flush=True)
+
+# (CI Only) Update GDExtension File
+if is_ci:
+    imgui_godot_gdextension_file_path = os.path.join(project_path, "addons", "imgui-godot", "imgui-godot-native.gdextension").replace("\\", "/")
+    game_gdextension_file_path = os.path.join(project_path, "bin", "game.gdextension").replace("\\", "/")
+    
+    update_gdextension_file(imgui_godot_gdextension_file_path)
+    update_gdextension_file(game_gdextension_file_path)
         
 # Export Game
 export_command += f"{godot_binary_file_name} --path \"{project_path}\" --headless --export-{export_command_type} \"{platform_arg} {configuration_arg} {architecture_arg} {precision_arg}\" \"{build_output_path}\" --verbose"
