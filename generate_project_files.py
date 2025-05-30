@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import platform
+import os
 import subprocess
 
 generate_command = "scons platform=<p> target=editor arch=x86_64 precision=single dev_build=yes dev_mode=yes vsproj=yes"
@@ -11,7 +12,14 @@ elif platform.system() == "Darwin":
 elif platform.system() == "Linux":
     generate_command = generate_command.replace("<p>", "linux")
     
+# Generate Godot Engine Project Files
+os.chdir("godot")
 return_code = subprocess.call(generate_command, shell=True)
 if return_code != 0:
-    print(f"Error: Failed to generate visual studio solution files for {platform.system()}")
-    exit()
+    sys.exit(f"Error: Failed to generate visual studio solution files for {platform.system()}")
+
+# Generate Game Project Files
+os.chdir("..")
+return_code = subprocess.call(generate_command, shell=True)
+if return_code != 0:
+    sys.exit(f"Error: Failed to generate visual studio solution files for {platform.system()}")
