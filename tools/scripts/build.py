@@ -209,18 +209,6 @@ if return_code != 0:
     sys.exit(f"Error: Failed to build game for {platform_arg} {configuration_arg} {game_architecture} {precision_arg}")
 
 # ===============================================
-# (Web / Android / IOS Only)
-# Need to do one more build here for non-native OS platforms.
-# Generated file will be used later during exports.
-if is_ci:
-    if platform_arg in ["web", "android", "ios"]:
-        build_command = f"scons platform={platform.system().lower()} target=editor arch={godot_engine_architecture_arg} precision={precision_arg} dev_build=yes dev_mode=yes"
-        print(f"Extra Command: {build_command}", flush=True)
-        return_code = subprocess.call(build_command, shell=True)
-        if return_code != 0:
-            sys.exit(f"Error: Failed to build game for {platform_arg} {configuration_arg} {game_architecture} {precision_arg}")
-
-# ===============================================
 # (Web Only) Zip Project
 if platform_arg == "web" and configuration_arg == "editor":
     print("Zip Game Project For Web Editor", flush=True)
