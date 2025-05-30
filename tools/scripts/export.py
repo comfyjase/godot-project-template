@@ -222,7 +222,7 @@ def update_gdextension_file(gdextension_file_path):
                 continue
                 
             if found_libraries_section:
-                if native_platform in line:
+                if platform_arg in ["web", "android", "ios"] and native_platform in line:
                     new_line = re.sub('\"(.+?)\"', f"\"res://bin/{native_platform}/{os.path.basename(native_file_path)}\"", line, flags=re.DOTALL)
                     all_lines[index] = new_line
                     continue
