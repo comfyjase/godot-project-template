@@ -214,7 +214,7 @@ if return_code != 0:
 # Generated file will be used later during exports.
 if is_ci:
     if platform_arg in ["web", "android", "ios"]:
-        build_command = f"scons platform={platform.system().lower()} target=template_debug arch={godot_engine_architecture_arg} precision={precision_arg} dev_build=yes dev_mode=yes"
+        build_command = f"scons platform={platform.system().lower()} target=editor arch={godot_engine_architecture_arg} precision={precision_arg} dev_build=yes dev_mode=yes"
         print(f"Extra Command: {build_command}", flush=True)
         return_code = subprocess.call(build_command, shell=True)
         if return_code != 0:
