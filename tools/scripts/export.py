@@ -138,9 +138,9 @@ if configuration_arg in ["editor", "editor_game", "template_debug"]:
     export_command_type = "debug"
     
     if native_platform == "windows":
-        native_file_path = os.path.join(f"{project_directory}", "game", "bin", f"{native_platform}", f"game.{native_platform}.template_debug.{godot_engine_architecture_arg}.dev{native_library_suffix}")
+        native_file_path = os.path.join(f"{project_directory}", "game", "bin", f"{native_platform}", f"game.{native_platform}.editor.{godot_engine_architecture_arg}.dev{native_library_suffix}")
     else:
-        native_file_path = os.path.join(f"{project_directory}", "game", "bin", f"{native_platform}", f"libgame.{native_platform}.template_debug.{godot_engine_architecture_arg}.dev{native_library_suffix}")
+        native_file_path = os.path.join(f"{project_directory}", "game", "bin", f"{native_platform}", f"libgame.{native_platform}.editor.{godot_engine_architecture_arg}.dev{native_library_suffix}")
         
     if platform_arg == "windows":
         necessary_file_path = os.path.join(f"{project_directory}", "game", "bin", f"{platform_arg}", f"game.{platform_arg}.template_debug.{architecture_arg}.dev{library_suffix}")
@@ -150,9 +150,9 @@ else:
     export_command_type = "release"
     
     if native_platform == "windows":
-        native_file_path = os.path.join(f"{project_directory}", "game", "bin", f"{native_platform}", f"game.{native_platform}.template_release.{godot_engine_architecture_arg}{native_library_suffix}")
+        native_file_path = os.path.join(f"{project_directory}", "game", "bin", f"{native_platform}", f"game.{native_platform}.editor.{godot_engine_architecture_arg}{native_library_suffix}")
     else:
-        native_file_path = os.path.join(f"{project_directory}", "game", "bin", f"{native_platform}", f"libgame.{native_platform}.template_release.{godot_engine_architecture_arg}{native_library_suffix}")
+        native_file_path = os.path.join(f"{project_directory}", "game", "bin", f"{native_platform}", f"libgame.{native_platform}.editor.{godot_engine_architecture_arg}{native_library_suffix}")
     
     if platform_arg == "windows":
         necessary_file_path = os.path.join(f"{project_directory}", "game", "bin", f"{platform_arg}", f"game.{platform_arg}.template_release.{architecture_arg}{library_suffix}")
@@ -182,7 +182,7 @@ if not os.path.exists(necessary_file_path):
 if platform_arg in ["web", "android", "ios"]:
     if not os.path.exists(native_file_path):
         print(f"Available binary files: ", flush=True)
-        print_files()
+        print_files(os.path.dirname(os.path.abspath(native_file_path)))
         sys.exit(f"Error {native_file_path} file is missing, make sure the Build Project step has built the game project for editor configuration.")
 else:
     if not os.path.exists(imgui_file_path):
