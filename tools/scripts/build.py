@@ -93,7 +93,7 @@ if build_engine:
     if configuration_arg == "template_debug":
         build_command += " tests=yes"
     
-    if platform_arg == "macos":
+    if platform_arg == "macos" or platform_arg == "ios":
         if is_ci:
             build_command += " vulkan=yes"
         elif platform.system() == "Linux":
