@@ -208,6 +208,7 @@ def update_gdextension_file(gdextension_file_path):
                 
     with open(f"{gdextension_file_path}", "w") as gdextension_file_write:
         gdextension_file_write.writelines(all_lines)
+        print(*all_lines, sep="\n", flush=True)
 
 # (CI Only) Update GDExtension File
 if is_ci:
@@ -278,6 +279,15 @@ print("=====================================", flush=True)
 print(export_command, flush=True)
 return_code = subprocess.call(export_command, shell=True)
 if return_code != 0:
+    print("Available godot binary files:", flush=True)
+    print_files()
+    print("Available game binary files:", flush=True)
+    print_files(os.path.dirname(os.path.abspath(necessary_file_path)))
+    with open(f"{project_path}/export_presets.cfg", "r") as export_presets_read:
+        all_lines=export_presets_read.readlines()
+        print("export_presets.cfg:", flush=True)
+        print(*all_lines, sep="\n", flush=True)
+
     sys.exit(f"Error: Failed to export game for {platform_arg} {configuration_arg} {architecture_arg} {precision_arg} from godot binary {godot_binary_file_name}")
 
 print("Done")
