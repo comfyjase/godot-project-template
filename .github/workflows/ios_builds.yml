@@ -29,6 +29,11 @@ jobs:
         with:
           platform: ${{ matrix.target.platform }}
 
+      - name: Install Vulkan
+        shell: sh
+        run: |
+          ./godot/misc/scripts/install_vulkan_sdk_macos.sh
+    
       - name: Setup Workflow Variables
         run: |
           python tools/scripts/write_to_github_actions_environment.py

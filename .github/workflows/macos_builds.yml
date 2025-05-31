@@ -39,7 +39,7 @@ jobs:
         with:
           platform: ${{ matrix.target.platform }}
  
-      - name: MacOS - Install Vulkan
+      - name: Install Vulkan
         shell: sh
         run: |
           ./godot/misc/scripts/install_vulkan_sdk_macos.sh
