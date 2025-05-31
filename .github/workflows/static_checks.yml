@@ -55,3 +55,7 @@ jobs:
       - name: Run C compiler on `gdextension_interface.h`
         run: |
           gcc -c godot/core/extension/gdextension_interface.h
+          
+      - name: Setup Workflow Variables
+        run: |
+          python tools/scripts/write_to_github_actions_environment.py
