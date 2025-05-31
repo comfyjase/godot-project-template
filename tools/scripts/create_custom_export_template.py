@@ -102,7 +102,9 @@ elif platform_arg == "web":
         build_command += " lto=none"
 elif platform_arg == "android":
     build_command += " generate_apk=yes"
-
+elif platform_arg == "ios":
+    build_command += " generate_bundle=yes"
+    
 print(build_command, flush=True)
 return_code = subprocess.call(build_command, shell=True)
 if return_code != 0:
@@ -154,17 +156,19 @@ elif platform_arg == "android":
     else:
         print(f"{old_name} custom export template file not found, here are the available files: ", flush=True)
         print_files()
-elif platform_arg == "macos":
-    old_name = f"godot_macos{template_suffix}"
-    new_name = f"macos.{suffix}"
+elif platform_arg == "macos" or platform_arg == "ios":
+    platform_name_to_use = platform_arg
+    
+    old_name = f"godot_{platform_name_to_use}{template_suffix}"
+    new_name = f"{platform_name_to_use}.{suffix}"
     
     if (configuration_arg in ["editor", "editor_game", "template_debug"]) and not is_ci:
-        old_name = old_name.replace("macos", "macos_dev")
+        old_name = old_name.replace(f"{platform_name_to_use}", f"{platform_name_to_use}_dev")
         if precision_arg == "double":
-            old_name = old_name.replace("macos_dev", "macos_dev_double")
+            old_name = old_name.replace(f"{platform_name_to_use}_dev", f"{platform_name_to_use}_dev_double")
     
     if precision_arg == "double":
-        old_name = old_name.replace("macos", "macos_double")
+        old_name = old_name.replace(f"{platform_name_to_use}", f"{platform_name_to_use}_double")
         
     if os.path.isfile(f"{old_name}"):
         os.rename(f"{old_name}", f"{new_name}")

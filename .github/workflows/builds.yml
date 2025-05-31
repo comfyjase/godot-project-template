@@ -43,3 +43,9 @@ jobs:
     needs: static-checks
     uses: ./.github/workflows/android_builds.yml
     secrets: inherit
+
+  ios-build:
+    name: 🍏 iOS Builds
+    needs: static-checks
+    uses: ./.github/workflows/ios_builds.yml
+    secrets: inherit
