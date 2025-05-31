@@ -37,15 +37,15 @@ jobs:
     needs: static-checks
     uses: ./.github/workflows/macos_builds.yml
     secrets: inherit
-
-  windows-build:
-    name: 🪟 Windows
-    needs: static-checks
-    uses: ./.github/workflows/windows_builds.yml
-    secrets: inherit
     
   web-build:
     name: 🌐 Web
     needs: static-checks
     uses: ./.github/workflows/web_builds.yml
+    secrets: inherit
+
+  windows-build:
+    name: 🪟 Windows
+    needs: static-checks
+    uses: ./.github/workflows/windows_builds.yml
     secrets: inherit
