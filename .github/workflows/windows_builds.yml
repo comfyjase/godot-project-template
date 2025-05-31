@@ -35,6 +35,10 @@ jobs:
           platform: ${{ matrix.target.platform }}
           windows-compiler: msvc
 
+      - name: Setup Workflow Variables
+        run: |
+          python tools/scripts/write_to_github_actions_environment.py
+    
       # Restore .scons_cache
       - name: Restore .scons_cache
         uses: ./godot-cpp/.github/actions/godot-cache-restore

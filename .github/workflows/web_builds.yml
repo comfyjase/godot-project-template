@@ -36,6 +36,10 @@ jobs:
           thirdparty/emsdk/emsdk.bat install latest --build=Release
           thirdparty/emsdk/emsdk.bat activate latest
     
+      - name: Setup Workflow Variables
+        run: |
+          python tools/scripts/write_to_github_actions_environment.py
+    
       # Restore .scons_cache
       - name: Restore .scons_cache
         uses: ./godot-cpp/.github/actions/godot-cache-restore
