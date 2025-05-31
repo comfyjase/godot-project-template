@@ -103,7 +103,7 @@ jobs:
           cache-name: ${{ matrix.target.platform }}_${{ matrix.target.arch }}_${{ matrix.float-precision }}_${{ matrix.target-type }}
 
       - name: Generate Release Keystore
-        if: ${{ matrix.target-type != "template_debug" && env.ANDROID_KEYSTORE_ALIAS != null && ANDROID_KEYSTORE_PASSWORD != null }}
+        if: ${{ matrix.target-type != template_debug && env.ANDROID_KEYSTORE_ALIAS != null && ANDROID_KEYSTORE_PASSWORD != null }}
         run: |
           keytool -genkey -keyalg RSA -alias $ANDROID_KEYSTORE_ALIAS -keypass $ANDROID_KEYSTORE_PASSWORD -keystore gameandroidrelease.keystore -storepass $ANDROID_KEYSTORE_PASSWORD -dname \"CN=Android Release,O=Android,C=UK\" -validity 9999
 
