@@ -214,7 +214,7 @@ if is_ci:
     update_gdextension_file(game_gdextension_file_path)
 
     # Android CI only, import project first so we know .godot folder exists
-    if platform_arg == "android":
+    if platform_arg == "android" and configuration_arg != "template_debug":
         import_command = f"{godot_binary_file_name} --path \"{project_path}\" --headless --import"
         print("=====================================", flush=True)
         print("Importing Game", flush=True)
