@@ -101,9 +101,8 @@ if platform_arg == "web":
 elif platform_arg == "android" and configuration_arg == "editor_game":
     build_file_name_and_type = f"android_{configuration_arg}{build_suffix}"
 else:
-    date_time_stamp = datetime.datetime.strftime(datetime.datetime.now(), '%m%d%Y_%H%M%S')
-    build_file_name_and_type = f"game_{platform_arg}_{configuration_arg}_{architecture_arg}_{precision_arg}_{date_time_stamp}_{latest_git_commit_id}{build_suffix}"
-    print(f"Build Name: {build_file_name_and_type}", flush=True)
+    build_file_name_and_type = f"game{build_suffix}"
+print(f"Build Name: {build_file_name_and_type}", flush=True)
 
 godot_engine_architecture_arg = ""
 if is_os_64_bit:
