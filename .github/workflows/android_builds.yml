@@ -9,6 +9,7 @@ env:
 jobs:
   build:
     #timeout-minutes: 120
+    secrets: inherit
     strategy:
       fail-fast: false
       matrix:
@@ -18,7 +19,6 @@ jobs:
           ]
         target-type: [template_debug, template_release, profile, production]
         float-precision: [single, double]
-    secrets: inherit
     
     runs-on: ${{ matrix.target.os }}
     steps:
