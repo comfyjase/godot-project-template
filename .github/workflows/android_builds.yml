@@ -9,7 +9,6 @@ env:
 jobs:
   build:
     #timeout-minutes: 120
-    secrets: inherit
     strategy:
       fail-fast: false
       matrix:
