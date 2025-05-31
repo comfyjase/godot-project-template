@@ -7,7 +7,7 @@ env:
   SCONS_CACHE_MSVC_CONFIG: true
   
 jobs:
-  build-windows:
+  build-and-export:
     # Comment back in when confident with regular commits (within 7 days as that's how long github actions cache last)
     #timeout-minutes: 120
     strategy:

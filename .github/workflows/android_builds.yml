@@ -7,7 +7,7 @@ env:
   ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
 
 jobs:
-  build:
+  build-and-export:
     #timeout-minutes: 120
     strategy:
       fail-fast: false
