@@ -218,7 +218,7 @@ if is_ci:
     # Android CI only, import project first so we know .godot folder exists
     if platform_arg == "android" and configuration_arg != "template_debug":
         # Check for generated keystore file
-        release_keystore_file_path = os.path.join(project_directory, "gameandroidrelease.keystore")
+        release_keystore_file_path = os.path.join(project_directory, "release.keystore")
         if not os.path.exists(release_keystore_file_path):
             print("Project directory files:", flush=True)
             print_files(project_directory)
