@@ -18,7 +18,8 @@ jobs:
           ]
         target-type: [template_debug, template_release, profile, production]
         float-precision: [single, double]
-
+    secrets: inherit
+    
     runs-on: ${{ matrix.target.os }}
     steps:
       # Clone this repository
