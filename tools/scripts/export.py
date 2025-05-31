@@ -217,7 +217,19 @@ if is_ci:
 
     # Android CI only, import project first so we know .godot folder exists
     if platform_arg == "android" and configuration_arg != "template_debug":
-        import_command = f"{godot_binary_file_name} --path \"{project_path}\" --headless --import"
+        # Check for generated keystore file
+        release_keystore_file_path = os.path.join(project_directory, "gameandroidrelease.keystore")
+        if not os.path.exists(release_keystore_file_path):
+            print("Project directory files:", flush=True)
+            print_files(project_directory)
+            sys.exit(f"Error: {release_keystore_file_path} doesn't exist under {project_directory}. Is it located somewhere else?")
+            
+        import_command = ""
+        if using_wsl:
+            import_command += "wsl ./"
+        elif native_platform == "linux" or native_platform == "macos":
+            import_command += "./"
+        import_command += f"{godot_binary_file_name} --path \"{project_path}\" --headless --import"
         print("=====================================", flush=True)
         print("Importing Game", flush=True)
         print("=====================================", flush=True)
@@ -225,13 +237,6 @@ if is_ci:
         return_code = subprocess.call(import_command, shell=True)
         if return_code != 0:
             sys.exit(f"Error: Failed to import game for {platform_arg} {configuration_arg} {architecture_arg} {precision_arg} from godot binary {godot_binary_file_name}")
-        
-        # Check for generated keystore file
-        release_keystore_file_path = os.path.join(project_directory, "gameandroidrelease.keystore")
-        if not os.path.exists(release_keystore_file_path):
-            print("Project directory files:", flush=True)
-            print_files(project_directory)
-            sys.exit(f"Error: {release_keystore_file_path} doesn't exist under {project_directory}. Is it located somewhere else?")
         
         # Update export credentials with keystore file information
         export_credentials_file_path = f"{project_path}/.godot/export_credentials.cfg"
