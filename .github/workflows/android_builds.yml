@@ -104,7 +104,7 @@ jobs:
 
       - name: Generate Release Keystore
         run: |
-          keytool -genkey -alias $ANDROID_KEYSTORE_ALIAS -keyalg RSA -keypass $ANDROID_KEYSTORE_PASSWORD -keystore gameandroidrelease.keystore -storepass $ANDROID_KEYSTORE_PASSWORD -dname \"CN=Android Release,O=Android,C=UK\" -validity 9999
+          keytool -genkey -keyalg RSA -alias $ANDROID_KEYSTORE_ALIAS -keypass $ANDROID_KEYSTORE_PASSWORD -keystore gameandroidrelease.keystore -storepass $ANDROID_KEYSTORE_PASSWORD -dname \"CN=Android Release,O=Android,C=UK\" -validity 9999
 
       - name: Export Project
         shell: sh
