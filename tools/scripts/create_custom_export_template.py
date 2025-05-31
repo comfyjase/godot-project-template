@@ -48,6 +48,10 @@ using_wsl = wsl_available and platform_arg == "linux"
 # Build Godot
 os.chdir("godot")
 
+print("=====================================", flush=True)
+print("Creating Custom Export Template", flush=True)
+print("=====================================", flush=True)
+
 godot_configuration_arg = configuration_arg
 if godot_configuration_arg in ["profile", "production"]:
     godot_configuration_arg = "template_release"
@@ -99,7 +103,7 @@ elif platform_arg == "web":
 elif platform_arg == "android":
     build_command += " generate_apk=yes"
 
-print("Create Export Template Command: " + build_command, flush=True)
+print(build_command, flush=True)
 return_code = subprocess.call(build_command, shell=True)
 if return_code != 0:
     sys.exit(f"Error: Failed to create godot export template for {platform_arg} {configuration_arg} {architecture_arg} {precision_arg}")

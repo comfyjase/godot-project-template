@@ -53,7 +53,9 @@ os.chdir("godot")
 
 build_engine = (configuration_arg in ["editor", "editor_game"] or is_ci)
 if build_engine:
+    print("=====================================", flush=True)
     print("Build Godot Engine", flush=True)
+    print("=====================================", flush=True)
     
     build_command = ""
     if using_wsl:
@@ -124,7 +126,9 @@ if build_engine:
 
 # ===============================================
 # Generate C++ extension api files
+print("=====================================", flush=True)
 print("Generate C++ extension api files", flush=True)
+print("=====================================", flush=True)
 os.chdir("bin")
 
 print(f"Detected System Platform: {platform.system()}", flush=True)
@@ -173,7 +177,9 @@ except IOError as e:
 
 # ===============================================
 # Build Game
+print("=====================================", flush=True)
 print("Build Game", flush=True)
+print("=====================================", flush=True)
 os.chdir("..")
 os.chdir("..")
 
@@ -211,7 +217,9 @@ if return_code != 0:
 # ===============================================
 # (Web Only) Zip Project
 if platform_arg == "web" and configuration_arg == "editor":
+    print("=====================================", flush=True)
     print("Zip Game Project For Web Editor", flush=True)
+    print("=====================================", flush=True)
     
     # Remove the old folder
     if os.path.isdir("game.zip"):

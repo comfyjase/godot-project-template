@@ -212,11 +212,64 @@ def update_gdextension_file(gdextension_file_path):
 if is_ci:
     game_gdextension_file_path = os.path.join(project_path, "bin", "game.gdextension").replace("\\", "/")
     update_gdextension_file(game_gdextension_file_path)
+
+    # Android CI only, import project first so we know .godot folder exists
+    if platform_arg == "android":
+        import_command = f"{godot_binary_file_name} --path \"{project_path}\" --headless --import"
+        print("=====================================", flush=True)
+        print("Importing Game", flush=True)
+        print("=====================================", flush=True)
+        print(import_command, flush=True)
+        return_code = subprocess.call(import_command, shell=True)
+        if return_code != 0:
+            sys.exit(f"Error: Failed to import game for {platform_arg} {configuration_arg} {architecture_arg} {precision_arg} from godot binary {godot_binary_file_name}")
         
+        # Check for generated keystore file
+        release_keystore_file_path = os.path.join(project_directory, "gameandroidrelease.keystore")
+        if not os.path.exists(release_keystore_file_path):
+            print("Project directory files:", flush=True)
+            print_files(project_directory)
+            sys.exit(f"Error: {release_keystore_file_path} doesn't exist under {project_directory}. Is it located somewhere else?")
+        
+        # Update export credentials with keystore file information
+        export_credentials_file_path = f"{project_path}/.godot/export_credentials.cfg"
+        export_godot_preset_tag = ""
+        export_godot_preset_tag_options = ""
+        all_lines = []
+        with open(f"{project_path}/export_presets.cfg", "r") as export_presets_read:
+            all_lines=export_presets_read.readlines()
+            
+            for index, line in enumerate(all_lines):
+                if line == f"name=\"{platform_arg} {configuration_arg} {architecture_arg} {precision_arg}\"\n":
+                    export_godot_preset_tag = all_lines[index - 2]
+                    export_godot_preset_tag_options = export_godot_preset_tag.replace("]", ".options]")
+                    break
+        
+        if os.path.exists(export_credentials_file_path):
+            sys.exit(f"Error: {export_credentials_file_path} already exists, you need to modify it instead of just writing to it.")
+        else:
+            with open(export_credentials_file_path, "w") as export_credentials_write:
+                print(f"Created {export_credentials_file_path}", flush=True)
+                
+                export_credentials_write.write(export_godot_preset_tag + "\n")
+                export_credentials_write.write("\n")
+                export_credentials_write.write("script_encryption_key=\"\"\n")
+                export_credentials_write.write("\n")
+                export_credentials_write.write(export_godot_preset_tag_options + "\n")
+                export_credentials_write.write("\n")
+                export_credentials_write.write("keystore/debug=\"\"\n")
+                export_credentials_write.write("keystore/debug_user=\"\"\n")
+                export_credentials_write.write("keystore/debug_password=\"\"\n")
+                export_credentials_write.write(f"keystore/release=\"{release_keystore_file_path}\"\n")
+                export_credentials_write.write(f"keystore/release_user=\"$ANDROID_KEYSTORE_ALIAS\"\n")
+                export_credentials_write.write(f"keystore/release_password=\"$ANDROID_KEYSTORE_PASSWORD\"\n")
+            
 # Export Game
 export_command += f"{godot_binary_file_name} --path \"{project_path}\" --headless --export-{export_command_type} \"{platform_arg} {configuration_arg} {architecture_arg} {precision_arg}\" \"{build_output_path}\" --verbose"
+print("=====================================", flush=True)
 print("Exporting Game", flush=True)
-print(f"{export_command}", flush=True)
+print("=====================================", flush=True)
+print(export_command, flush=True)
 return_code = subprocess.call(export_command, shell=True)
 if return_code != 0:
     sys.exit(f"Error: Failed to export game for {platform_arg} {configuration_arg} {architecture_arg} {precision_arg} from godot binary {godot_binary_file_name}")
