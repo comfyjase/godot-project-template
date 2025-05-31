@@ -162,6 +162,8 @@ if configuration_arg in ["editor", "editor_game", "template_debug"]:
     necessary_file_path = necessary_file_path.replace(".dev", "")
 
 if not os.path.exists(necessary_file_path):
+    print("Available binary files:", flush=True)
+    print_files(os.path.dirname(os.path.abspath(necessary_file_path)))
     sys.exit(f"Error: {necessary_file_path} file is missing, please build project for {platform_arg} template_{export_command_type} {architecture_arg} {precision_arg}")
 if platform_arg not in ["web", "android", "ios"]:
     if not os.path.exists(imgui_file_path):

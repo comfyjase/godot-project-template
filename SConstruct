@@ -130,7 +130,7 @@ library_suffix = env.subst('$SHLIBSUFFIX')
 if platform.system() == "Linux" and env["platform"] == "macos":
     library_suffix = ".dylib"
 lib_filename = "{}{}{}{}".format(env.subst('$SHLIBPREFIX'), lib_name, suffix, library_suffix)
-if env["platform"] in ["web", "android"]:
+if env["platform"] in ["web"]:
     lib_filename = "lib" + lib_filename
 
 library = env.SharedLibrary(
