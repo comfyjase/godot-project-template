@@ -75,17 +75,3 @@ web.wasm32.single.debug = "res://bin/web/libgame.web.template_debug.wasm32.nothr
 web.wasm32.double.debug = "res://bin/web/libgame.web.template_debug.double.wasm32.nothreads.wasm"
 web.wasm32.single.release = "res://bin/web/libgame.web.template_release.wasm32.nothreads.wasm"
 web.wasm32.double.release = "res://bin/web/libgame.web.template_release.double.wasm32.nothreads.wasm"
-
-[dependencies]
-ios.debug.single = {
-    "res://bin/ios/libgodot-cpp.ios.template_debug.xcframework": ""
-}
-ios.debug.double = {
-    "res://bin/ios/libgodot-cpp.ios.template_debug.double.xcframework": ""
-}
-ios.release.single = {
-    "res://bin/ios/libgodot-cpp.ios.template_release.xcframework": ""
-}
-ios.release.double = {
-    "res://bin/ios/libgodot-cpp.ios.template_release.double.xcframework": ""
-}
