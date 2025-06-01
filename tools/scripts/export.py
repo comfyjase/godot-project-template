@@ -269,6 +269,25 @@ if is_ci:
                 export_credentials_write.write(f"keystore/release=\"{release_keystore_file_path}\"\n")
                 export_credentials_write.write(f"keystore/release_user=\"$ANDROID_KEYSTORE_ALIAS\"\n")
                 export_credentials_write.write(f"keystore/release_password=\"$ANDROID_KEYSTORE_PASSWORD\"\n")
+    elif platform_arg == "windows":
+        app_data_file_path = "%APPDATA%".replace("\\", "/")
+        godot_editor_settings_file_path = f"{app_data_file_path}/Godot/editor_settings-4.4.tres"
+        
+        if not os.path.exists(godot_editor_settings_file_path):
+            print_files(f"{app_data_file_path}/Godot")
+            sys.exit(f"Error: Godot editor settings file {godot_editor_settings_file_path} does not exist under {app_data_file_path}/Godot/. Does project need to be imported first or is {app_data_file_path} not expanding correctly?")
+        
+        rcedit_file_path = f"{project_directory}/thirdparty/rcedit/rcedit.exe"
+        all_lines = []
+        with open(godot_editor_settings_file_path, "r") as editor_settings_file_read:
+            all_lines = editor_settings_file_read.readlines()
+            for index, line in enumerate(all_lines):
+                if "export/windows/rcedit" in line:
+                    all_lines[index] = f"export/windows/rcedit = \"{rcedit_file_path}\"\n"
+                    print(f"Updated editor settings rcedit file path to {rcedit_file_path}", flush=True)
+                
+        with open(godot_editor_settings_file_path, "w") as editor_settings_file_write:
+            editor_settings_file_write.writelines(all_lines)
             
 # Export Game
 export_command += f"{godot_binary_file_name} --path \"{project_path}\" --headless --export-{export_command_type} \"{platform_arg} {configuration_arg} {architecture_arg} {precision_arg}\" \"{build_output_path}\" --verbose"
