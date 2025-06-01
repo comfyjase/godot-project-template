@@ -234,9 +234,15 @@ if platform_arg == "ios":
     game_binary_file_name = f"libgame.ios.{configuration_arg}.{architecture_arg}.dylib"
     game_xcframework_file_name = f"libgame.ios.{configuration_arg}.xcframework"
     
-    godot_cpp_binary_file_name = f"libgodot-cpp.ios.{configuration_arg}.{architecture_arg}.dylib"
+    godot_cpp_binary_file_name = f"libgodot-cpp.ios.{configuration_arg}.{architecture_arg}.a"
     godot_cpp_xcframework_file_name = f"libgodot-cpp.ios.{configuration_arg}.xcframework"
     
+    if configuration_arg == "template_debug":
+        godot_cpp_binary_file_name = godot_cpp_binary_file_name.replace(architecture_arg, f"dev.{architecture_arg}")
+    else:
+        # Not sure if this is needed.
+        godot_cpp_binary_file_name = godot_cpp_binary_file_name.replace(configuration_arg, "template_release")
+        
     if precision_arg == "double":
         game_binary_file_name = game_binary_file_name.replace(architecture_arg, f"{precision_arg}.{architecture_arg}")
         game_xcframework_file_name = game_xcframework_file_name.replace(configuration_arg, f"{configuration_arg}.{precision_arg}")
