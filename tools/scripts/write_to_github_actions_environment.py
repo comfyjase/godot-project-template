@@ -17,7 +17,7 @@ with open(env_file, "a") as file:
     latest_git_commit_id = subprocess.check_output(git_command, shell=True).decode('ascii').strip()
     
     git_command = "git show -s --date=format:'%Y%m%d_%H%M%S' --format=%cd"
-    latest_commit_timestamp = subprocess.check_output(git_command, shell=True).decode('ascii').strip()
+    latest_commit_timestamp = subprocess.check_output(git_command, shell=True).decode('ascii').strip().replace("\'", "")
     
     file.write(f"BUILD_TIME={latest_commit_timestamp}\n")
     file.write(f"SHA_SHORT={latest_git_commit_id}\n")
