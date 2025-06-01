@@ -1,4 +1,4 @@
-name: 🍏 iOS Builds
+name: 🍏 iOS
 on:
   workflow_call:
 

@@ -199,8 +199,8 @@ with open("export_presets.cfg", "r") as export_presets_read:
         export_template_file_path = "/mnt/" + export_template_file_path.replace(":", "").lower()
     elif platform.system() == "Linux" or platform.system() == "Darwin":
         export_template_file_path = export_template_file_path.lower()
-        print(f"Called chmod +x {export_template_file_path}", flush=True)
-        subprocess.call(f"chmod +x {export_template_file_path}", shell=True)
+        print(f"Called chmod a+rwx {export_template_file_path}", flush=True)
+        subprocess.call(f"chmod a+rwx {export_template_file_path}", shell=True)
     all_lines=export_presets_read.readlines()
     
     found_export = False
