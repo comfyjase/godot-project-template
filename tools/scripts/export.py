@@ -270,7 +270,7 @@ if is_ci:
                 export_credentials_write.write(f"keystore/release_user=\"$ANDROID_KEYSTORE_ALIAS\"\n")
                 export_credentials_write.write(f"keystore/release_password=\"$ANDROID_KEYSTORE_PASSWORD\"\n")
     elif platform_arg == "windows":
-        app_data_file_path = "%APPDATA%".replace("\\", "/")
+        app_data_file_path = subprocess.check_output("echo %APPDATA%", shell=True).decode('ascii').strip().replace("\\", "/")
         godot_editor_settings_file_path = f"{app_data_file_path}/Godot/editor_settings-4.4.tres"
         
         if not os.path.exists(godot_editor_settings_file_path):
