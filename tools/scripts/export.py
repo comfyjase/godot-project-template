@@ -287,7 +287,7 @@ if return_code != 0:
         all_lines=export_presets_read.readlines()
         print("export_presets.cfg:", flush=True)
         for index, line in enumerate(all_lines):
-            if f"name={platform_arg}" in line:
+            if f"name=\"{platform_arg}" in line:
                 print(line, flush=True)
             elif ("custom_template/debug" in line and "custom_template/debug=\"\"" not in line):
                 print(line, flush=True)
