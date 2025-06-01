@@ -41,12 +41,26 @@ windows.arm64.double.debug = "res://bin/windows/game.windows.template_debug.doub
 windows.arm64.single.release = "res://bin/windows/game.windows.template_release.arm64.dll"
 windows.arm64.double.release = "res://bin/windows/game.windows.template_release.double.arm64.dll"
 
+linux.x86_32.single.editor = "res://bin/linux/libgame.linux.editor.x86_32.so"
+linux.x86_32.double.editor = "res://bin/linux/libgame.linux.editor.double.x86_32.so"
+linux.x86_32.single.debug = "res://bin/linux/libgame.linux.template_debug.x86_32.so"
+linux.x86_32.double.debug = "res://bin/linux/libgame.linux.template_debug.double.x86_32.so"
+linux.x86_32.single.release = "res://bin/linux/libgame.linux.template_release.x86_32.so"
+linux.x86_32.double.release = "res://bin/linux/libgame.linux.template_release.double.x86_32.so"
+
 linux.x86_64.single.editor = "res://bin/linux/libgame.linux.editor.x86_64.so"
 linux.x86_64.double.editor = "res://bin/linux/libgame.linux.editor.double.x86_64.so"
 linux.x86_64.single.debug = "res://bin/linux/libgame.linux.template_debug.x86_64.so"
 linux.x86_64.double.debug = "res://bin/linux/libgame.linux.template_debug.double.x86_64.so"
 linux.x86_64.single.release = "res://bin/linux/libgame.linux.template_release.x86_64.so"
 linux.x86_64.double.release = "res://bin/linux/libgame.linux.template_release.double.x86_64.so"
+
+linux.arm32.single.editor = "res://bin/linux/libgame.linux.editor.arm32.so"
+linux.arm32.double.editor = "res://bin/linux/libgame.linux.editor.double.arm32.so"
+linux.arm32.single.debug = "res://bin/linux/libgame.linux.template_debug.arm32.so"
+linux.arm32.double.debug = "res://bin/linux/libgame.linux.template_debug.double.arm32.so"
+linux.arm32.single.release = "res://bin/linux/libgame.linux.template_release.arm32.so"
+linux.arm32.double.release = "res://bin/linux/libgame.linux.template_release.double.arm32.so"
 
 linux.arm64.single.editor = "res://bin/linux/libgame.linux.editor.arm64.so"
 linux.arm64.double.editor = "res://bin/linux/libgame.linux.editor.double.arm64.so"
