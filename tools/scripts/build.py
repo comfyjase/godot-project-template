@@ -215,7 +215,7 @@ if return_code != 0:
     sys.exit(f"Error: Failed to build game for {platform_arg} {configuration_arg} {game_architecture} {precision_arg}")
 
 # ===============================================
-# (Web Editor Only) Zip Project
+# (Web Only) Zip Project
 if platform_arg == "web" and configuration_arg == "editor":
     print("=====================================", flush=True)
     print("Zip Game Project For Web Editor", flush=True)
@@ -228,26 +228,3 @@ if platform_arg == "web" and configuration_arg == "editor":
     # Make new zip folder
     shutil.make_archive("game", "zip", "game")
     
-# ==============================================
-# (iOS Only) Convert
-if platform_arg == "ios":
-    game_binary_file_name = f"libgame.ios.{configuration_arg}.{architecture_arg}.dylib"
-    game_xcframework_file_name = f"libgame.ios.{configuration_arg}.xcframework"
-    
-    #godot_cpp_binary_file_name = f"libgodot-cpp.ios.{configuration_arg}.{architecture_arg}.dylib"
-    #godot_cpp_xcframework_file_name = f"libgodot-cpp.ios.{configuration_arg}.xcframework"
-    
-    if precision_arg == "double":
-        game_xcframework_file_name = game_xcframework_file_name.replace(configuration_arg, f"{configuration_arg}.{precision_arg}")
-    
-    ios_xcodebuild_command = f"xcodebuild -create-xcframework -library game/bin/{game_binary_file_name} -output game/bin/{game_xcframework_file_name}"
-    print(f"iOS xcode build command: {ios_xcodebuild_command}", flush=True)
-    return_code = subprocess.call(ios_xcodebuild_command, shell=True)
-    if return_code != 0:
-        sys.exit("Error: iOS xcode build command failed for the game project")
-    
-    #ios_xcodebuild_command = f"xcodebuild -create-xcframework -library godot-cpp/bin/{godot_cpp_binary_file_name} -output godot-cpp/bin/{godot_cpp_xcframework_file_name}"
-    #print(f"iOS xcode build command: {ios_xcodebuild_command}", flush=True)
-    #return_code = subprocess.call(ios_xcodebuild_command, shell=True)
-    #if return_code != 0:
-    #    sys.exit("Error: iOS xcode build command failed for the godot-cpp project")
