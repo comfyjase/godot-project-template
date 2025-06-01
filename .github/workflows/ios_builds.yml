@@ -67,6 +67,10 @@ jobs:
           scons-cache: ${{ github.workspace }}/.scons_cache/
           cache-name: ${{ matrix.target.platform }}_${{ matrix.target.arch }}_${{ matrix.float-precision }}_${{ matrix.target-type }}
       
+      - name: Unit Tests
+        run: |
+          python tools/scripts/run_unit_tests.py ${{ matrix.target.platform }} ${{ matrix.target-type }} ${{ matrix.target.arch }} ${{ matrix.float-precision }} True
+
       # Can comment if you are part of the apple developer program
       #- name: Export Project
       #  shell: sh

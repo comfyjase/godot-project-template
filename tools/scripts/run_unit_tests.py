@@ -17,6 +17,7 @@ current_directory = os.getcwd()
 if not os.path.exists(os.path.join(f"{current_directory}", "game")):
     os.chdir("..")
     os.chdir("..")
+
 project_directory = os.getcwd()
 
 platform_arg = sys.argv[1]
@@ -48,7 +49,9 @@ using_wsl = wsl_available and platform_arg == "linux"
 
 # ===============================================
 # Run Unit Tests
+print("=====================================", flush=True)
 print("Run Engine Unit Tests", flush=True)
+print("=====================================", flush=True)
 
 os.chdir("godot")
 
@@ -78,23 +81,26 @@ if precision_arg == "double":
 run_unit_test_command = ""
 if using_wsl:
     run_unit_test_command = "wsl ./"
-if platform.system() == "Linux" or platform.system() == "Darwin":
+elif platform.system() == "Linux" or platform.system() == "Darwin":
     subprocess.call(f"chmod +x bin/{godot_binary_file_name}", shell=True)
     run_unit_test_command += "./"
-#else:
-#    run_unit_test_command += "call "
 run_unit_test_command += f"\"bin/{godot_binary_file_name}\" --headless --test"
 
-print(f"Directory = {os.getcwd()} | run_unit_test_command = {run_unit_test_command}", flush=True)
+print(run_unit_test_command, flush=True)
 return_code = subprocess.call(run_unit_test_command, shell=True)
 if return_code != 0:
     sys.exit(f"Error: Failed unit tests, see output for details.")
 
 # ===============================================
 # Build Game
+print("=====================================", flush=True)
 print("Run Game Unit Tests", flush=True)
+print("=====================================", flush=True)
 
 os.chdir("..")
 os.chdir("..")
 
 # TODO: Game unit tests :')
+print("TODO: Implement a way to run doctest unit tests from gdextension code...")
+
+print("Done")

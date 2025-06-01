@@ -89,9 +89,7 @@ if build_engine:
 
     if is_ci:
         build_command += " debug_symbols=no"
-    
-    if configuration_arg == "template_debug":
-        build_command += " tests=yes"
+    build_command += " tests=yes"
     
     if platform_arg == "macos" or platform_arg == "ios":
         if is_ci:

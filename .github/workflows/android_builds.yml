@@ -112,6 +112,10 @@ jobs:
         run: |
           python tools/scripts/export.py ${{ matrix.target.platform }} ${{ matrix.target-type }} ${{ matrix.target.arch }} ${{ matrix.float-precision }} True
 
+      - name: Unit Tests
+        run: |
+          python tools/scripts/run_unit_tests.py ${{ matrix.target.platform }} ${{ matrix.target-type }} ${{ matrix.target.arch }} ${{ matrix.float-precision }} True
+
       # Upload the build
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
