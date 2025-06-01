@@ -273,6 +273,15 @@ if is_ci:
         app_data_file_path = subprocess.check_output("echo %APPDATA%", shell=True).decode('ascii').strip().replace("\\", "/")
         godot_editor_settings_file_path = f"{app_data_file_path}/Godot/editor_settings-4.4.tres"
         
+        import_command = f"{godot_binary_file_name} --path \"{project_path}\" --headless --import"
+        print("=====================================", flush=True)
+        print("Importing Game", flush=True)
+        print("=====================================", flush=True)
+        print(import_command, flush=True)
+        return_code = subprocess.call(import_command, shell=True)
+        if return_code != 0:
+            sys.exit(f"Error: Failed to import game for {platform_arg} {configuration_arg} {architecture_arg} {precision_arg} from godot binary {godot_binary_file_name}")
+        
         if not os.path.exists(godot_editor_settings_file_path):
             print_files(f"{app_data_file_path}/Godot")
             sys.exit(f"Error: Godot editor settings file {godot_editor_settings_file_path} does not exist under {app_data_file_path}/Godot/. Does project need to be imported first or is {app_data_file_path} not expanding correctly?")
