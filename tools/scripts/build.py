@@ -234,20 +234,38 @@ if platform_arg == "ios":
     game_binary_file_name = f"libgame.ios.{configuration_arg}.{architecture_arg}.dylib"
     game_xcframework_file_name = f"libgame.ios.{configuration_arg}.xcframework"
     
-    #godot_cpp_binary_file_name = f"libgodot-cpp.ios.{configuration_arg}.{architecture_arg}.dylib"
-    #godot_cpp_xcframework_file_name = f"libgodot-cpp.ios.{configuration_arg}.xcframework"
+    godot_cpp_binary_file_name = f"libgodot-cpp.ios.{configuration_arg}.{architecture_arg}.dylib"
+    godot_cpp_xcframework_file_name = f"libgodot-cpp.ios.{configuration_arg}.xcframework"
     
     if precision_arg == "double":
+        game_binary_file_name = game_binary_file_name.replace(architecture_arg, f"{precision_arg}.{architecture_arg}")
         game_xcframework_file_name = game_xcframework_file_name.replace(configuration_arg, f"{configuration_arg}.{precision_arg}")
+        
+        godot_cpp_binary_file_name = godot_cpp_binary_file_name.replace(architecture_arg, f"{precision_arg}.{architecture_arg}")
+        godot_cpp_xcframework_file_name = godot_cpp_xcframework_file_name.replace(configuration_arg, f"{configuration_arg}.{precision_arg}")
+        
+    ios_xcodebuild_command = f"xcodebuild -create-xcframework -library godot-cpp/bin/{godot_cpp_binary_file_name} -output game/bin/{platform_arg}/{godot_cpp_xcframework_file_name}"
+    print(f"iOS xcode build command: {ios_xcodebuild_command}", flush=True)
+    return_code = subprocess.call(ios_xcodebuild_command, shell=True)
+    if return_code != 0:
+        print("Available godot binary files:", flush=True)
+        print_files(os.path.join(project_directory, "godot", "bin"))
+        print("Available godot-cpp binary files:", flush=True)
+        print_files(os.path.join(project_directory, "godot-cpp", "bin"))
+        print("Available game binary files:", flush=True)
+        print_files(os.path.join(project_directory, "game", "bin", platform_arg))
+        print_files(os.path.join(project_directory, "bin", platform_arg))
+        sys.exit("Error: iOS xcode build command failed for the godot-cpp project")
     
     ios_xcodebuild_command = f"xcodebuild -create-xcframework -library game/bin/{game_binary_file_name} -output game/bin/{game_xcframework_file_name}"
     print(f"iOS xcode build command: {ios_xcodebuild_command}", flush=True)
     return_code = subprocess.call(ios_xcodebuild_command, shell=True)
     if return_code != 0:
+        print("Available godot binary files:", flush=True)
+        print_files(os.path.join(project_directory, "godot", "bin"))
+        print("Available godot-cpp binary files:", flush=True)
+        print_files(os.path.join(project_directory, "godot-cpp", "bin"))
+        print("Available game binary files:", flush=True)
+        print_files(os.path.join(project_directory, "game", "bin", platform_arg))
+        print_files(os.path.join(project_directory, "bin", platform_arg))
         sys.exit("Error: iOS xcode build command failed for the game project")
-    
-    #ios_xcodebuild_command = f"xcodebuild -create-xcframework -library godot-cpp/bin/{godot_cpp_binary_file_name} -output godot-cpp/bin/{godot_cpp_xcframework_file_name}"
-    #print(f"iOS xcode build command: {ios_xcodebuild_command}", flush=True)
-    #return_code = subprocess.call(ios_xcodebuild_command, shell=True)
-    #if return_code != 0:
-    #    sys.exit("Error: iOS xcode build command failed for the godot-cpp project")
