@@ -82,7 +82,7 @@ elif platform_arg == "web":
 elif platform_arg == "android":
     library_suffix = ".so"
 elif platform_arg == "ios":
-    library_suffix = ".dylib"
+    library_suffix = ".xcframework"
 
 native_platform = platform.system().lower()
 if native_platform == "darwin":
@@ -281,6 +281,8 @@ return_code = subprocess.call(export_command, shell=True)
 if return_code != 0:
     print("Available godot binary files:", flush=True)
     print_files()
+    print("Available godot-cpp binary files:", flush=True)
+    print_files(os.path.join(project_directory, "godot-cpp", "bin"))
     print("Available game binary files:", flush=True)
     print_files(os.path.dirname(os.path.abspath(necessary_file_path)))
     with open(f"{project_path}/export_presets.cfg", "r") as export_presets_read:
