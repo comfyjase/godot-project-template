@@ -21,7 +21,7 @@ jobs:
     secrets: inherit
   
   ios-build:
-    name: 🍏 iOS Builds
+    name: 🍏 iOS
     needs: static-checks
     uses: ./.github/workflows/ios_builds.yml
     secrets: inherit
