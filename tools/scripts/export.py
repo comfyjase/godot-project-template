@@ -287,7 +287,11 @@ if return_code != 0:
         all_lines=export_presets_read.readlines()
         print("export_presets.cfg:", flush=True)
         for index, line in enumerate(all_lines):
-            if "name=" in line or "custom_template/" in line:
+            if "name=" in line:
+                print(line, flush=True)
+            elif ("custom_template/debug" in line and "custom_template/debug=\"\"" not in line):
+                print(line, flush=True)
+            elif ("custom_template/release" in line and "custom_template/release=\"\"" not in line):
                 print(line, flush=True)
 
     sys.exit(f"Error: Failed to export game for {platform_arg} {configuration_arg} {architecture_arg} {precision_arg} from godot binary {godot_binary_file_name}")
