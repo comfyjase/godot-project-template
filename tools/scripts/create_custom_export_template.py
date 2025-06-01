@@ -188,7 +188,6 @@ else:
 # Update export_presets.cfg with this template
 os.chdir(os.path.join("..", "..", "game"))
 
-# TODO: Check what is needed for web/android here...
 with open("export_presets.cfg", "r") as export_presets_read:
     godot_platform_name = platform_arg
     if platform_arg == "linux":

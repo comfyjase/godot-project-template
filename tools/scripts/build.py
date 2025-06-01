@@ -51,6 +51,12 @@ using_wsl = wsl_available and (platform_arg == "linux" or platform_arg == "macos
 # Build Godot
 os.chdir("godot")
 
+godot_engine_architecture_arg = ""
+if is_os_64_bit:
+    godot_engine_architecture_arg = "x86_64"
+else:
+    godot_engine_architecture_arg = "x86_32"
+    
 build_engine = (configuration_arg in ["editor", "editor_game"] or is_ci)
 if build_engine:
     print("=====================================", flush=True)
@@ -62,28 +68,26 @@ if build_engine:
         build_command = "wsl "
     
     godot_platform = platform_arg
-    godot_architecture = architecture_arg
+    
     # For CI, need to make sure there's some native os version of the godot editor for the next step
     # Generating the cpp bindings needs a godot binary file.
     if is_ci:
         if godot_platform not in ["windows", "linux", "macos"]:
             godot_platform = platform.system().lower()
-            if godot_platform == "windows" or godot_platform == "linux" or godot_platform == "darwin":
-                godot_architecture = "x86_64"
             if godot_platform == "darwin":
                 godot_platform = "macos"
-            print(f"Building godot engine for native os {godot_platform} {godot_architecture}", flush=True)
+            print(f"Building godot engine for native os {godot_platform} {godot_engine_architecture_arg}", flush=True)
     
     if configuration_arg == "production":
-        build_command += f"scons platform={godot_platform} target=editor arch={godot_architecture} precision={precision_arg} production=yes"
+        build_command += f"scons platform={godot_platform} target=editor arch={godot_engine_architecture_arg} precision={precision_arg} production=yes"
     elif configuration_arg == "profile":
-        build_command += f"scons platform={godot_platform} target=editor arch={godot_architecture} precision={precision_arg} production=yes debug_symbols=yes"
+        build_command += f"scons platform={godot_platform} target=editor arch={godot_engine_architecture_arg} precision={precision_arg} production=yes debug_symbols=yes"
         if is_ci:   # engine debug symbols are too large for CI
             build_command = build_command.replace(" debug_symbols=yes", "")
     elif configuration_arg == "template_release":
-        build_command += f"scons platform={godot_platform} target=editor arch={godot_architecture} precision={precision_arg}"
+        build_command += f"scons platform={godot_platform} target=editor arch={godot_engine_architecture_arg} precision={precision_arg}"
     else:
-        build_command += f"scons platform={godot_platform} target=editor arch={godot_architecture} precision={precision_arg} dev_build=yes dev_mode=yes"
+        build_command += f"scons platform={godot_platform} target=editor arch={godot_engine_architecture_arg} precision={precision_arg} dev_build=yes dev_mode=yes"
         if is_ci:   # Same as above...
             build_command = build_command.replace(" dev_build=yes dev_mode=yes", "")
 
@@ -110,7 +114,7 @@ if build_engine:
     print("Build Command: " + build_command, flush=True)
     return_code = subprocess.call(build_command, shell=True)
     if return_code != 0:
-        sys.exit(f"Error: Failed to build godot for {platform_arg} {configuration_arg} {architecture_arg} {precision_arg}")
+        sys.exit(f"Error: Failed to build godot for {platform_arg} editor {godot_engine_architecture_arg} {precision_arg}")
     
     if platform_arg == "web" and configuration_arg in ["editor", "editor_game"]:
         print(os.getcwd(), flush=True)
@@ -130,12 +134,6 @@ print("=====================================", flush=True)
 os.chdir("bin")
 
 print(f"Detected System Platform: {platform.system()}", flush=True)
-
-godot_engine_architecture_arg = ""
-if is_os_64_bit:
-    godot_engine_architecture_arg = "x86_64"
-else:
-    godot_engine_architecture_arg = "x86_32"
 
 godot_binary_file_name = ""
 if platform.system() == "Windows":
