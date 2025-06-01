@@ -51,12 +51,11 @@ using_wsl = wsl_available and (platform_arg == "linux" or platform_arg == "macos
 # Build Godot
 os.chdir("godot")
 
-godot_engine_architecture_arg = ""
-if is_os_64_bit:
-    godot_engine_architecture_arg = "x86_64"
-else:
-    godot_engine_architecture_arg = "x86_32"
-    
+# Assuming for windows/linux/mac that arch arg is what the user wants to build the engine with.
+godot_engine_architecture_arg = architecture_arg
+if platform_arg not in ["windows", "linux", "macos"]:
+    godot_engine_architecture_arg = detect_arch()
+
 build_engine = (configuration_arg in ["editor", "editor_game"] or is_ci)
 if build_engine:
     print("=====================================", flush=True)

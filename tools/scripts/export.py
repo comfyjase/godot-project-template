@@ -104,11 +104,9 @@ else:
     build_file_name_and_type = f"game{build_suffix}"
 print(f"Build Name: {build_file_name_and_type}", flush=True)
 
-godot_engine_architecture_arg = ""
-if is_os_64_bit:
-    godot_engine_architecture_arg = "x86_64"
-else:
-    godot_engine_architecture_arg = "x86_32"
+godot_engine_architecture_arg = architecture_arg
+if platform_arg not in ["windows", "linux", "macos"]:
+    godot_engine_architecture_arg = detect_arch()
 
 godot_binary_file_name = ""
 if native_platform == "windows":

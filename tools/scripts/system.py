@@ -81,3 +81,16 @@ def print_files(directory = "."):
     files = [f for f in os.listdir(directory) if os.path.isfile(os.path.join(directory, f))]
     for f in files:
         print(f"\t{f}", flush=True)
+
+def detect_arch():
+    host_machine = platform.machine().lower()
+    if host_machine in architectures:
+        return host_machine
+    elif host_machine in architecture_aliases.keys():
+        return architecture_aliases[host_machine]
+    elif "86" in host_machine:
+        # Catches x86, i386, i486, i586, i686, etc.
+        return "x86_32"
+    else:
+        methods.print_warning(f'Unsupported CPU architecture: "{host_machine}". Falling back to x86_64.')
+        return "x86_64"
