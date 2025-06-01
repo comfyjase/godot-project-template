@@ -26,7 +26,9 @@ with open(env_file, "a") as file:
     latest_commit_timestamp = subprocess.check_output(git_command, shell=True).decode('ascii').strip().replace("\'", "")
     
     rcedit_file_path = os.path.join(project_directory, "thirdparty", "rcedit")
+    return_code = subprocess.call(f"echo \"{rcedit_file_path}\" >> $GITHUB_PATH")
+    if return_code != 0:
+        sys.exit(f"Error: Failed to add {rcedit_file_path} to the github path variable")
     
     file.write(f"BUILD_TIME={latest_commit_timestamp}\n")
     file.write(f"SHA_SHORT={latest_git_commit_id}\n")
-    file.write(f"rcedit={rcedit_file_path}\n")
