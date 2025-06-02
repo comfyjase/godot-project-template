@@ -90,10 +90,7 @@ if env["target"] in ["editor", "editor_game", "template_debug"]:
     cpp_defines.append("TESTS_ENABLED")
 
 if env["platform"] == "windows":
-    if env["arch"] == "x86_64":
-        cpp_defines.append("PLATFORM_WIN64")
-    else:
-        cpp_defines.append("PLATFORM_WIN32")
+    cpp_defines.append("PLATFORM_WINDOWS")
 elif env["platform"] == "linux":
     cpp_defines.append("PLATFORM_LINUX")
 elif env["platform"] == "macos":

@@ -13,13 +13,14 @@ elif platform.system() == "Linux":
     generate_command = generate_command.replace("<p>", "linux")
     
 # Generate Godot Engine Project Files
-os.chdir("godot")
-return_code = subprocess.call(generate_command, shell=True)
-if return_code != 0:
-    sys.exit(f"Error: Failed to generate visual studio solution files for {platform.system()}")
+if not os.path.exists("godot/godot.vcxproj"):
+    os.chdir("godot")
+    return_code = subprocess.call(generate_command, shell=True)
+    if return_code != 0:
+        sys.exit(f"Error: Failed to generate visual studio solution files for {platform.system()}")
+    os.chdir("..")
 
 # Generate Game Project Files
-os.chdir("..")
 return_code = subprocess.call(generate_command, shell=True)
 if return_code != 0:
     sys.exit(f"Error: Failed to generate visual studio solution files for {platform.system()}")

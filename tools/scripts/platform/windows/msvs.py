@@ -89,7 +89,7 @@ def get_vs_cpp_defines():
     vs_cpp_defines.extend([
         # Win32 editor
         [
-            "PLATFORM_WIN32",
+            "PLATFORM_WINDOWS",
             "TOOLS_ENABLED",
             "DEBUG_ENABLED",
             "TESTS_ENABLED",
@@ -97,7 +97,7 @@ def get_vs_cpp_defines():
         ],
         # x64 editor
         [
-            "PLATFORM_WIN64",
+            "PLATFORM_WINDOWS",
             'IMGUI_USER_CONFIG="\\"imconfig-godot.h\\""',
             "IMGUI_ENABLED",
             "TOOLS_ENABLED",
@@ -107,7 +107,7 @@ def get_vs_cpp_defines():
         ],
         # Win32 editor_game
         [
-            "PLATFORM_WIN32",
+            "PLATFORM_WINDOWS",
             "TOOLS_ENABLED",
             "DEBUG_ENABLED",
             "TESTS_ENABLED",
@@ -115,7 +115,7 @@ def get_vs_cpp_defines():
         ],
         # x64 editor_game
         [
-            "PLATFORM_WIN64",
+            "PLATFORM_WINDOWS",
             'IMGUI_USER_CONFIG="\\"imconfig-godot.h\\""',
             "IMGUI_ENABLED",
             "TOOLS_ENABLED",
@@ -125,7 +125,7 @@ def get_vs_cpp_defines():
         ],
         # Win32 template_debug
         [
-            "PLATFORM_WIN32",
+            "PLATFORM_WINDOWS",
             "TOOLS_ENABLED",
             "DEBUG_ENABLED",
             "TESTS_ENABLED",
@@ -133,7 +133,7 @@ def get_vs_cpp_defines():
         ],
         # x64 template_debug
         [
-            "PLATFORM_WIN64",
+            "PLATFORM_WINDOWS",
             'IMGUI_USER_CONFIG="\\"imconfig-godot.h\\""',
             "IMGUI_ENABLED",
             "TOOLS_ENABLED",
@@ -143,36 +143,36 @@ def get_vs_cpp_defines():
         ],
         # Win32 template_release
         [
-            "PLATFORM_WIN32",
+            "PLATFORM_WINDOWS",
             "RELEASE"
         ],
         # x64 template_release
         [
-            "PLATFORM_WIN64",
+            "PLATFORM_WINDOWS",
             'IMGUI_USER_CONFIG="\\"imconfig-godot.h\\""',
             "IMGUI_ENABLED",
             "RELEASE"
         ],
         # Win32 profile
         [
-            "PLATFORM_WIN32",
+            "PLATFORM_WINDOWS",
             "PROFILE"
         ],
         # x64 profile
         [
-            "PLATFORM_WIN64",
+            "PLATFORM_WINDOWS",
             'IMGUI_USER_CONFIG="\\"imconfig-godot.h\\""',
             "IMGUI_ENABLED",
             "PROFILE"
         ],
         # Win32 production
         [
-            "PLATFORM_WIN32",
+            "PLATFORM_WINDOWS",
             "PRODUCTION"
         ],
         # x64 production
         [
-            "PLATFORM_WIN64",
+            "PLATFORM_WINDOWS",
             'IMGUI_USER_CONFIG="\\"imconfig-godot.h\\""',
             "IMGUI_ENABLED",
             "PRODUCTION"

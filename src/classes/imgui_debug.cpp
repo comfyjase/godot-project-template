@@ -152,11 +152,8 @@ void godot::ImGuiDebug::draw_build_information(double delta)
 	ImGui::Begin("BuildInformation", 0, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoNav | ImGuiWindowFlags_NoNavFocus | ImGuiWindowFlags_NoNavInputs);
 	{
 		String platform = "None";
-#if PLATFORM_WIN32
-#error Win32 isn't supported by imgui-godot and doesn't have IMGUI_ENABLED defined
-		return;
-#elif PLATFORM_WIN64
-		platform = "Win64";
+#if PLATFORM_WINDOWS
+		platform = "Windows";
 #elif PLATFORM_LINUX
 		platform = "Linux";
 #elif PLATFORM_MACOS
