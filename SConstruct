@@ -73,7 +73,7 @@ include_files = []
 cpp_defines = []
 
 # imgui
-should_include_imgui = (env["arch"] != "x86_32") and (env["platform"] not in ["web", "android", "ios"])
+should_include_imgui = (env["arch"] not in ["x86_32", "arm32", "arm64"]) and (env["platform"] not in ["web", "android", "ios"])
 if should_include_imgui:
     all_directories = ["game/addons/imgui-godot/include", "thirdparty/imgui" ]
     source_files = Glob("thirdparty/imgui/*.cpp", strings=True)
