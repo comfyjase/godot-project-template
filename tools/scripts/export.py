@@ -284,7 +284,10 @@ if is_ci:
             print_files(f"{app_data_file_path}/Godot")
             sys.exit(f"Error: Godot editor settings file {godot_editor_settings_file_path} does not exist under {app_data_file_path}/Godot/. Does project need to be imported first or is {app_data_file_path} not expanding correctly?")
         
-        rcedit_file_path = f"{project_directory}/thirdparty/rcedit/rcedit.exe".replace("\\", "/")
+        rcedit_file_path = f"{project_directory}/thirdparty/rcedit/rcedit_x64.exe".replace("\\", "/")
+        if architecture_arg == "x86_32":
+            rcedit_file_path = rcedit_file_path.replace("rcedit_x64", "rcedit_x32")
+            
         all_lines = []
         with open(godot_editor_settings_file_path, "r") as editor_settings_file_read:
             all_lines = editor_settings_file_read.readlines()
