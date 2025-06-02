@@ -306,7 +306,7 @@ print("Exporting Game", flush=True)
 print("=====================================", flush=True)
 print(export_command, flush=True)
 return_code = subprocess.call(export_command, shell=True)
-if return_code != 0:
+if not os.path.exists(build_output_path):
     print("Available godot binary files:", flush=True)
     print_files()
     print("Available game binary files:", flush=True)
