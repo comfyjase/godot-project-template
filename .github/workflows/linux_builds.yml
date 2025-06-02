@@ -63,7 +63,7 @@ jobs:
           
       # Add linux x86_32 toolchain
       - name: Install 32 Bit Support
-        if: ${{ matrix.target.platform == 'linux' && matrix.target.arch == 'x86_32' }}
+        if: ${{ matrix.target.arch == 'x86_32' }}
         run: |
           sudo apt-get update && sudo apt-get install -y gcc-multilib g++-multilib
           
@@ -101,6 +101,7 @@ jobs:
           cache-name: ${{ matrix.target.platform }}_${{ matrix.target.arch }}_${{ matrix.float-precision }}_${{ matrix.target-type }}
       
       - name: Export Project
+        if: ${{ matrix.target.arch != 'arm32' }}
         shell: sh
         run: |
           python tools/scripts/export.py ${{ matrix.target.platform }} ${{ matrix.target-type }} ${{ matrix.target.arch }} ${{ matrix.float-precision }} True
@@ -112,6 +113,7 @@ jobs:
 
       # Upload the build
       - name: Upload Artifact
+        if: ${{ matrix.target.arch != 'arm32' }}
         uses: actions/upload-artifact@v4
         with:
           name: game_${{ matrix.target.platform }}_${{ matrix.target-type }}_${{ matrix.target.arch }}_${{ matrix.float-precision }}_${{ env.BUILD_TIME }}_${{ github.ref_name }}_${{ env.SHA_SHORT }}
