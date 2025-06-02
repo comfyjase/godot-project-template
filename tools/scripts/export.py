@@ -162,7 +162,7 @@ if not os.path.exists(necessary_file_path):
     print("Available binary files:", flush=True)
     print_files(os.path.dirname(os.path.abspath(necessary_file_path)))
     sys.exit(f"Error: {necessary_file_path} file is missing, please build project for {platform_arg} template_{export_command_type} {architecture_arg} {precision_arg}")
-if (platform_arg not in ["web", "android", "ios"]) and (architecture_arg != "x86_32"):
+if (platform_arg not in ["web", "android", "ios"]) and (architecture_arg not in ["x86_32", "arm64", "arm32", "rv64"]):
     if not os.path.exists(imgui_file_path):
         imgui_godot_binary_folder_name = os.path.dirname(os.path.abspath(imgui_file_path))
         print(f"imgui-godot binary files: {imgui_godot_binary_folder_name}: ", flush=True)
