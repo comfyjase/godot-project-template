@@ -172,7 +172,7 @@ if (platform_arg not in ["web", "android", "ios"]) and (architecture_arg not in 
 if native_platform == "linux" or native_platform == "macos":
     print(f"Called chmod +xr {necessary_file_path}", flush=True)
     subprocess.call(f"chmod +xr {necessary_file_path}", shell=True)
-    if platform_arg not in ["web", "android", "ios"]:
+    if (platform_arg not in ["web", "android", "ios"]) and (architecture_arg not in ["x86_32", "arm64", "arm32", "rv64"]):
         print(f"Called chmod +xr {imgui_file_path}", flush=True)
         subprocess.call(f"chmod +xr {imgui_file_path}", shell=True)
 
