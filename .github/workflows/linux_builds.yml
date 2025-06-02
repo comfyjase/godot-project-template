@@ -63,7 +63,7 @@ jobs:
           
       # Add linux x86_32 toolchain
       - name: Install 32 Bit Support
-        if: ${{ matrix.target.platform == 'linux' && (matrix.target.arch == 'x86_32' || matrix.target.arch == 'arm32') }}
+        if: ${{ matrix.target.platform == 'linux' && matrix.target.arch == 'x86_32' }}
         run: |
           sudo apt-get update && sudo apt-get install -y gcc-multilib g++-multilib
           
