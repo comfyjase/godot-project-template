@@ -53,7 +53,11 @@ os.chdir("godot")
 
 # Assuming for windows/linux/mac that arch arg is what the user wants to build the engine with.
 godot_engine_architecture_arg = architecture_arg
-if platform_arg not in ["windows", "linux", "macos"]:
+if platform_arg in ["windows", "linux", "macos"]:
+    # For native OS, only use 64 bit version of the editor/engine.
+    if "32" in godot_engine_architecture_arg:
+        godot_engine_architecture_arg = godot_engine_architecture_arg.replace("32", "64")
+else:
     godot_engine_architecture_arg = detect_arch()
 
 build_engine = (configuration_arg in ["editor", "editor_game"] or is_ci)
