@@ -10,7 +10,10 @@ jobs:
       matrix:
         target:
           [
-            { platform: linux, arch: x86_64, os: ubuntu-22.04 }
+            { platform: linux, arch: x86_64, os: ubuntu-22.04 },
+            { platform: linux, arch: x86_32, os: ubuntu-22.04 },
+            { platform: linux, arch: arm64, os: ubuntu-22.04-arm },
+            { platform: linux, arch: arm32, os: ubuntu-22.04-arm },
           ]
         target-type: [template_debug, template_release, profile, production]
         float-precision: [single, double]

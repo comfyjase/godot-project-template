@@ -14,7 +14,10 @@ jobs:
       matrix:
         target:
           [
-            { platform: android, arch: arm64, os: ubuntu-22.04 }
+            { platform: android, arch: x86_64, os: ubuntu-22.04 },
+            { platform: android, arch: x86_32, os: ubuntu-22.04 },
+            { platform: android, arch: arm64, os: ubuntu-22.04 },
+            { platform: android, arch: arm32, os: ubuntu-22.04 },
           ]
         target-type: [template_debug, template_release, profile, production]
         float-precision: [single, double]
