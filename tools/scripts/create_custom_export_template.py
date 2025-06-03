@@ -203,8 +203,9 @@ if not os.path.exists(export_template_file_path):
     print_files()
     sys.exit(f"Error: Failed to create {export_template_file_path} for {platform_arg} {configuration_arg} {architecture_arg} {precision_arg}")
 
-print(f"Called chmod a+rwx {export_template_file_path}", flush=True)
-subprocess.call(f"chmod a+rwx {export_template_file_path}", shell=True)
+if platform.system() == "Linux" or platform.system() == "Darwin":
+    print(f"Called chmod a+rwx {export_template_file_path}", flush=True)
+    subprocess.call(f"chmod a+rwx {export_template_file_path}", shell=True)
 
 with open("export_presets.cfg", "r") as export_presets_read:
     all_lines=export_presets_read.readlines()
