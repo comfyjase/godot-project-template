@@ -34,7 +34,6 @@ jobs:
           rm -r godot-cpp/test
           rm -r thirdparty/emsdk
           rm -r thirdparty/imgui
-          rm -r thirdparty/osxcross
 
       # This needs to happen before Python and npm execution; it must happen before any extra files are written.
       - name: .gitignore checks (gitignore_check.sh)
