@@ -104,7 +104,8 @@ jobs:
         with:
           scons-cache: ${{ github.workspace }}/.scons_cache/
           cache-name: ${{ matrix.target.platform }}_${{ matrix.target.arch }}_${{ matrix.float-precision }}_${{ matrix.target-type }}
-
+        continue-on-error: true
+        
       - name: Generate Release Keystore
         if: ${{ matrix.target-type != 'template_debug' && env.ANDROID_KEYSTORE_ALIAS != null && env.ANDROID_KEYSTORE_PASSWORD != null }}
         run: |

@@ -76,7 +76,8 @@ jobs:
         with:
           scons-cache: ${{ github.workspace }}/.scons_cache/
           cache-name: ${{ matrix.target.platform }}_${{ matrix.target.arch }}_${{ matrix.float-precision }}_${{ matrix.target-type }}
-      
+        continue-on-error: true
+        
       - name: Export Project
         shell: sh
         run: |
