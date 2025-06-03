@@ -38,10 +38,10 @@ class TargetPlatformSelection(customtkinter.CTkFrame):
     def __init__(self, master):
         super().__init__(master)
         self.target_configurations = [ "template_debug", "template_release", "profile", "production" ]
-        self.target_platforms = [ "linux", "macos", "windows", "web" ]
+        self.target_platforms = [ "linux", "windows", "web", "android" ]
         
         self.configuration_labels = [ "Template Debug", "Template Release", "Profile", "Production" ]
-        self.platform_labels = [ "🐧 Linux", "🍎 MacOS", "🪟 Windows", "🌐 Web" ]
+        self.platform_labels = [ "🐧 Linux", "🪟 Windows", "🌐 Web", "🤖 Android" ]
         
         self.configuration_titles = []
         self.platform_titles = []
@@ -69,7 +69,7 @@ class TargetPlatformSelection(customtkinter.CTkFrame):
                 # Selecting default targets for convenience
                 if target_configuration == "template_debug" and target_platform == "linux":
                     checkbox.select()
-                if target_configuration == "production" and target_platform == "macos":
+                if target_configuration == "production" and target_platform == "android":
                     checkbox.select()
                     
                 self.checkboxes.append(checkbox)

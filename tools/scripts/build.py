@@ -45,7 +45,7 @@ elif architecture_arg == "web":
 elif architecture_arg == "android": # TODO: Add different android processor platforms? E.g. android_arm32, android_arm64, android_x86_32, android_x86_64?
     architecture_arg = "arm64"
     
-using_wsl = wsl_available and (platform_arg == "linux" or platform_arg == "macos")
+using_wsl = wsl_available and platform_arg == "linux"
 
 # ===============================================
 # Build Godot
@@ -97,8 +97,6 @@ if build_engine:
     if platform_arg == "macos" or platform_arg == "ios":
         if is_ci:
             build_command += " vulkan=yes"
-        elif platform.system() == "Linux":
-            build_command += " vulkan_sdk_path=$HOME/VulkanSDK osxcross_sdk=darwin24.4"
     # Removing dev_build/dev_mode from web editor because it doesn't compile (get emscripten errors...) and adding dlink_enabled
     elif platform_arg == "web":
         if not is_ci:
@@ -197,8 +195,6 @@ else:
 if platform_arg == "macos":
     if is_ci:
         build_command += " vulkan=yes"
-    elif platform.system() == "Linux" or using_wsl:
-        build_command += " vulkan_sdk_path=$HOME/VulkanSDK osxcross_sdk=darwin24.4"
 elif platform_arg == "web":
     if configuration_arg in ["editor", "editor_game", "template_debug"]:
         build_command = build_command.replace(" dev_build=yes dev_mode=yes", "")

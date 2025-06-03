@@ -42,7 +42,7 @@ elif architecture_arg == "web":
 elif architecture_arg == "android": # TODO: Add different android processor platforms? E.g. android_arm32, android_arm64, android_x86_32, android_x86_64?
     architecture_arg = "arm64"
     
-using_wsl = wsl_available and (platform_arg == "linux" or platform_arg == "macos")
+using_wsl = wsl_available and platform_arg == "linux"
 
 # ===============================================
 # SCons Clean
@@ -78,8 +78,6 @@ if clean_engine:
     if platform_arg == "macos":
         if is_ci:
             clean_command += " vulkan=yes"
-        elif platform.system() == "Linux" or platform.system() == "Windows":
-            clean_command += " vulkan_sdk_path=$HOME/VulkanSDK osxcross_sdk=darwin24.4"
     elif platform_arg == "web":
         if not is_ci:
             if configuration_arg in ["editor", "editor_game", "template_debug"]:
@@ -122,8 +120,6 @@ else:
 if platform_arg == "macos":
     if is_ci:
         clean_command += " vulkan=yes"
-    elif platform.system() == "Linux" or using_wsl:
-        clean_command += " vulkan_sdk_path=$HOME/VulkanSDK osxcross_sdk=darwin24.4"
 elif platform_arg == "web":
     if configuration_arg in ["editor", "editor_game", "template_debug"]:
         clean_command = clean_command.replace(" dev_build=yes dev_mode=yes", "")

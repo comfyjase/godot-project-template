@@ -83,10 +83,6 @@ if configuration_arg == "template_debug":
 if platform_arg == "macos":
     if is_ci:
         build_command += " vulkan=yes"
-    elif platform.system() == "Linux":
-        build_command += " vulkan_sdk_path=$HOME/VulkanSDK"
-        if platform.system() == "Linux":
-            build_command += " osxcross_sdk=darwin24.4"        
     build_command += " generate_bundle=yes"
 elif platform_arg == "web":
     if configuration_arg in ["editor", "editor_game", "template_debug"]:

@@ -129,7 +129,7 @@ if platform.system() == "Windows":
         
         shutil.copytree(x64_bit_platform_folder, new_platform_folder, dirs_exist_ok=True)
     
-    new_platforms_to_add = [ "linux", "macos", "web", "android" ]
+    new_platforms_to_add = [ "linux", "web", "android" ]
     for (new_platform in new_platforms_to_add):
         create_new_vs_platform(new_platform)
 
