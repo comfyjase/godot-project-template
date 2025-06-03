@@ -188,18 +188,25 @@ else:
 # Update export_presets.cfg with this template
 os.chdir(os.path.join("..", "..", "game"))
 
+godot_platform_name = platform_arg
+if platform_arg == "linux":
+    godot_platform_name = "linuxbsd"
+export_template_file_path = os.path.join(project_directory, "godot", "bin", f"{godot_platform_name}.{suffix}")
+export_template_file_path = os.path.normpath(export_template_file_path).replace("\\", "/")
+if using_wsl:
+    export_template_file_path = "/mnt/" + export_template_file_path.replace(":", "").lower()
+elif platform.system() == "Linux" or platform.system() == "Darwin":
+    export_template_file_path = export_template_file_path.lower()
+    
+if not os.path.exists(export_template_file_path):
+    print("Available files:", flush=True)
+    print_files()
+    sys.exit(f"Error: Failed to create {export_template_file_path} for {platform_arg} {configuration_arg} {architecture_arg} {precision_arg}")
+
+print(f"Called chmod a+rwx {export_template_file_path}", flush=True)
+subprocess.call(f"chmod a+rwx {export_template_file_path}", shell=True)
+
 with open("export_presets.cfg", "r") as export_presets_read:
-    godot_platform_name = platform_arg
-    if platform_arg == "linux":
-        godot_platform_name = "linuxbsd"
-    export_template_file_path = os.path.join(project_directory, "godot", "bin", f"{godot_platform_name}.{suffix}")
-    export_template_file_path = os.path.normpath(export_template_file_path).replace("\\", "/")
-    if using_wsl:
-        export_template_file_path = "/mnt/" + export_template_file_path.replace(":", "").lower()
-    elif platform.system() == "Linux" or platform.system() == "Darwin":
-        export_template_file_path = export_template_file_path.lower()
-        print(f"Called chmod a+rwx {export_template_file_path}", flush=True)
-        subprocess.call(f"chmod a+rwx {export_template_file_path}", shell=True)
     all_lines=export_presets_read.readlines()
     
     found_export = False
