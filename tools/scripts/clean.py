@@ -43,18 +43,6 @@ elif architecture_arg == "android": # TODO: Add different android processor plat
     architecture_arg = "arm64"
     
 using_wsl = wsl_available and platform_arg == "linux"
-
-# ===============================================
-# SCons Clean
-godot_configuration_arg = configuration_arg
-if godot_configuration_arg in ["profile", "production"]:
-    godot_configuration_arg = "template_release"
-elif godot_configuration_arg == "editor_game":
-    godot_configuration_arg = "editor"
-
-clean_command = ""
-if using_wsl:
-    clean_command = "wsl "
     
 # ===============================================
 # Engine Clean
@@ -63,70 +51,96 @@ if using_wsl:
 clean_engine = True
 
 if clean_engine:
-    print(f"Cleaning Engine Files {platform.system()}", flush=True)
-    os.chdir("godot")
+    print("=====================================", flush=True)
+    print("Cleaning Godot Engine", flush=True)
+    print("=====================================", flush=True)
+
+    godot_engine_architecture_arg = architecture_arg
+    if platform_arg not in ["windows", "linux", "macos"]:
+        godot_engine_architecture_arg = detect_arch()
+    
+    clean_command = ""
+    if using_wsl:
+        clean_command = "wsl "
+    
+    godot_platform = platform_arg
+    building_editor_for_non_native_os = (godot_platform in ["web", "android"] and configuration_arg == "editor")
+    
+    # Always make sure there's some native os version of the godot editor for the next step
+    # Generating the cpp bindings needs a godot binary file.
+    if godot_platform not in ["windows", "linux", "macos"]:
+        # Unless building the editor for web/android, then don't update godot_platform.
+        if not building_editor_for_non_native_os:
+            godot_platform = platform.system().lower()
+            if godot_platform == "darwin":
+                godot_platform = "macos"
+            print(f"Building godot engine for native os {godot_platform} {godot_engine_architecture_arg}", flush=True)
         
     if configuration_arg == "production":
-        clean_command += f"scons platform={platform_arg} target={godot_configuration_arg} arch={architecture_arg} precision={precision_arg} production=yes"
+        clean_command += f"scons platform={godot_platform} target=editor arch={godot_engine_architecture_arg} precision={precision_arg} production=yes"
     elif configuration_arg == "profile":
-        clean_command += f"scons platform={platform_arg} target={godot_configuration_arg} arch={architecture_arg} precision={precision_arg} production=yes debug_symbols=yes"
+        clean_command += f"scons platform={godot_platform} target=editor arch={godot_engine_architecture_arg} precision={precision_arg} production=yes debug_symbols=yes"
+        if is_ci:   # engine debug symbols are too large for CI
+            clean_command = clean_command.replace(" debug_symbols=yes", "")
     elif configuration_arg == "template_release":
-        clean_command += f"scons platform={platform_arg} target={godot_configuration_arg} arch={architecture_arg} precision={precision_arg}"
+        clean_command += f"scons platform={godot_platform} target=editor arch={godot_engine_architecture_arg} precision={precision_arg}"
     else:
-        clean_command += f"scons platform={platform_arg} target={godot_configuration_arg} arch={architecture_arg} precision={precision_arg} dev_build=yes dev_mode=yes"
+        clean_command += f"scons platform={godot_platform} target=editor arch={godot_engine_architecture_arg} precision={precision_arg} dev_build=yes dev_mode=yes"
+        if is_ci:   # Same as above...
+            clean_command = clean_command.replace(" dev_build=yes dev_mode=yes", "")
     
-    if platform_arg == "macos":
-        if is_ci:
-            clean_command += " vulkan=yes"
+    if is_ci:
+        clean_command += " debug_symbols=no"
+    clean_command += " tests=yes"
+    
+    if platform_arg == "macos" or platform_arg == "ios":
+        clean_command += " vulkan=yes"
     elif platform_arg == "web":
-        if not is_ci:
-            if configuration_arg in ["editor", "editor_game", "template_debug"]:
-                clean_command = clean_command.replace(" dev_build=yes dev_mode=yes", "")
-            
+        if building_editor_for_non_native_os:
             clean_command += " dlink_enabled=yes threads=no"
     elif platform_arg == "android":
-        if not is_ci:
+        if building_editor_for_non_native_os:
             clean_command += " generate_apk=yes"
-        
+    
     clean_command += " -c"
-    print(clean_command, flush=True)
+    print("Clean Command: " + clean_command, flush=True)
     return_code = subprocess.call(clean_command, shell=True)
     if return_code != 0:
-        sys.exit(f"Error: Failed to clean engine using scons for {platform_arg} {godot_configuration_arg} {architecture_arg} {precision_arg}")
-    
+        sys.exit(f"Error: Failed to clean godot for {platform_arg} editor {godot_engine_architecture_arg} {precision_arg}")
+
     os.chdir("..")
     
 # ===============================================
 # Project Clean
-print("Cleaning Game Project Files", flush=True)
-
-game_architecture = architecture_arg
-if platform_arg == "macos" and architecture_arg != "universal":
-    game_architecture = "universal"
+print("=====================================", flush=True)
+print("Cleaning Game", flush=True)
+print("=====================================", flush=True)
 
 clean_command = ""
 if using_wsl:
     clean_command = "wsl "
+game_architecture = architecture_arg
+if platform_arg == "macos" and architecture_arg != "universal":
+    game_architecture = "universal"
     
 if configuration_arg == "production":
-    clean_command += f"scons platform={platform_arg} target={godot_configuration_arg} arch={game_architecture} precision={precision_arg} production=yes"
+    clean_command += f"scons platform={platform_arg} target={configuration_arg} arch={game_architecture} precision={precision_arg} production=yes"
 elif configuration_arg == "profile":
-    clean_command += f"scons platform={platform_arg} target={godot_configuration_arg} arch={game_architecture} precision={precision_arg} production=yes debug_symbols=yes"
+    clean_command += f"scons platform={platform_arg} target={configuration_arg} arch={game_architecture} precision={precision_arg} production=yes debug_symbols=yes"
 elif configuration_arg == "template_release":
-    clean_command += f"scons platform={platform_arg} target={godot_configuration_arg} arch={game_architecture} precision={precision_arg}"
+    clean_command += f"scons platform={platform_arg} target={configuration_arg} arch={game_architecture} precision={precision_arg}"
 else:
-    clean_command += f"scons platform={platform_arg} target={godot_configuration_arg} arch={game_architecture} precision={precision_arg} dev_build=yes dev_mode=yes"
+    clean_command += f"scons platform={platform_arg} target={configuration_arg} arch={game_architecture} precision={precision_arg} dev_build=yes dev_mode=yes"
 
 if platform_arg == "macos":
-    if is_ci:
-        clean_command += " vulkan=yes"
+    clean_command += " vulkan=yes"
 elif platform_arg == "web":
     if configuration_arg in ["editor", "editor_game", "template_debug"]:
         clean_command = clean_command.replace(" dev_build=yes dev_mode=yes", "")
     clean_command += " threads=no"
-
+    
 clean_command += " -c"
-print(clean_command, flush=True)
+print(f"Command: {clean_command}", flush=True)
 return_code = subprocess.call(clean_command, shell=True)
 if return_code != 0:
-    sys.exit(f"Error: Failed to clean project using scons for {platform_arg} {godot_configuration_arg} {game_architecture} {precision_arg}")
+    sys.exit(f"Error: Failed to clean game for {platform_arg} {configuration_arg} {game_architecture} {precision_arg}")

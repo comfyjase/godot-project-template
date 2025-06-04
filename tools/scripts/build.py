@@ -51,15 +51,15 @@ using_wsl = wsl_available and platform_arg == "linux"
 # Build Godot
 os.chdir("godot")
 
-# Assuming for windows/linux/mac that arch arg is what the user wants to build the engine with.
-godot_engine_architecture_arg = architecture_arg
-if platform_arg not in ["windows", "linux", "macos"]:
-    godot_engine_architecture_arg = detect_arch()
-
 print("=====================================", flush=True)
 print("Build Godot Engine", flush=True)
 print("=====================================", flush=True)
 
+# Assuming for windows/linux/mac that arch arg is what the user wants to build the engine with.
+godot_engine_architecture_arg = architecture_arg
+if platform_arg not in ["windows", "linux", "macos"]:
+    godot_engine_architecture_arg = detect_arch()
+    
 build_command = ""
 if using_wsl:
     build_command = "wsl "
@@ -107,6 +107,18 @@ print("Build Command: " + build_command, flush=True)
 return_code = subprocess.call(build_command, shell=True)
 if return_code != 0:
     sys.exit(f"Error: Failed to build godot for {platform_arg} editor {godot_engine_architecture_arg} {precision_arg}")
+
+if is_ci:
+    clean_extra_debug_command = ""
+    if platform.system() == "Linux" or platform.system() == "Darwin":
+        clean_extra_debug_command = "strip bin/godot*"
+    elif platform.system() == "Windows":
+        clean_extra_debug_command = "Remove-Item bin/* -Include *.exp,*.lib,*.pdb -Force"
+
+    print(clean_extra_debug_command, flush=True)
+    return_code = subprocess.call(clean_extra_debug_command, shell=True)
+    if return_code != 0:
+        sys.exit(f"Error: Failed to clean up extra debug files from godot binaries for {platform_arg} editor {godot_engine_architecture_arg} {precision_arg}")        
 
 if platform_arg == "web" and configuration_arg in ["editor", "editor_game"]:
     print(os.getcwd(), flush=True)
@@ -188,8 +200,7 @@ else:
     build_command += f"scons platform={platform_arg} target={configuration_arg} arch={game_architecture} precision={precision_arg} dev_build=yes dev_mode=yes"
 
 if platform_arg == "macos":
-    if is_ci:
-        build_command += " vulkan=yes"
+    build_command += " vulkan=yes"
 elif platform_arg == "web":
     if configuration_arg in ["editor", "editor_game", "template_debug"]:
         build_command = build_command.replace(" dev_build=yes dev_mode=yes", "")
