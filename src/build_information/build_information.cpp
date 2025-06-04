@@ -73,7 +73,6 @@ void BuildInformation::_ready()
 	Vector2 debug_ui_minimum_size = Vector2(30.0f, 30.0f);
 
 	// Build Name
-	// TODO: Check this works in exported builds.
 	String build_information_file_path = "res://bin/build.info";
 	String build_name = FileAccess::open(build_information_file_path, FileAccess::READ)->get_as_text();
 	build_name_label = memnew(Label);
