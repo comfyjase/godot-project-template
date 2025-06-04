@@ -108,18 +108,6 @@ return_code = subprocess.call(build_command, shell=True)
 if return_code != 0:
     sys.exit(f"Error: Failed to build godot for {platform_arg} editor {godot_engine_architecture_arg} {precision_arg}")
 
-if is_ci:
-    clean_extra_debug_command = ""
-    if platform.system() == "Linux" or platform.system() == "Darwin":
-        clean_extra_debug_command = "strip bin/godot*"
-    elif platform.system() == "Windows":
-        clean_extra_debug_command = "Remove-Item bin/* -Include *.exp,*.lib,*.pdb -Force"
-
-    print(clean_extra_debug_command, flush=True)
-    return_code = subprocess.call(clean_extra_debug_command, shell=True)
-    if return_code != 0:
-        sys.exit(f"Error: Failed to clean up extra debug files from godot binaries for {platform_arg} editor {godot_engine_architecture_arg} {precision_arg}")        
-
 if platform_arg == "web" and configuration_arg in ["editor", "editor_game"]:
     print(os.getcwd(), flush=True)
     os.chdir(os.path.join("bin", ".web_zip"))

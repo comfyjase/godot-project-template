@@ -106,18 +106,6 @@ return_code = subprocess.call(build_command, shell=True)
 if return_code != 0:
     sys.exit(f"Error: Failed to create godot export template for {platform_arg} {configuration_arg} {architecture_arg} {precision_arg}")
 
-if is_ci:
-    clean_extra_debug_command = ""
-    if platform_arg == "linux" or platform_arg == "macos":
-        clean_extra_debug_command = "strip bin/godot*"
-    elif platform_arg == "windows":
-        clean_extra_debug_command = "Remove-Item bin/* -Include *.exp,*.lib,*.pdb -Force"
-
-    print(clean_extra_debug_command, flush=True)
-    return_code = subprocess.call(clean_extra_debug_command, shell=True)
-    if return_code != 0:
-        sys.exit(f"Error: Failed to clean up extra debug files from godot binaries for {platform_arg} editor {godot_engine_architecture_arg} {precision_arg}")
-        
 # ===============================================
 # Rename Files
 os.chdir("bin")
