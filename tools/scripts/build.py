@@ -213,7 +213,7 @@ if return_code != 0:
 
 # ===============================================
 # Write To Build Information File
-build_information_file_path = os.path.join(project_directory, "game", "bin", "build_information.txt")
+build_information_file_path = os.path.join(project_directory, "game", "bin", "build.info")
 with open(build_information_file_path, "w") as build_information_file_write:
     git_command = "git rev-parse --short HEAD"
     latest_git_commit_id = subprocess.check_output(git_command, shell=True).decode('ascii').strip()

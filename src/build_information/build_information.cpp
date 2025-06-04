@@ -74,7 +74,7 @@ void BuildInformation::_ready()
 
 	// Build Name
 	// TODO: Check this works in exported builds.
-	String build_information_file_path = "res://bin/build_information.txt";
+	String build_information_file_path = "res://bin/build.info";
 	String build_name = FileAccess::open(build_information_file_path, FileAccess::READ)->get_as_text();
 	build_name_label = memnew(Label);
 	build_name_label->set_name("BuildNameLabel");
