@@ -16,11 +16,13 @@ jobs:
         target:
           [
             #{ platform: windows, arch: arm64, os: windows-11-arm },
-            { platform: windows, arch: x86_32, os: windows-latest },
+            #{ platform: windows, arch: x86_32, os: windows-latest },
             { platform: windows, arch: x86_64, os: windows-latest },
           ]
-        target-type: [template_debug, template_release, profile, production]
-        float-precision: [single, double]
+        #target-type: [template_debug, template_release, profile, production]
+        #float-precision: [single, double]
+        target-type: [template_debug, production]
+        float-precision: [single]
 
     runs-on: ${{ matrix.target.os }}
     steps:

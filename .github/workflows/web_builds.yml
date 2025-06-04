@@ -12,8 +12,10 @@ jobs:
           [
             { platform: web, arch: wasm32, os: windows-latest }
           ]
-        target-type: [template_debug, template_release, profile, production]
-        float-precision: [single, double]
+        #target-type: [template_debug, template_release, profile, production]
+        #float-precision: [single, double]
+        target-type: [production]
+        float-precision: [single]
 
     runs-on: ${{ matrix.target.os }}
     steps:

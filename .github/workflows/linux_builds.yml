@@ -11,13 +11,15 @@ jobs:
         target:
           [
             #{ platform: linux, arch: arm32, os: ubuntu-22.04-arm },
-            { platform: linux, arch: arm64, os: ubuntu-22.04-arm },
-            { platform: linux, arch: x86_32, os: ubuntu-22.04 },
+            #{ platform: linux, arch: arm64, os: ubuntu-22.04-arm },
+            #{ platform: linux, arch: x86_32, os: ubuntu-22.04 },
             { platform: linux, arch: x86_64, os: ubuntu-22.04 },
           ]
-        target-type: [template_debug, template_release, profile, production]
-        float-precision: [single, double]
-
+        #target-type: [template_debug, template_release, profile, production]
+        #float-precision: [single, double]
+        target-type: [template_debug, production]
+        float-precision: [single]
+        
     runs-on: ${{ matrix.target.os }}
     steps:
       # Clone this repository
@@ -44,22 +46,12 @@ jobs:
 
       - name: Setup Dependencies
         run: |
-          sudo apt-get update
-          sudo apt-get install -y \
-          build-essential \
-          scons \
-          pkg-config \
-          libx11-dev \
-          libxcursor-dev \
-          libxinerama-dev \
-          libgl1-mesa-dev \
-          libglu1-mesa-dev \
-          libasound2-dev \
-          libpulse-dev \
-          libudev-dev \
-          libxi-dev \
-          libxrandr-dev \
-          libwayland-dev
+          sudo rm -f /etc/apt/sources.list.d/microsoft-prod.list
+          sudo apt-get install mesa-vulkan-drivers
+          sudo apt-get install libwayland-bin
+          echo "Disk usage before:" && df -h
+          sudo rm -rf /usr/local/lib/android
+          echo "Disk usage after:" && df -h
           
       # Add linux x86_32 toolchain
       - name: Install 32 Bit Support

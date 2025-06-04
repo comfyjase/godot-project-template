@@ -12,9 +12,11 @@ jobs:
           [
             { platform: ios, arch: arm64, os: macos-latest }
           ]
-        target-type: [template_debug, template_release, profile, production]
-        float-precision: [single, double]
-
+        #target-type: [template_debug, template_release, profile, production]
+        #float-precision: [single, double]
+        target-type: [production]
+        float-precision: [single]
+        
     runs-on: ${{ matrix.target.os }}
     steps:
       # Clone this repository
