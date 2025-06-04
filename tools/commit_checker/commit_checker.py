@@ -363,7 +363,7 @@ class App(customtkinter.CTk):
         
     def get_changed_files(self):
         changed_files = []
-        changed_files_str = subprocess.check_output("git status --short", shell=True).decode('ascii').strip()
+        changed_files_str = subprocess.check_output("git status --short", shell=True).decode('ascii').strip().replace("\\", "/")
         if changed_files_str != "":
             changed_files = changed_files_str.split("\n")
         print(f"Changed Files: {changed_files}")

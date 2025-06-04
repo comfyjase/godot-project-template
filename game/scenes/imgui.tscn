@@ -1,5 +1,0 @@
-[gd_scene format=3 uid="uid://wf4uqecvsntq"]
-
-[node name="ImGui" type="Node"]
-
-[node name="ImGuiDebug" type="ImGuiDebug" parent="."]

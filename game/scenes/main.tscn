@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://cexe77d1cxuao"]
 
 [ext_resource type="Texture2D" uid="uid://dbx66sovxd1" path="res://icon.svg" id="1_ry8g2"]
-[ext_resource type="PackedScene" uid="uid://wf4uqecvsntq" path="res://scenes/imgui.tscn" id="2_cdjr8"]
+[ext_resource type="PackedScene" uid="uid://wf4uqecvsntq" path="res://scenes/debug.tscn" id="2_cdjr8"]
 
 [node name="Root" type="Node2D"]
 
@@ -11,4 +11,4 @@ speed = 2.0
 position = Vector2(343, 157)
 texture = ExtResource("1_ry8g2")
 
-[node name="ImGui" parent="." instance=ExtResource("2_cdjr8")]
+[node name="Debug" parent="." instance=ExtResource("2_cdjr8")]

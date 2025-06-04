@@ -10,10 +10,7 @@
 
 #include "custom_sprite.h"
 
-// Note, still want to include this class so the scene is always valid
-// It's just, the class will basically be empty if IMGUI_ENABLED is not defined
-// Which is as designed. This class should always exist.
-#include "imgui_debug.h"
+#include "build_information.h"
 
 using namespace godot;
 
@@ -30,7 +27,7 @@ void initialize_gdextension_types(ModuleInitializationLevel p_level)
 
 	// Use GDREGISTER_CLASS if you want logic to run in editor as well...
 	//GDREGISTER_CLASS(CustomSprite);
-	GDREGISTER_RUNTIME_CLASS(ImGuiDebug);	// See comment above for #include "imgui_debug.h"
+	GDREGISTER_RUNTIME_CLASS(BuildInformation);
 	GDREGISTER_RUNTIME_CLASS(CustomSprite);
 }
 

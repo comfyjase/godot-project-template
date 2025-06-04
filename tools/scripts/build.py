@@ -56,72 +56,67 @@ godot_engine_architecture_arg = architecture_arg
 if platform_arg not in ["windows", "linux", "macos"]:
     godot_engine_architecture_arg = detect_arch()
 
-build_engine = (configuration_arg in ["editor", "editor_game"] or is_ci)
-if build_engine:
-    print("=====================================", flush=True)
-    print("Build Godot Engine", flush=True)
-    print("=====================================", flush=True)
-    
-    build_command = ""
-    if using_wsl:
-        build_command = "wsl "
-    
-    godot_platform = platform_arg
-    
-    # For CI, need to make sure there's some native os version of the godot editor for the next step
-    # Generating the cpp bindings needs a godot binary file.
-    if is_ci:
-        if godot_platform not in ["windows", "linux", "macos"]:
-            godot_platform = platform.system().lower()
-            if godot_platform == "darwin":
-                godot_platform = "macos"
-            print(f"Building godot engine for native os {godot_platform} {godot_engine_architecture_arg}", flush=True)
-    
-    if configuration_arg == "production":
-        build_command += f"scons platform={godot_platform} target=editor arch={godot_engine_architecture_arg} precision={precision_arg} production=yes"
-    elif configuration_arg == "profile":
-        build_command += f"scons platform={godot_platform} target=editor arch={godot_engine_architecture_arg} precision={precision_arg} production=yes debug_symbols=yes"
-        if is_ci:   # engine debug symbols are too large for CI
-            build_command = build_command.replace(" debug_symbols=yes", "")
-    elif configuration_arg == "template_release":
-        build_command += f"scons platform={godot_platform} target=editor arch={godot_engine_architecture_arg} precision={precision_arg}"
-    else:
-        build_command += f"scons platform={godot_platform} target=editor arch={godot_engine_architecture_arg} precision={precision_arg} dev_build=yes dev_mode=yes"
-        if is_ci:   # Same as above...
-            build_command = build_command.replace(" dev_build=yes dev_mode=yes", "")
+print("=====================================", flush=True)
+print("Build Godot Engine", flush=True)
+print("=====================================", flush=True)
 
-    if is_ci:
-        build_command += " debug_symbols=no"
-    build_command += " tests=yes"
+build_command = ""
+if using_wsl:
+    build_command = "wsl "
+
+godot_platform = platform_arg
+building_editor_for_non_native_os = (godot_platform in ["web", "android"] and configuration_arg == "editor")
+
+# Always make sure there's some native os version of the godot editor for the next step
+# Generating the cpp bindings needs a godot binary file.
+if godot_platform not in ["windows", "linux", "macos"]:
+    # Unless building the editor for web/android, then don't update godot_platform.
+    if not building_editor_for_non_native_os:
+        godot_platform = platform.system().lower()
+        if godot_platform == "darwin":
+            godot_platform = "macos"
+        print(f"Building godot engine for native os {godot_platform} {godot_engine_architecture_arg}", flush=True)
     
-    if platform_arg == "macos" or platform_arg == "ios":
-        if is_ci:
-            build_command += " vulkan=yes"
-    # Removing dev_build/dev_mode from web editor because it doesn't compile (get emscripten errors...) and adding dlink_enabled
-    elif platform_arg == "web":
-        if not is_ci:
-            if configuration_arg in ["editor", "editor_game", "template_debug"]:
-                build_command = build_command.replace(" dev_build=yes dev_mode=yes", "")
-            
-            build_command += " dlink_enabled=yes threads=no"
-    elif platform_arg == "android":
-        if not is_ci:
-            build_command += " generate_apk=yes"
-        
-    print("Build Command: " + build_command, flush=True)
-    return_code = subprocess.call(build_command, shell=True)
-    if return_code != 0:
-        sys.exit(f"Error: Failed to build godot for {platform_arg} editor {godot_engine_architecture_arg} {precision_arg}")
+if configuration_arg == "production":
+    build_command += f"scons platform={godot_platform} target=editor arch={godot_engine_architecture_arg} precision={precision_arg} production=yes"
+elif configuration_arg == "profile":
+    build_command += f"scons platform={godot_platform} target=editor arch={godot_engine_architecture_arg} precision={precision_arg} production=yes debug_symbols=yes"
+    if is_ci:   # engine debug symbols are too large for CI
+        build_command = build_command.replace(" debug_symbols=yes", "")
+elif configuration_arg == "template_release":
+    build_command += f"scons platform={godot_platform} target=editor arch={godot_engine_architecture_arg} precision={precision_arg}"
+else:
+    build_command += f"scons platform={godot_platform} target=editor arch={godot_engine_architecture_arg} precision={precision_arg} dev_build=yes dev_mode=yes"
+    if is_ci:   # Same as above...
+        build_command = build_command.replace(" dev_build=yes dev_mode=yes", "")
+
+if is_ci:
+    build_command += " debug_symbols=no"
+build_command += " tests=yes"
+
+if platform_arg == "macos" or platform_arg == "ios":
+    build_command += " vulkan=yes"
+elif platform_arg == "web":
+    if building_editor_for_non_native_os:
+        build_command += " dlink_enabled=yes threads=no"
+elif platform_arg == "android":
+    if building_editor_for_non_native_os:
+        build_command += " generate_apk=yes"
     
-    if platform_arg == "web" and configuration_arg in ["editor", "editor_game"]:
-        print(os.getcwd(), flush=True)
-        os.chdir(os.path.join("bin", ".web_zip"))
+print("Build Command: " + build_command, flush=True)
+return_code = subprocess.call(build_command, shell=True)
+if return_code != 0:
+    sys.exit(f"Error: Failed to build godot for {platform_arg} editor {godot_engine_architecture_arg} {precision_arg}")
+
+if platform_arg == "web" and configuration_arg in ["editor", "editor_game"]:
+    print(os.getcwd(), flush=True)
+    os.chdir(os.path.join("bin", ".web_zip"))
+    
+    godot_html_editor_file_name = "godot.editor.html"
+    if os.path.isfile(godot_html_editor_file_name):
+        shutil.copyfile(godot_html_editor_file_name, "index.html")
         
-        godot_html_editor_file_name = "godot.editor.html"
-        if os.path.isfile(godot_html_editor_file_name):
-            shutil.copyfile(godot_html_editor_file_name, "index.html")
-            
-        os.chdir(os.path.join("..", ".."))
+    os.chdir(os.path.join("..", ".."))
 
 # ===============================================
 # Generate C++ extension api files
@@ -204,6 +199,21 @@ print(f"Command: {build_command}", flush=True)
 return_code = subprocess.call(build_command, shell=True)
 if return_code != 0:
     sys.exit(f"Error: Failed to build game for {platform_arg} {configuration_arg} {game_architecture} {precision_arg}")
+
+# ===============================================
+# Write To Build Information File
+build_information_file_path = os.path.join(project_directory, "game", "bin", "build_information.txt")
+with open(build_information_file_path, "w") as build_information_file_write:
+    git_command = "git rev-parse --short HEAD"
+    latest_git_commit_id = subprocess.check_output(git_command, shell=True).decode('ascii').strip()
+    
+    git_command = "git show -s --date=format:'%Y%m%d_%H%M%S' --format=%cd"
+    latest_commit_timestamp = subprocess.check_output(git_command, shell=True).decode('ascii').strip().replace("\'", "")
+    
+    git_command = "git branch --show-current"
+    current_branch_name = subprocess.check_output(git_command, shell=True).decode('ascii').strip()
+    
+    build_information_file_write.writelines(f"Game_{platform_arg.capitalize()}_{configuration_arg.replace("_", " ").title().replace(" ", "_")}_{architecture_arg}_{precision_arg.capitalize()}_{latest_commit_timestamp}_{current_branch_name}_{latest_git_commit_id}")
 
 # ===============================================
 # (Web Only) Zip Project
