@@ -137,7 +137,7 @@ if platform_arg == "web":
         if precision_arg == "double":
             old_name = old_name.replace(f"{architecture_arg}", f"{precision_arg}.{architecture_arg}")
         new_name = f"web.{suffix}"
-        os.rename(f"{old_name}", f"{new_name}")
+        os.replace(f"{old_name}", f"{new_name}")
 elif platform_arg == "android":
     old_name = f"android_dev{template_suffix}"
     if (configuration_arg in ["editor", "editor_game", "template_debug"]):
@@ -148,7 +148,7 @@ elif platform_arg == "android":
     
     if os.path.isfile(old_name):
         print(f"Renaming {old_name} to android.{suffix}", flush=True)
-        os.rename(old_name, f"android.{suffix}")
+        os.replace(old_name, f"android.{suffix}")
     else:
         print(f"{old_name} custom export template file not found, here are the available files: ", flush=True)
         print_files()
@@ -167,7 +167,7 @@ elif platform_arg == "macos" or platform_arg == "ios":
         old_name = old_name.replace(f"{platform_name_to_use}", f"{platform_name_to_use}_double")
         
     if os.path.isfile(f"{old_name}"):
-        os.rename(f"{old_name}", f"{new_name}")
+        os.replace(f"{old_name}", f"{new_name}")
     else:
         print_files()
 else:
@@ -178,7 +178,7 @@ else:
     for file in godot_files:
         old_name = file
         new_name = file.replace("godot.", "").replace(f"{godot_configuration_arg}", f"{configuration_arg}")
-        os.rename(old_name, new_name)
+        os.replace(old_name, new_name)
 
 # ===============================================
 # Update export_presets.cfg with this template
@@ -208,7 +208,7 @@ with open("export_presets.cfg", "r") as export_presets_read:
     
     found_export = False
     for index, line in enumerate(all_lines):
-        if line == f"name=\"{platform_arg} {configuration_arg} {architecture_arg} {precision_arg}\"\n":
+        if f"name=\"{platform_arg} {configuration_arg} {architecture_arg} {precision_arg}" in line:
             found_export = True
             print(f"Found export preset for {platform_arg} {configuration_arg} {architecture_arg} {precision_arg}", flush=True)
             

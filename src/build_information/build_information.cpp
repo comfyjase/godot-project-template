@@ -2,11 +2,13 @@
 
 #include <godot_cpp/core/class_db.hpp>
 #include <godot_cpp/core/print_string.hpp>
+#include <godot_cpp/classes/display_server.hpp>
 #include <godot_cpp/classes/engine.hpp>
 #include <godot_cpp/classes/file_access.hpp>
 #include <godot_cpp/classes/global_constants.hpp>
 #include <godot_cpp/classes/input.hpp>
 #include <godot_cpp/classes/label.hpp>
+#include <godot_cpp/classes/os.hpp>
 #include <godot_cpp/classes/rendering_server.hpp>
 #include <godot_cpp/classes/rich_text_label.hpp>
 #include <godot_cpp/classes/scene_tree.hpp>
@@ -69,6 +71,13 @@ void BuildInformation::_ready()
 	}
 
 	current_frame_history_index = 0;
+
+	// Mobiles only to make sure build info appears in the edges of the screen
+	// Even if the device has rounded corners.
+#if PLATFORM_IOS || PLATFORM_ANDROID
+	constexpr float padding = 30.0f;
+	set_position(Vector2(get_position().x - padding, get_position().y + padding));
+#endif
 
 	Vector2 debug_ui_minimum_size = Vector2(30.0f, 30.0f);
 
@@ -187,7 +196,7 @@ void BuildInformation::draw_build_information(double delta) {
 		text_colour = "red";
 	else if (fps < 60.0)
 		text_colour = "yellow";
-	fps_label->set_text("FPS: [color=" + text_colour + "]" + String::num_real(fps).pad_decimals(2) + "[/color]");
+	fps_label->set_text("FPS: [color=" + text_colour + "]" + String::num_real(fps).pad_decimals(0) + "[/color]");
 
 	const double frame_time = 1000.0 / fps;
 	text_colour = "green";

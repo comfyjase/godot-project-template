@@ -158,6 +158,14 @@ elif platform_arg == "macos":
 if configuration_arg in ["editor", "editor_game", "template_debug"]:
     necessary_file_path = necessary_file_path.replace(".dev", "")
 
+if platform_arg == "android" and platform.system() == "Windows":
+    android_binary_made_on_windows_file_path = necessary_file_path.replace("libgame.", "game.").replace("\\", "/")
+    if not os.path.exists(android_binary_made_on_windows_file_path) and not os.path.exists(necessary_file_path):
+        sys.exit(f"{android_binary_made_on_windows_file_path} or {necessary_file_path} don't exist. Has build.py created editor_game custom export template correctly?")
+    
+    if os.path.exists(android_binary_made_on_windows_file_path):
+        os.replace(android_binary_made_on_windows_file_path, necessary_file_path)
+    
 if not os.path.exists(necessary_file_path):
     print("Available binary files:", flush=True)
     print_files(os.path.dirname(os.path.abspath(necessary_file_path)))

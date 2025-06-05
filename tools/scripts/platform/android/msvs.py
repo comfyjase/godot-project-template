@@ -32,18 +32,19 @@ def get_vs_debug_settings():
         binary_file_name = "python"
 
     # TODO: Pass $(Configuration) for architecture for arm32 and other configs...
-    android_command_arguments_to_install_and_run = "tools/scripts/android_install_and_run.py $(Configuration) arm64 single"    
+    android_editor_command_arguments_to_install_and_run = "tools/scripts/android_install_and_run.py $(Configuration) arm64 single"
+    android_editor_game_command_arguments_to_install_and_run = "tools/scripts/export_and_run.py android $(Configuration) arm64 single"    
 
     vs_debug_settings.extend([
         # android editor
         {
             'LocalDebuggerCommand': binary_file_name,
-            'LocalDebuggerCommandArguments': android_command_arguments_to_install_and_run
+            'LocalDebuggerCommandArguments': android_editor_command_arguments_to_install_and_run
         },
         # android editor_game
         {
             'LocalDebuggerCommand': binary_file_name,
-            'LocalDebuggerCommandArguments': android_command_arguments_to_install_and_run
+            'LocalDebuggerCommandArguments': android_editor_game_command_arguments_to_install_and_run
         },
         # android template_debug
         {

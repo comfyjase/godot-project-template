@@ -38,6 +38,8 @@ if return_code != 0:
 # Run
 if configuration == "editor":
     return_code = subprocess.call(f"adb.exe shell monkey -p org.godotengine.editor.v4.dev 1", shell=True)
+elif configuration == "editor_game":
+    return_code = subprocess.call(f"adb.exe shell monkey -p com.example.game.editor_game 1", shell=True)
 else:
     # TODO: What is the package name for the game library???
     return_code = subprocess.call(f"adb.exe shell monkey -p com.example.game 1", shell=True)
