@@ -98,6 +98,8 @@ if platform_arg == "macos" or platform_arg == "ios":
     build_command += " vulkan=yes"
 elif platform_arg == "web":
     if building_editor_for_non_native_os:
+        if configuration_arg in ["editor", "editor_game", "template_debug"]:
+            build_command = build_command.replace(" dev_build=yes dev_mode=yes", "")
         build_command += " dlink_enabled=yes threads=no"
 elif platform_arg == "android":
     if building_editor_for_non_native_os:
@@ -178,7 +180,7 @@ if using_wsl:
     build_command = "wsl "
 
 game_target = configuration_arg
-if platform_arg == "android" and game_target == "editor_game":
+if game_target == "editor_game" and platform_arg in ["web", "android"]:
     game_target = "template_debug"
     
 game_architecture = architecture_arg
@@ -236,12 +238,13 @@ if platform_arg == "web" and configuration_arg == "editor":
     shutil.make_archive("game", "zip", "game")
     
 # ===============================================
-# (Android Only) Create Custom Export Template If Needed
-if platform_arg == "android" and configuration_arg == "editor_game":
-    print("=====================================", flush=True)
-    print("Android Creating Custom Export Template For Editor Game", flush=True)
-    print("=====================================", flush=True)
+# (Web/Android Only) Create Custom Export Template If Needed
+if configuration_arg == "editor_game":
+    if platform_arg in ["web", "android"]:
+        print("=====================================", flush=True)
+        print(f"{platform_arg.capitalize()} Creating Custom Export Template For Editor Game", flush=True)
+        print("=====================================", flush=True)
     
-    return_code = subprocess.call(f"python {os.path.join(project_directory, "tools", "scripts", "create_custom_export_template.py")} {platform_arg} {configuration_arg} {architecture_arg} {precision_arg}", shell=True)
-    if return_code != 0:
-        sys.exit(f"Error: create_custom_export_template.py {platform_arg} {configuration_arg} {architecture_arg} {precision_arg} failed")
+        return_code = subprocess.call(f"python {os.path.join(project_directory, "tools", "scripts", "create_custom_export_template.py")} {platform_arg} {configuration_arg} {architecture_arg} {precision_arg}", shell=True)
+        if return_code != 0:
+            sys.exit(f"Error: create_custom_export_template.py {platform_arg} {configuration_arg} {architecture_arg} {precision_arg} failed")

@@ -104,7 +104,7 @@ elif platform_arg == "ios":
 print(build_command, flush=True)
 return_code = subprocess.call(build_command, shell=True)
 if return_code != 0:
-    sys.exit(f"Error: Failed to create godot export template for {platform_arg} {configuration_arg} {architecture_arg} {precision_arg}")
+    sys.exit(f"Error: Failed to build godot export template for {platform_arg} {configuration_arg} {architecture_arg} {precision_arg}")
 
 # ===============================================
 # Rename Files
@@ -130,8 +130,8 @@ if precision_arg == "double":
     suffix = suffix.replace(f"{architecture_arg}", f"{precision_arg}.{architecture_arg}")
 if platform_arg == "web":
     if configuration_arg in ["editor", "editor_game"]:
-        shutil.copytree(".web_zip", f"web_{configuration_arg}", dirs_exist_ok=True)
-        shutil.make_archive(f"web_{configuration_arg}", "zip", f"web_{configuration_arg}")
+        shutil.copytree(".web_zip", f"web.{configuration_arg}.{architecture_arg}", dirs_exist_ok=True)
+        shutil.make_archive(f"web.{configuration_arg}.{architecture_arg}", "zip", f"web.{configuration_arg}.{architecture_arg}")
     else:
         old_name = f"godot.web.{godot_configuration_arg}.{architecture_arg}.nothreads.dlink{template_suffix}"
         if precision_arg == "double":

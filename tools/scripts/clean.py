@@ -54,9 +54,14 @@ if clean_engine:
     print("=====================================", flush=True)
     print("Cleaning Godot Engine", flush=True)
     print("=====================================", flush=True)
-
+    
+    os.chdir("godot")
+    
+    building_editor_for_non_native_os = (platform_arg in ["web", "android"] and configuration_arg == "editor")
+    
+    # Assuming for windows/linux/mac that arch arg is what the user wants to build the engine with.
     godot_engine_architecture_arg = architecture_arg
-    if platform_arg not in ["windows", "linux", "macos"]:
+    if not building_editor_for_non_native_os and platform_arg not in ["windows", "linux", "macos"]:
         godot_engine_architecture_arg = detect_arch()
     
     clean_command = ""
@@ -119,23 +124,28 @@ print("=====================================", flush=True)
 clean_command = ""
 if using_wsl:
     clean_command = "wsl "
+
+game_target = configuration_arg
+if game_target == "editor_game" and platform_arg in ["web", "android"]:
+    game_target = "template_debug"
+    
 game_architecture = architecture_arg
 if platform_arg == "macos" and architecture_arg != "universal":
     game_architecture = "universal"
     
-if configuration_arg == "production":
-    clean_command += f"scons platform={platform_arg} target={configuration_arg} arch={game_architecture} precision={precision_arg} production=yes"
-elif configuration_arg == "profile":
-    clean_command += f"scons platform={platform_arg} target={configuration_arg} arch={game_architecture} precision={precision_arg} production=yes debug_symbols=yes"
-elif configuration_arg == "template_release":
-    clean_command += f"scons platform={platform_arg} target={configuration_arg} arch={game_architecture} precision={precision_arg}"
+if game_target == "production":
+    clean_command += f"scons platform={platform_arg} target={game_target} arch={game_architecture} precision={precision_arg} production=yes"
+elif game_target == "profile":
+    clean_command += f"scons platform={platform_arg} target={game_target} arch={game_architecture} precision={precision_arg} production=yes debug_symbols=yes"
+elif game_target == "template_release":
+    clean_command += f"scons platform={platform_arg} target={game_target} arch={game_architecture} precision={precision_arg}"
 else:
-    clean_command += f"scons platform={platform_arg} target={configuration_arg} arch={game_architecture} precision={precision_arg} dev_build=yes dev_mode=yes"
+    clean_command += f"scons platform={platform_arg} target={game_target} arch={game_architecture} precision={precision_arg} dev_build=yes dev_mode=yes"
 
 if platform_arg == "macos":
     clean_command += " vulkan=yes"
 elif platform_arg == "web":
-    if configuration_arg in ["editor", "editor_game", "template_debug"]:
+    if game_target in ["editor", "editor_game", "template_debug"]:
         clean_command = clean_command.replace(" dev_build=yes dev_mode=yes", "")
     clean_command += " threads=no"
     
@@ -143,4 +153,4 @@ clean_command += " -c"
 print(f"Command: {clean_command}", flush=True)
 return_code = subprocess.call(clean_command, shell=True)
 if return_code != 0:
-    sys.exit(f"Error: Failed to clean game for {platform_arg} {configuration_arg} {game_architecture} {precision_arg}")
+    sys.exit(f"Error: Failed to clean game for {platform_arg} {game_target} {game_architecture} {precision_arg}")
