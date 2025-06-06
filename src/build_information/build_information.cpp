@@ -1,7 +1,5 @@
 #include "build_information.h"
 
-#include <godot_cpp/core/class_db.hpp>
-#include <godot_cpp/core/print_string.hpp>
 #include <godot_cpp/classes/display_server.hpp>
 #include <godot_cpp/classes/engine.hpp>
 #include <godot_cpp/classes/file_access.hpp>
@@ -13,6 +11,8 @@
 #include <godot_cpp/classes/rich_text_label.hpp>
 #include <godot_cpp/classes/scene_tree.hpp>
 #include <godot_cpp/classes/viewport.hpp>
+#include <godot_cpp/core/class_db.hpp>
+#include <godot_cpp/core/print_string.hpp>
 
 #if IMGUI_ENABLED
 #include <imgui-godot.h>
@@ -20,8 +20,7 @@
 
 using namespace godot;
 
-void BuildInformation::_bind_methods()
-{}
+void BuildInformation::_bind_methods() {}
 
 BuildInformation::BuildInformation() :
 		always_show_build_information(true),
@@ -40,14 +39,11 @@ BuildInformation::BuildInformation() :
 		cpu_frame_time_label(nullptr),
 		gpu_frame_time_label(nullptr),
 		joypad_button_just_pressed(false),
-		show(false)
-{}
+		show(false) {}
 
-BuildInformation::~BuildInformation()
-{}
+BuildInformation::~BuildInformation() {}
 
-void BuildInformation::_ready()
-{
+void BuildInformation::_ready() {
 #if IMGUI_ENABLED
 	ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
 #endif
@@ -64,8 +60,7 @@ void BuildInformation::_ready()
 	rendering_server->viewport_set_measure_render_time(viewport_rid, true);
 
 	const double initial_frame_time = (1000.0 / 120.0);
-	for (int i = 0; i < FRAME_TIME_HISTORY; ++i)
-	{
+	for (int i = 0; i < FRAME_TIME_HISTORY; ++i) {
 		cpu_times[i] = initial_frame_time;
 		gpu_times[i] = initial_frame_time;
 	}
@@ -103,39 +98,30 @@ void BuildInformation::_ready()
 	init_build_information_rich_text_label(gpu_frame_time_label, "GPUFrameTimeLabel", debug_ui_minimum_size);
 }
 
-void BuildInformation::_input(const Ref<InputEvent> &p_event)
-{
+void BuildInformation::_input(const Ref<InputEvent> &p_event) {
 #if IMGUI_ENABLED
 	bool imgui_toggle_debug_joypad_input = (input->is_joy_button_pressed(0, JoyButton::JOY_BUTTON_LEFT_STICK) && input->is_joy_button_pressed(0, JoyButton::JOY_BUTTON_RIGHT_STICK));
 
 	// Keyboard input
-	if (input->is_action_just_pressed("imgui_toggle_debug"))
-	{
+	if (input->is_action_just_pressed("imgui_toggle_debug")) {
 		show = !show;
 	}
 
 	// Joypad input
-	if (imgui_toggle_debug_joypad_input)
-	{
-		if (!joypad_button_just_pressed)
-		{
+	if (imgui_toggle_debug_joypad_input) {
+		if (!joypad_button_just_pressed) {
 			show = !show;
 			joypad_button_just_pressed = true;
 		}
-	}
-	else
-	{
+	} else {
 		joypad_button_just_pressed = false;
 	}
 #endif
 }
 
-void BuildInformation::_process(double delta)
-{
-	if (!show)
-	{
-		if (always_show_build_information)
-		{
+void BuildInformation::_process(double delta) {
+	if (!show) {
+		if (always_show_build_information) {
 			draw_build_information(delta);
 		}
 
@@ -159,15 +145,13 @@ void BuildInformation::_process(double delta)
 
 		draw_node_hierarchy(root_node);
 
-		if (!any_hierarchy_item_selected)
-		{
+		if (!any_hierarchy_item_selected) {
 			selected_node = nullptr;
 		}
 	}
 	ImGui::End();
 
-	if (selected_node != nullptr && root_node != selected_node && selected_node->has_method("draw_debug"))
-	{
+	if (selected_node != nullptr && root_node != selected_node && selected_node->has_method("draw_debug")) {
 		ImGui::Begin("Debug Menu");
 		{
 			draw_debug_menu(selected_node);
@@ -244,39 +228,31 @@ void BuildInformation::draw_build_information(double delta) {
 		current_frame_history_index = 0;
 }
 
-void BuildInformation::draw_node_hierarchy(Node *node)
-{
+void BuildInformation::draw_node_hierarchy(Node *node) {
 #if IMGUI_ENABLED
 	ImGuiTreeNodeFlags flag = ImGuiTreeNodeFlags_DefaultOpen;
 
-	if (node->get_child_count() == 0)
-	{
+	if (node->get_child_count() == 0) {
 		flag |= ImGuiTreeNodeFlags_Leaf;
-	}
-	else
-	{
+	} else {
 		flag |= ImGuiTreeNodeFlags_OpenOnArrow;
 		flag |= ImGuiTreeNodeFlags_OpenOnDoubleClick;
 	}
 
-	if (selected_node == node)
-	{
+	if (selected_node == node) {
 		flag |= ImGuiTreeNodeFlags_Selected;
 		any_hierarchy_item_selected = true;
 	}
 
-	if (ImGui::TreeNodeEx(node->get_name().c_unescape().utf8().get_data(), flag))
-	{
-		if (ImGui::IsItemClicked() || ImGui::IsItemActivated())
-		{
+	if (ImGui::TreeNodeEx(node->get_name().c_unescape().utf8().get_data(), flag)) {
+		if (ImGui::IsItemClicked() || ImGui::IsItemActivated()) {
 			selected_node = node;
 			any_hierarchy_item_selected = true;
 		}
-		
+
 		Array children_nodes = node->get_children();
-		for (int i = 0; i < children_nodes.size(); ++i)
-		{
-			Node* child = node->get_child(i);
+		for (int i = 0; i < children_nodes.size(); ++i) {
+			Node *child = node->get_child(i);
 			draw_node_hierarchy(child);
 		}
 
@@ -285,23 +261,19 @@ void BuildInformation::draw_node_hierarchy(Node *node)
 #endif
 }
 
-void BuildInformation::draw_debug_menu(Node *node, bool include_all_children_draw_debug/* = false*/)
-{
+void BuildInformation::draw_debug_menu(Node *node, bool include_all_children_draw_debug /* = false*/) {
 #if IMGUI_ENABLED
-	if (node->has_method("draw_debug"))
-	{
+	if (node->has_method("draw_debug")) {
 		ImGui::Text("%s", node->get_name().c_unescape().utf8().get_data());
 		ImGui::Separator();
 		node->call("draw_debug");
 		ImGui::Separator();
 	}
 
-	if (include_all_children_draw_debug)
-	{
+	if (include_all_children_draw_debug) {
 		TypedArray<Node> children_nodes = node->get_children();
-		for (int i = 0; i < children_nodes.size(); ++i)
-		{
-			Node* child = node->get_child(i);
+		for (int i = 0; i < children_nodes.size(); ++i) {
+			Node *child = node->get_child(i);
 			draw_debug_menu(child, include_all_children_draw_debug);
 		}
 	}
