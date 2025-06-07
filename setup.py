@@ -2,14 +2,17 @@
 
 import os
 import platform
+import requests
 import shutil
 import subprocess
 import sys
+import webbrowser
 
 if platform.system() == "Windows":
     import winreg
 
 from methods import *
+from pathlib import Path
 
 current_directory = os.getcwd()
 
@@ -54,6 +57,9 @@ print("############################################", flush=True)
 # Installs
 print("Installing software and system dependencies for project", flush=True)
 
+print("==========================================", flush=True)
+print("Installing Python Libraries", flush=True)
+print("==========================================", flush=True)
 # pip
 run_subprocess("python -m ensurepip --upgrade", "Error: Failed to install pip, have you installed python correctly and added it to PATH? Aborting!")
 
@@ -61,13 +67,65 @@ run_subprocess("python -m ensurepip --upgrade", "Error: Failed to install pip, h
 run_subprocess("pip install scons", "Error: Failed to install scons somehow... aborting!")
 run_subprocess("pip install customtkinter", "Error: Failed to install customtkinter... aborting!")
 run_subprocess("pip install pillow", "Error: Failed to install pillow... aborting!")
+run_subprocess("pip install requests", "Error: Failed to install requests... aborting!")
+print("Done", flush=True)
+print("", flush=True)
 
+print("==========================================", flush=True)
+print("Installing Godot Swappy", flush=True)
+print("==========================================", flush=True)
+URL = "https://github.com/godotengine/godot-swappy/releases/download/from-source-2025-01-31/godot-swappy.zip"
+r = requests.get(URL)
+with open("godot-swappy.zip", "wb") as fd:
+    fd.write(r.content)
+shutil.unpack_archive("godot-swappy.zip", "godot/thirdparty/swappy-frame-pacing")
+print("Done", flush=True)
+print("", flush=True)
+
+print("==========================================", flush=True)
+print("Installing Android SDK", flush=True)
+print("==========================================", flush=True)
+
+print("Next, you will have to manually download OpenJDK 17 from the next website that will open up.", flush=True)
+input("Press Enter to go to the OpenJDK 17 website (https://adoptium.net/en-GB/temurin/releases/?variant=openjdk17&os=any&arch=any&version=17)...")
+webbrowser.open("https://adoptium.net/en-GB/temurin/releases/?variant=openjdk17&os=any&arch=any&version=17")
+input("Press Enter once you have installed OpenJDK 17...")
+
+print("")
+print("Next, this script will open a website link for you where you have to accept the license terms and manually download the android sdk command line tools.", flush=True)
+print("You will have to scroll down towards the bottom of the page until you see the Command line tools only header - download the sdk for your platform.", flush=True)
+downloads_folder = Path.home() / "Downloads/"
+
+print("")
+input("Press Enter to go to the Android SDK download website (https://developer.android.com/studio#command-tools)...")
+webbrowser.open("https://developer.android.com/studio#command-tools")
+print("")
+input("Press Enter to continue once you have downloaded the Androidn SDK zip folder...")
+android_sdk_version_folder_name = "commandlinetools-win-13114758_latest.zip"
+android_sdk_downloaded_folder = downloads_folder + android_sdk_version_folder_name
+android_sdk_root_folder = Path.home().drive + "/sdks/android/"
+android_sdk_destination_folder = android_sdk_root_folder + "cmdline-tools/latest/"
+shutil.unpack_archive(android_sdk_downloaded_folder, android_sdk_destination_folder)
+input(f"Please add ANDROID_HOME={Path.home().drive}/sdks/android to your environment variables then press enter...")
+run_subprocess(f"{android_sdk_root_folder}/cmdline-tools/latest/bin/sdkmanager --sdk_root={android_sdk_root_folder} --licenses", f"Failed to install android sdk {android_sdk_version_folder_name}")
+run_subprocess(f"{android_sdk_root_folder}/cmdline-tools/latest/bin/sdkmanager --sdk_root={android_sdk_root_folder} \"platform-tools\" \"build-tools;34.0.0\" \"platforms;android-34\" \"cmdline-tools;latest\" \"cmake;3.10.2.4988404\" \"ndk;23.2.8568313\"", f"Failed to install android sdk {android_sdk_version_folder_name}")
+print("Done", flush=True)
+print("", flush=True)
+
+print("==========================================", flush=True)
+print(f"Installing System Dependencies For {platform.system()}", flush=True)
+print("==========================================", flush=True)
 # (Windows Only)
 if platform.system() == "Windows":
     wsl_install_output = subprocess.check_output(f"wsl -l -v").decode('ascii').strip()
     if "Windows subsystem for Linux has no installed distributions" in wsl_install_output:
         run_subprocess("wsl --install", "Error: Failed to install WSL, aborting!")
     run_subprocess("winget install --id GitHub.cli", "Error: Failed to install Github CLI (gh) using winget. Aborting!")
+    
+    # WSL Installs
+    run_subprocess("wsl sudo apt-get update", "Error: Failed to update linux somehow, aborting!")
+    run_subprocess("wsl sudo apt-get install -y build-essential scons pkg-config libx11-dev libxcursor-dev libxinerama-dev libgl1-mesa-dev libglu1-mesa-dev libasound2-dev libpulse-dev libudev-dev libxi-dev libxrandr-dev libwayland-dev", "Error: Failed to install linux libraries, aborting!")
+    run_subprocess("wsl sudo apt-get install -y libembree-dev libenet-dev libfreetype-dev libpng-dev zlib1g-dev libgraphite2-dev libharfbuzz-dev libogg-dev libtheora-dev libvorbis-dev libwebp-dev libmbedtls-dev libminiupnpc-dev libpcre2-dev libzstd-dev libsquish-dev libicu-dev", "Error: Failed to install linux libraries part 2, aborting!")   
 # (Linux Only) 
 elif platform.system() == "Linux":
     run_subprocess("sudo apt-get update", "Error: Failed to update linux somehow, aborting!")
@@ -85,11 +143,17 @@ elif platform.system() == "Linux":
 elif platform.system() == "Darwin":
     run_subprocess("/bin/bash -c \"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)\"", "Error: Failed to install brew. Aborting!")
     run_subprocess("brew install gh", "Error: Failed to install Github CLI (gh) using brew. Aborting!")
-    
+
+print("Please enter your github account details - needed for the Commit Checker which uses Github CLI (gh commands)", flush=True)  
 run_subprocess("gh auth login", "Error: Failed Github CLI auth login, might need to restart the terminal for the install to take effect? Aborting!")
+print("Done", flush=True)
+print("", flush=True)
 
 # ======================================================
 # Submodules
+print("==========================================", flush=True)
+print(f"Installing EMSDK For Web Platform", flush=True)
+print("==========================================", flush=True)
 # emsdk install and activate 
 os.chdir("thirdparty/emsdk")
 emsdk_version = "latest"
@@ -105,11 +169,18 @@ print("Please restart your machine after this project setup has finished - this 
 os.chdir("..")
 os.chdir("..")
 
+print("Done", flush=True)
+print("", flush=True)
+
 # ======================================================
 # (Windows Only) Create New Platforms For Visual Studio
 # NOTE: Only tested with VS 2022... would need to update v170 below for other versions!
 
 if platform.system() == "Windows":
+    print("==========================================", flush=True)
+    print(f"Adding New Visual Studio Platforms", flush=True)
+    print("==========================================", flush=True)
+
     # Default to VS 2022
     visual_studio_version = "2022"
     visual_studio_vc_directory_name = "v170"
@@ -132,6 +203,9 @@ if platform.system() == "Windows":
     new_platforms_to_add = [ "linux", "web", "android" ]
     for (new_platform in new_platforms_to_add):
         create_new_vs_platform(new_platform)
+        
+    print("Done", flush=True)
+    print("", flush=True)
 
 print("############################################", flush=True)
 print("######### PROJECT SETUP FINISHED ###########", flush=True)
