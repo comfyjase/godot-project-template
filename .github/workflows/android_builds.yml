@@ -96,6 +96,7 @@ jobs:
           keytool -genkey -keyalg rsa -alias $ANDROID_KEYSTORE_ALIAS -keypass $ANDROID_KEYSTORE_PASSWORD -keystore release.keystore -storepass $ANDROID_KEYSTORE_PASSWORD -dname "cn=android, o=android, c=uk" -validity 9999
 
       - name: Export Project
+        if: ${{ matrix.target-type == 'template_debug' || ( matrix.target-type != 'template_debug' && env.ANDROID_KEYSTORE_ALIAS != null && env.ANDROID_KEYSTORE_PASSWORD != null) }}
         shell: sh
         run: |
           python tools/scripts/export.py ${{ matrix.target.platform }} ${{ matrix.target-type }} ${{ matrix.target.arch }} ${{ matrix.float-precision }} True
@@ -106,6 +107,7 @@ jobs:
 
       # Upload the build
       - name: Upload Artifact
+        if: ${{ matrix.target-type == 'template_debug' || ( matrix.target-type != 'template_debug' && env.ANDROID_KEYSTORE_ALIAS != null && env.ANDROID_KEYSTORE_PASSWORD != null) }}
         uses: actions/upload-artifact@v4
         with:
           name: game_${{ matrix.target.platform }}_${{ matrix.target-type }}_${{ matrix.target.arch }}_${{ matrix.float-precision }}_${{ env.BUILD_TIME }}_${{ github.ref_name }}_${{ env.SHA_SHORT }}
