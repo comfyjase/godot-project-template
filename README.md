@@ -1,16 +1,17 @@
 # godot-cpp template
-This repository serves as a quickstart template for GDExtension development with Godot 4.0+.
+This repository serves as a quickstart template for GDExtension development with Godot 4.4+.
 
 [![🎮 Build & Export Game](https://github.com/comfyjase/godot-cpp-template/actions/workflows/builds.yml/badge.svg)](https://github.com/comfyjase/godot-cpp-template/actions/workflows/builds.yml)
 
 ## Contents
-* The gdextension C++ example project from the godot tutorial (`game/`)
-* godot as a submodule (`godot/`)
-* godot-cpp as a submodule (`godot-cpp/`)
+* the gdextension C++ example project from the godot tutorial (`game/`)
+* godot as a submodule (`godot/` - v4.4)
+* godot-cpp as a submodule (`godot-cpp/` - v4.4)
 * GitHub Issues template (`.github/ISSUE_TEMPLATE.yml`)
 * GitHub CI/CD workflows to publish your exported game files when creating a release (`.github/workflows/builds.yml`)
 * preconfigured source files for C++ development of the GDExtension (`src/`)
 * setup to automatically generate `.xml` files in a `doc_classes/` directory to be parsed by Godot as [GDExtension built-in documentation](https://docs.godotengine.org/en/stable/tutorials/scripting/gdextension/gdextension_docs_system.html)
+* support for writing C++ doctest unit tests from within gdextension code
 
 ## Usage - Template
 
@@ -20,6 +21,7 @@ This will let you create a copy of this repository with a clean git history. Mak
 For getting started after cloning your own copy to your local machine, you should: 
 * initialize the godot-cpp git submodule via `git submodule update --init`
 * run setup.py
+* restart your machine (for environment variable updates to take effect)
 * run generate_project_files.py if you want to generate a visual studio solution
 
 ## Usage - Actions
