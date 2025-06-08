@@ -1,6 +1,6 @@
 #define DOCTEST_CONFIG_IMPLEMENT
 
-#include "test_main.h"
+#include "test_game_main.h"
 
 #include <godot_cpp/classes/os.hpp>
 #include <godot_cpp/templates/local_vector.hpp>

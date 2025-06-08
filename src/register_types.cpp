@@ -14,7 +14,7 @@
 #include "build_information.h"
 
 #if TESTS_ENABLED
-#include "tests/test_main.h"
+#include "tests/test_game_main.h"
 #endif
 
 using namespace godot;
