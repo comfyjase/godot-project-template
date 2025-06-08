@@ -77,7 +77,7 @@ else:
 
 if is_ci:
     build_command += " debug_symbols=no"
-if configuration_arg == "template_debug":
+if configuration_arg in ["editor", "editor_game", "template_debug"]:
     build_command += " tests=yes"
     
 if platform_arg == "macos":

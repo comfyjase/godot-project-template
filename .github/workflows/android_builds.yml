@@ -102,6 +102,7 @@ jobs:
           python tools/scripts/export.py ${{ matrix.target.platform }} ${{ matrix.target-type }} ${{ matrix.target.arch }} ${{ matrix.float-precision }} True
 
       - name: Unit Tests
+        if: ${{ matrix.target-type == 'template_debug' }}
         run: |
           python tools/scripts/run_unit_tests.py ${{ matrix.target.platform }} ${{ matrix.target-type }} ${{ matrix.target.arch }} ${{ matrix.float-precision }} True
 

@@ -49,5 +49,10 @@ int godot::test_game_main(bool &tests_need_run) {
 		delete[] doctest_args;
 	}
 
-	return context.run();
+	int result = context.run();
+	if (context.shouldExit()) {
+		return result;
+	}
+
+	return result;
 }

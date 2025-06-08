@@ -96,7 +96,8 @@ if clean_engine:
     
     if is_ci:
         clean_command += " debug_symbols=no"
-    clean_command += " tests=yes"
+    if configuration_arg in ["editor", "editor_game", "template_debug"]:
+        clean_command += " tests=yes"
     
     if platform_arg == "macos" or platform_arg == "ios":
         clean_command += " vulkan=yes"

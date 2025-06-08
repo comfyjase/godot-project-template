@@ -11,9 +11,8 @@
 
 #include "custom_sprite.h"
 #include "build_information.h"
-
 #if TESTS_ENABLED
-#include "tests/test_game_main.h"
+#include "tests/game_test_node.h"
 #endif
 
 using namespace godot;
@@ -30,15 +29,9 @@ void initialize_gdextension_types(ModuleInitializationLevel p_level) {
 	// Use GDREGISTER_CLASS if you want logic to run in editor as well...
 	GDREGISTER_RUNTIME_CLASS(BuildInformation);
 	GDREGISTER_CLASS(CustomSprite);
-
+	
 #if TESTS_ENABLED
-	bool tests_need_to_run = false;
-	int test_results = test_game_main(tests_need_to_run);
-	if (tests_need_to_run) {
-		if (test_results != 0) {
-			print_error("Error: Game unit tests failed.");
-		}
-	}
+	GDREGISTER_RUNTIME_CLASS(GameTest);
 #endif
 }
 

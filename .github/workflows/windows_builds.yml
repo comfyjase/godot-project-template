@@ -85,6 +85,7 @@ jobs:
           Remove-Item bin/${{ matrix.target.platform }}/* -Include *.exp,*.lib,*.pdb -Force
 
       - name: Unit Tests
+        if: ${{ matrix.target-type == 'template_debug' }}
         run: |
           python tools/scripts/run_unit_tests.py ${{ matrix.target.platform }} ${{ matrix.target-type }} ${{ matrix.target.arch }} ${{ matrix.float-precision }} True
 

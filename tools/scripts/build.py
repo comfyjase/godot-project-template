@@ -92,7 +92,8 @@ else:
 
 if is_ci:
     build_command += " debug_symbols=no"
-build_command += " tests=yes"
+if configuration_arg in ["editor", "editor_game", "template_debug"]:
+    build_command += " tests=yes"
 
 if platform_arg == "macos" or platform_arg == "ios":
     build_command += " vulkan=yes"

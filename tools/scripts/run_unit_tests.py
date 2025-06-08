@@ -90,14 +90,14 @@ if return_code != 0:
     sys.exit(f"Error: Failed unit tests, see output for details.")
 
 # ===============================================
-# Build Game
+# Run Game Unit Tests
 print("=====================================", flush=True)
 print("Run Game Unit Tests", flush=True)
 print("=====================================", flush=True)
 
 os.chdir("..")
 
-run_unit_test_command = f"\"godot/bin/{godot_binary_file_name}\" --path \"game\" --headless --quit-after 1800 --game-test"
+run_unit_test_command = f"\"godot/bin/{godot_binary_file_name}\" --path \"game\" --headless scenes/test.tscn --game-test"
 print(run_unit_test_command, flush=True)
 return_code = subprocess.call(run_unit_test_command, shell=True)
 if return_code != 0:
