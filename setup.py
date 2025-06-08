@@ -2,7 +2,6 @@
 
 import os
 import platform
-import requests
 import shutil
 import subprocess
 import sys
@@ -18,10 +17,10 @@ current_directory = os.getcwd()
 
 # Helper Functions
 def run_subprocess(subprocess_command, return_code_error_message):
-    subprocess.call(subprocess_command, shell=True)
-        if return_code != 0:
-            print(return_code_error_message)
-            exit()
+    return_code = subprocess.call(subprocess_command, shell=True)
+    if return_code != 0:
+        print(return_code_error_message)
+        exit()
 
 # TODO: Test...
 def get_vs_install_directory():
@@ -30,12 +29,13 @@ def get_vs_install_directory():
         exit()
         
     vs_install_directory_path = ""
-    vs_install_directories = get_all_directories_recursive("C:/ProgramData/Microsoft/VisualStudio/Packages/_Instances/")
+    vs_install_directories = os.listdir("C:/ProgramData/Microsoft/VisualStudio/Packages/_Instances/")
     
-    for (vs_install_directory in vs_install_directories):
-        directory_name = os.path.dirname(vs_install_directory)
+    for vs_install_directory in vs_install_directories:
+        directory_name = vs_install_directory
         
-        root_key_name = f"SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\{directory_name}\\"
+        reg_path = ["SOFTWARE", "WOW6432Node", "Microsoft", "Windows", "CurrentVersion", "Uninstall", directory_name]
+        root_key_name = "\\".join(reg_path)
         
         with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, root_key_name) as key:
             try:
@@ -60,6 +60,7 @@ print("Installing software and system dependencies for project", flush=True)
 print("==========================================", flush=True)
 print("Installing Python Libraries", flush=True)
 print("==========================================", flush=True)
+
 # pip
 run_subprocess("python -m ensurepip --upgrade", "Error: Failed to install pip, have you installed python correctly and added it to PATH? Aborting!")
 
@@ -70,6 +71,9 @@ run_subprocess("pip install pillow", "Error: Failed to install pillow... abortin
 run_subprocess("pip install requests", "Error: Failed to install requests... aborting!")
 print("Done", flush=True)
 print("", flush=True)
+
+# Done here so it's only imported _after_ the subprocess command installs it for the user
+import requests
 
 print("==========================================", flush=True)
 print("Installing Godot Swappy", flush=True)
@@ -100,15 +104,17 @@ print("")
 input("Press Enter to go to the Android SDK download website (https://developer.android.com/studio#command-tools)...")
 webbrowser.open("https://developer.android.com/studio#command-tools")
 print("")
-input("Press Enter to continue once you have downloaded the Androidn SDK zip folder...")
+input("Press Enter to continue once you have downloaded the Android SDK zip folder...")
 android_sdk_version_folder_name = "commandlinetools-win-13114758_latest.zip"
-android_sdk_downloaded_folder = downloads_folder + android_sdk_version_folder_name
+android_sdk_downloaded_folder = downloads_folder / android_sdk_version_folder_name
 android_sdk_root_folder = Path.home().drive + "/sdks/android/"
 android_sdk_destination_folder = android_sdk_root_folder + "cmdline-tools/latest/"
 shutil.unpack_archive(android_sdk_downloaded_folder, android_sdk_destination_folder)
-input(f"Please add ANDROID_HOME={Path.home().drive}/sdks/android to your environment variables then press enter...")
-run_subprocess(f"{android_sdk_root_folder}/cmdline-tools/latest/bin/sdkmanager --sdk_root={android_sdk_root_folder} --licenses", f"Failed to install android sdk {android_sdk_version_folder_name}")
-run_subprocess(f"{android_sdk_root_folder}/cmdline-tools/latest/bin/sdkmanager --sdk_root={android_sdk_root_folder} \"platform-tools\" \"build-tools;34.0.0\" \"platforms;android-34\" \"cmdline-tools;latest\" \"cmake;3.10.2.4988404\" \"ndk;23.2.8568313\"", f"Failed to install android sdk {android_sdk_version_folder_name}")
+shutil.copytree(android_sdk_destination_folder + "cmdline-tools", android_sdk_destination_folder, dirs_exist_ok=True)
+shutil.rmtree(android_sdk_destination_folder + "cmdline-tools")
+input(f"Please add ANDROID_HOME={Path.home().drive}/sdks/android and JAVA_HOME=path/to/Eclipse Adoptium/jdk-17.0.15.6-hotspot to your environment variables, and add {Path.home().drive}/sdks/android/platform-tools to your PATH, then press enter...")
+run_subprocess(f"{android_sdk_root_folder}/cmdline-tools/latest/bin/sdkmanager.bat --sdk_root={android_sdk_root_folder} --licenses", f"Failed to install android sdk {android_sdk_version_folder_name}")
+run_subprocess(f"{android_sdk_root_folder}/cmdline-tools/latest/bin/sdkmanager.bat --sdk_root={android_sdk_root_folder} \"platform-tools\" \"build-tools;34.0.0\" \"platforms;android-34\" \"cmdline-tools;latest\" \"cmake;3.10.2.4988404\" \"ndk;23.2.8568313\"", f"Failed to install android sdk {android_sdk_version_folder_name}")
 print("Done", flush=True)
 print("", flush=True)
 
@@ -117,10 +123,18 @@ print(f"Installing System Dependencies For {platform.system()}", flush=True)
 print("==========================================", flush=True)
 # (Windows Only)
 if platform.system() == "Windows":
-    wsl_install_output = subprocess.check_output(f"wsl -l -v").decode('ascii').strip()
-    if "Windows subsystem for Linux has no installed distributions" in wsl_install_output:
-        run_subprocess("wsl --install", "Error: Failed to install WSL, aborting!")
-    run_subprocess("winget install --id GitHub.cli", "Error: Failed to install Github CLI (gh) using winget. Aborting!")
+    if (shutil.which("wsl") is not None):
+        return_code = subprocess.call("wsl -l -v", shell=True)
+        if return_code == 0:
+            wsl_install_output = subprocess.check_output(f"wsl -l -v", shell=True).decode('ascii').strip()
+            if "Windows subsystem for Linux has no installed distributions" in wsl_install_output:
+                print("Once the WSL install has finished, please type exit and press enter to return back to setup.", flush=True)
+                run_subprocess("wsl --install", "Error: Failed to install WSL, aborting!")
+        else:
+            print("Once the WSL install has finished, please type exit and press enter to return back to setup.", flush=True)
+            run_subprocess("wsl --install", "Error: Failed to install WSL, aborting!")
+    if (shutil.which("gh") is None):
+        run_subprocess("winget install --id GitHub.cli", "Error: Failed to install Github CLI (gh) using winget. Aborting!")
     
     # WSL Installs
     run_subprocess("wsl sudo apt-get update", "Error: Failed to update linux somehow, aborting!")
@@ -144,8 +158,11 @@ elif platform.system() == "Darwin":
     run_subprocess("/bin/bash -c \"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)\"", "Error: Failed to install brew. Aborting!")
     run_subprocess("brew install gh", "Error: Failed to install Github CLI (gh) using brew. Aborting!")
 
-print("Please enter your github account details - needed for the Commit Checker which uses Github CLI (gh commands)", flush=True)  
-run_subprocess("gh auth login", "Error: Failed Github CLI auth login, might need to restart the terminal for the install to take effect? Aborting!")
+return_code = subprocess.call("gh auth status", shell=True)
+if return_code != 0:
+    print("Please enter your github account details - needed for the Commit Checker which uses Github CLI (gh commands)", flush=True)  
+    run_subprocess("gh auth login", "Error: Failed Github CLI auth login, might need to restart the terminal for the install to take effect? Aborting!")
+
 print("Done", flush=True)
 print("", flush=True)
 
@@ -199,9 +216,10 @@ if platform.system() == "Windows":
         new_platform_folder = vs_platforms_directory + platform_name
         
         shutil.copytree(x64_bit_platform_folder, new_platform_folder, dirs_exist_ok=True)
+        print(f"Added {platform_name} to Visual Studio", flush=True)
     
     new_platforms_to_add = [ "linux", "web", "android" ]
-    for (new_platform in new_platforms_to_add):
+    for new_platform in new_platforms_to_add:
         create_new_vs_platform(new_platform)
         
     print("Done", flush=True)
@@ -210,3 +228,5 @@ if platform.system() == "Windows":
 print("############################################", flush=True)
 print("######### PROJECT SETUP FINISHED ###########", flush=True)
 print("############################################", flush=True)
+
+print("Please restart your PC now so environment variable changes can take effect", flush=True)

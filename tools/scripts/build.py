@@ -111,7 +111,7 @@ return_code = subprocess.call(build_command, shell=True)
 if return_code != 0:
     sys.exit(f"Error: Failed to build godot for {platform_arg} editor {godot_engine_architecture_arg} {precision_arg}")
 
-if platform_arg == "web" and configuration_arg in ["editor", "editor_game"]:
+if platform_arg == "web" and building_editor_for_non_native_os:
     print(os.getcwd(), flush=True)
     os.chdir(os.path.join("bin", ".web_zip"))
     
