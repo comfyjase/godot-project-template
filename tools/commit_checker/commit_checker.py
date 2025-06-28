@@ -4,7 +4,9 @@ import customtkinter
 from PIL import Image
 
 import asyncio
+import glob
 import os
+import pathlib
 import platform
 import subprocess
 import sys
@@ -67,8 +69,7 @@ class TargetPlatformSelection(customtkinter.CTkFrame):
                 checkbox.deselect()
                 
                 # Selecting default targets for convenience
-                if target_configuration == "template_debug" and target_platform == "linux":
-                    checkbox.select()
+                # Defaulting to platform that compiles using clang so it's the most "pedantic"/"thorough" compiler for catching issues.
                 if target_configuration == "production" and target_platform == "android":
                     checkbox.select()
                     
@@ -112,6 +113,7 @@ class App(customtkinter.CTk):
         self.select_frame_by_name("perform_checks")
         
         self.error_messages_window = None
+        self.std_output_error_messages = []
         self.error_messages = []
         self.number_of_commands = 0
         self.should_animate_loading_icon = False
@@ -488,14 +490,16 @@ class App(customtkinter.CTk):
             await asyncio.sleep(self.animation_interval)
     
     async def start_writing_log_output(self, proc, row_number):
-        #self.console_output_frame.grid(row=7, column=1, columnspan=5, sticky="nsew")
         self.log_output_label.grid(row=row_number, column=3, padx=20, pady=(10, 0), sticky="w")
         
         while True:
             buf = await proc.stdout.readline()
             if not buf:
                 break
-            self.log_output_label.configure(text=f"Log Output: {buf.decode().rstrip()}")
+            output = buf.decode().rstrip()
+            if ("error" in output):
+                self.std_output_error_messages.append(output + "\n")
+            self.log_output_label.configure(text=f"Log Output: {output}")
         
     def start_checklist_subprocesses(self):
         thread = threading.Thread(target=asyncio.run, args=(self.async_run_checklist_subprocesses(self.checklist_commands),))
@@ -515,6 +519,13 @@ class App(customtkinter.CTk):
                 self.checklist_status_labels[i].configure(image = self.loading_image)
                 self.should_animate_loading_icon = True
                 self.start_rotating_loading_image(self.checklist_status_labels[i])
+                
+                if "linux" in command or "android" in command:
+                    dir = pathlib.Path(project_directory + "/src/")
+                    so_files = dir.rglob("*.os")  # recursively
+                    for so_file in so_files:
+                        print(f"Removing {so_file}", flush=True)
+                        os.remove(so_file)
                 
                 print(f"Running command: {command}")
                 proc = await asyncio.create_subprocess_shell(
@@ -537,8 +548,9 @@ class App(customtkinter.CTk):
                 self.log_output_label.configure(text = "")
                 self.log_output_label.grid_forget()
                 
+                std_output = stdout.decode()
                 if stdout:
-                    print(f"[stdout]\n{stdout.decode()}")
+                    print(f"[stdout]\n{std_output}")
                 
                 if proc.returncode == 0:
                     self.checklist_status_labels[i].configure(text = "")
@@ -549,8 +561,11 @@ class App(customtkinter.CTk):
                     
                     if stderr:
                         error_output = stderr.decode()
-                        print(f"[stderr]\n{error_output}")
-                        self.error_messages.append(f"{self.checklist_stages[i].cget("text")}\n{error_output}\n")
+                        error_message = f"{self.checklist_stages[i].cget("text")}\n{error_output}\n"
+                        print(f"[stdout]\n{self.std_output_error_messages}")
+                        print(f"[stderr]\n{error_message}")
+                        self.error_messages.extend(self.std_output_error_messages)
+                        self.error_messages.append(error_message)
                 
                 print(f"Finished running command: {command}")
                 self.number_of_commands -= 1
@@ -643,6 +658,8 @@ class App(customtkinter.CTk):
         self.checklist_commands.append(unit_test_command)
         self.checklist_status_labels.append(self.running_check_unit_test_result_description)
         
+        self.error_messages.clear()
+        self.std_output_error_messages.clear()
         self.start_checklist_subprocesses()
         
     def get_compile_command(self, target_platform, target_configuration):

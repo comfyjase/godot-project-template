@@ -97,7 +97,7 @@ print("=====================================", flush=True)
 
 os.chdir("..")
 
-run_unit_test_command = f"\"godot/bin/{godot_binary_file_name}\" --path \"game\" --headless scenes/test.tscn --game-test"
+run_unit_test_command = f"\"godot/bin/{godot_binary_file_name}\" --path \"game\" --headless scenes/unit_tests/test.tscn --game-test"
 print(run_unit_test_command, flush=True)
 return_code = subprocess.call(run_unit_test_command, shell=True)
 if return_code != 0:

@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import os
+import platform
 import sys
 
 from methods import *
@@ -46,7 +47,7 @@ if not is_submodule_initialized(dir_name):
 
 # Convert from game configuration to something godot/godot-cpp understands
 game_target = env["target"]
-if game_target == "editor_game":
+if game_target in ["editor_game", "development"]:
     env["target"] = "editor"
 elif game_target == "profile":
     env["target"] = "template_release"
@@ -61,11 +62,11 @@ env = SConscript("godot-cpp/SConstruct", {"env": env, "customs": customs})
 env["target"] = game_target
 ARGUMENTS["target"] = env["target"]
 
-if env["target"] in ["editor", "editor_game", "template_debug"]:
+if env["target"] in ["editor", "editor_game", "development", "template_debug"]:
     try:
         doc_data = env.GodotCPPDocData("src/gen/doc_data.gen.cpp", source=Glob("doc_classes/*.xml", strings=True))
     except AttributeError:
-        print("Not including class reference as we're targeting a pre-4.3 baseline.")
+        print("Not including class reference as we're targeting a pre-4.4 baseline.")
 
 all_directories = []
 source_files = []
@@ -88,7 +89,7 @@ include_files.append("godot/thirdparty/doctest/doctest.h")
 all_directories.extend(get_all_directories_recursive("src/"))
 source_files.extend(get_all_files_recursive("src/", "*.cpp"))
 include_files.extend(get_all_files_recursive("src/", "*.h"))
-if env["target"] in ["editor", "editor_game", "template_debug"]:
+if env["target"] in ["editor", "editor_game", "development", "template_debug"]:
     cpp_defines.append("TOOLS_ENABLED")
     cpp_defines.append("DEBUG_ENABLED")
     cpp_defines.append("TESTS_ENABLED")
@@ -115,6 +116,8 @@ elif env["target"] == "template_release":
 else:
     cpp_defines.append("DEBUG")
 
+cpp_defines.append("DOCTEST_CONFIG_NO_EXCEPTIONS_BUT_WITH_ALL_ASSERTS")
+
 env.Append(CPPPATH=all_directories)
 env.Append(CPPDEFINES=cpp_defines)
 
@@ -131,7 +134,7 @@ library_suffix = env.subst('$SHLIBSUFFIX')
 if platform.system() == "Linux" and env["platform"] == "macos":
     library_suffix = ".dylib"
 lib_filename = "{}{}{}{}".format(env.subst('$SHLIBPREFIX'), lib_name, suffix, library_suffix)
-if env["platform"] in ["web"]:
+if platform.system() == "Windows" and (env["platform"] in ["web", "android"]):
     lib_filename = "lib" + lib_filename
 
 library = env.SharedLibrary(

@@ -101,6 +101,10 @@ elif platform_arg == "android":
 elif platform_arg == "ios":
     build_command += " generate_bundle=yes"
     
+if not is_ci:
+    cache_path = project_directory.replace("\\", "/") + "/godot/.scons_cache"
+    build_command += f" cache_path={cache_path}"
+    
 print(build_command, flush=True)
 return_code = subprocess.call(build_command, shell=True)
 if return_code != 0:

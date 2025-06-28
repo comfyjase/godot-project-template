@@ -55,6 +55,12 @@ def get_vs_debug_settings():
             'LocalDebuggerCommand': f"$(SolutionDir)godot/bin/{binary_file_names[1]}",
             'LocalDebuggerCommandArguments': command_arguments_to_run_project_as_game
         },
+        # Win32 development
+        {
+        },
+        # x64 development
+        {
+        },
         # Win32 template_debug
         {
         },
@@ -93,7 +99,8 @@ def get_vs_cpp_defines():
             "TOOLS_ENABLED",
             "DEBUG_ENABLED",
             "TESTS_ENABLED",
-            "DEBUG"
+            "DEBUG",
+            "DOCTEST_CONFIG_NO_EXCEPTIONS_BUT_WITH_ALL_ASSERTS"
         ],
         # x64 editor
         [
@@ -103,7 +110,8 @@ def get_vs_cpp_defines():
             "TOOLS_ENABLED",
             "DEBUG_ENABLED",
             "TESTS_ENABLED",
-            "DEBUG"
+            "DEBUG",
+            "DOCTEST_CONFIG_NO_EXCEPTIONS_BUT_WITH_ALL_ASSERTS"
         ],
         # Win32 editor_game
         [
@@ -111,7 +119,8 @@ def get_vs_cpp_defines():
             "TOOLS_ENABLED",
             "DEBUG_ENABLED",
             "TESTS_ENABLED",
-            "DEBUG"
+            "DEBUG",
+            "DOCTEST_CONFIG_NO_EXCEPTIONS_BUT_WITH_ALL_ASSERTS"
         ],
         # x64 editor_game
         [
@@ -121,7 +130,28 @@ def get_vs_cpp_defines():
             "TOOLS_ENABLED",
             "DEBUG_ENABLED",
             "TESTS_ENABLED",
-            "DEBUG"
+            "DEBUG",
+            "DOCTEST_CONFIG_NO_EXCEPTIONS_BUT_WITH_ALL_ASSERTS"
+        ],
+        # Win32 development
+        [
+            "PLATFORM_WINDOWS",
+            "TOOLS_ENABLED",
+            "DEBUG_ENABLED",
+            "TESTS_ENABLED",
+            "DEBUG",
+            "DOCTEST_CONFIG_NO_EXCEPTIONS_BUT_WITH_ALL_ASSERTS"
+        ],
+        # x64 development
+        [
+            "PLATFORM_WINDOWS",
+            'IMGUI_USER_CONFIG="\\"imconfig-godot.h\\""',
+            "IMGUI_ENABLED",
+            "TOOLS_ENABLED",
+            "DEBUG_ENABLED",
+            "TESTS_ENABLED",
+            "DEBUG",
+            "DOCTEST_CONFIG_NO_EXCEPTIONS_BUT_WITH_ALL_ASSERTS"
         ],
         # Win32 template_debug
         [
@@ -129,7 +159,8 @@ def get_vs_cpp_defines():
             "TOOLS_ENABLED",
             "DEBUG_ENABLED",
             "TESTS_ENABLED",
-            "DEBUG"
+            "DEBUG",
+            "DOCTEST_CONFIG_NO_EXCEPTIONS_BUT_WITH_ALL_ASSERTS"
         ],
         # x64 template_debug
         [
@@ -139,43 +170,50 @@ def get_vs_cpp_defines():
             "TOOLS_ENABLED",
             "DEBUG_ENABLED",
             "TESTS_ENABLED",
-            "DEBUG"
+            "DEBUG",
+            "DOCTEST_CONFIG_NO_EXCEPTIONS_BUT_WITH_ALL_ASSERTS"
         ],
         # Win32 template_release
         [
             "PLATFORM_WINDOWS",
-            "RELEASE"
+            "RELEASE",
+            "DOCTEST_CONFIG_NO_EXCEPTIONS_BUT_WITH_ALL_ASSERTS"
         ],
         # x64 template_release
         [
             "PLATFORM_WINDOWS",
             'IMGUI_USER_CONFIG="\\"imconfig-godot.h\\""',
             "IMGUI_ENABLED",
-            "RELEASE"
+            "RELEASE",
+            "DOCTEST_CONFIG_NO_EXCEPTIONS_BUT_WITH_ALL_ASSERTS"
         ],
         # Win32 profile
         [
             "PLATFORM_WINDOWS",
-            "PROFILE"
+            "PROFILE",
+            "DOCTEST_CONFIG_NO_EXCEPTIONS_BUT_WITH_ALL_ASSERTS"
         ],
         # x64 profile
         [
             "PLATFORM_WINDOWS",
             'IMGUI_USER_CONFIG="\\"imconfig-godot.h\\""',
             "IMGUI_ENABLED",
-            "PROFILE"
+            "PROFILE",
+            "DOCTEST_CONFIG_NO_EXCEPTIONS_BUT_WITH_ALL_ASSERTS"
         ],
         # Win32 production
         [
             "PLATFORM_WINDOWS",
-            "PRODUCTION"
+            "PRODUCTION",
+            "DOCTEST_CONFIG_NO_EXCEPTIONS_BUT_WITH_ALL_ASSERTS"
         ],
         # x64 production
         [
             "PLATFORM_WINDOWS",
             'IMGUI_USER_CONFIG="\\"imconfig-godot.h\\""',
             "IMGUI_ENABLED",
-            "PRODUCTION"
+            "PRODUCTION",
+            "DOCTEST_CONFIG_NO_EXCEPTIONS_BUT_WITH_ALL_ASSERTS"
         ]
     ])
  
@@ -198,6 +236,14 @@ def get_vs_cpp_flags():
             "/nologo /utf-8 /MT /Zi /FS /O2 /TP /std:c++17 /Zc:__cplusplus"
         ],
         # x64 editor_game
+        [
+            "/nologo /utf-8 /MT /Zi /FS /O2 /TP /std:c++17 /Zc:__cplusplus"
+        ],
+        # Win32 development
+        [
+            "/nologo /utf-8 /MT /Zi /FS /O2 /TP /std:c++17 /Zc:__cplusplus"
+        ],
+        # x64 development
         [
             "/nologo /utf-8 /MT /Zi /FS /O2 /TP /std:c++17 /Zc:__cplusplus"
         ],

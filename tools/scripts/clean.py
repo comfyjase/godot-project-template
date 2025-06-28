@@ -48,7 +48,7 @@ using_wsl = wsl_available and platform_arg == "linux"
 # Engine Clean
 
 # Switch to True if you want to clean engine symbols too...
-clean_engine = True
+clean_engine = configuration_arg != "development":
 
 if clean_engine:
     print("=====================================", flush=True)
@@ -107,6 +107,10 @@ if clean_engine:
     elif platform_arg == "android":
         if building_editor_for_non_native_os:
             clean_command += " generate_apk=yes"
+    
+    if not is_ci:
+        cache_path = project_directory.replace("\\", "/") + "/godot/.scons_cache"
+        clean_command += f" cache_path={cache_path}"
     
     clean_command += " -c"
     print("Clean Command: " + clean_command, flush=True)

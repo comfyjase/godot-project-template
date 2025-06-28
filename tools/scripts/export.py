@@ -4,6 +4,7 @@ import datetime
 import platform
 import os
 import re
+import shutil
 import subprocess
 import sys
 
@@ -45,6 +46,51 @@ if platform_arg == architecture_arg:
         architecture_arg = "arm64"
     
 using_wsl = wsl_available and platform_arg == "linux"
+
+# ===============================================
+# Plugin Cleanup
+if is_ci:
+    print("=====================================", flush=True)
+    print("Plugin Cleanup", flush=True)
+    print("=====================================", flush=True)
+
+    # Disable plugins in the project file.
+    with open("game/project.godot", "r") as godot_project_file_read:
+        with open("game/project.godot", "r") as godot_project_file_read:
+            all_lines = godot_project_file_read.readlines()    
+            strings_to_remove = [
+                # Godot Git Plugin - should be editor only, not needed for export.
+                "version_control/plugin_name=\"GitPlugin\"",
+                "version_control/autoload_on_startup=true",
+            ]
+            
+            # imgui-godot plugin
+            # No imgui support on these platforms.
+            if platform_arg in ["web", "android", "ios"]:
+                strings_to_remove.append("ImGuiRoot=\"*res://addons/imgui-godot/data/ImGuiRoot.tscn\"")
+                strings_to_remove.append("enabled=PackedStringArray(\"res://addons/imgui-godot/plugin.cfg\")")
+                strings_to_remove.append(", \"res://addons/imgui-godot/plugin.cfg\"")
+            
+            for i, line in enumerate(all_lines):
+                for j, string_to_remove in enumerate(strings_to_remove):
+                    if string_to_remove in line:
+                        all_lines[i] = line.replace(string_to_remove, "")
+                        print(f"Line: {line} changed to -> \"\"", flush=True)
+                    
+            with open("game/project.godot", "w") as godot_project_file_write:
+                godot_project_file_write.writelines(all_lines)
+
+    # Remove plugin specific files so the export process doesn't pick them up.
+    os.remove("game/addons/godot-git-plugin/git_plugin.gdextension")
+    os.remove("game/addons/godot-git-plugin/git_plugin.gdextension.uid")
+    os.remove("game/addons/godot-git-plugin/plugin.cfg")
+    
+    if platform_arg in ["web", "android", "ios"]:
+        os.remove("game/addons/imgui-godot/imgui-godot-native.gdextension")
+        os.remove("game/addons/imgui-godot/imgui-godot-native.gdextension.uid")
+        os.remove("game/addons/imgui-godot/plugin.cfg")
+    
+    print("Done", flush=True)
 
 # ===============================================
 # Export
@@ -332,5 +378,24 @@ if not os.path.exists(build_output_path):
                 print(line, flush=True)
 
     sys.exit(f"Error: Failed to export game for {platform_arg} {configuration_arg} {architecture_arg} {precision_arg} from godot binary {godot_binary_file_name}")
+
+# (Web Only) - Copy serve.py to bin folder for ease of use.
+if platform_arg == "web":
+    bin_folder_path = os.path.join(project_directory, "bin", platform_arg)
+    
+    serve_source_file_path = os.path.join(project_directory, "godot", "platform", platform_arg, "serve.py")
+    serve_destination_file_path = bin_folder_path
+    print(f"Copying godot serve.py from {serve_source_file_path} to {serve_destination_file_path}", flush=True)
+    
+    run_web_build_script_source_file_path = os.path.join(project_directory, "tools", "scripts", "run_web_build.py")
+    run_web_build_script_destination_file_path = bin_folder_path
+    print(f"Copying run_web_build.py from {run_web_build_script_source_file_path} to {run_web_build_script_destination_file_path}", flush=True)
+    
+    os.chdir(os.path.join("..", ".."))
+    if not os.path.exists(bin_folder_path):
+        os.makedirs(bin_folder_path, exist_ok=True)
+    
+    shutil.copy(serve_source_file_path, serve_destination_file_path)
+    shutil.copy(run_web_build_script_source_file_path, run_web_build_script_destination_file_path)
 
 print("Done")

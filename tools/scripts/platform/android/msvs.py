@@ -46,6 +46,9 @@ def get_vs_debug_settings():
             'LocalDebuggerCommand': binary_file_name,
             'LocalDebuggerCommandArguments': android_editor_game_command_arguments_to_install_and_run
         },
+        # android development
+        {
+        },
         # android template_debug
         {
         },
@@ -72,7 +75,8 @@ def get_vs_cpp_defines():
             "TOOLS_ENABLED",
             "DEBUG_ENABLED",
             "TESTS_ENABLED",
-            "DEBUG"
+            "DEBUG",
+            "DOCTEST_CONFIG_NO_EXCEPTIONS_BUT_WITH_ALL_ASSERTS"
         ],
         # android editor_game
         [
@@ -80,7 +84,17 @@ def get_vs_cpp_defines():
             "TOOLS_ENABLED",
             "DEBUG_ENABLED",
             "TESTS_ENABLED",
-            "DEBUG"
+            "DEBUG",
+            "DOCTEST_CONFIG_NO_EXCEPTIONS_BUT_WITH_ALL_ASSERTS"
+        ],
+        # android development
+        [
+            "PLATFORM_ANDROID",
+            "TOOLS_ENABLED",
+            "DEBUG_ENABLED",
+            "TESTS_ENABLED",
+            "DEBUG",
+            "DOCTEST_CONFIG_NO_EXCEPTIONS_BUT_WITH_ALL_ASSERTS"
         ],
         # android template_debug
         [
@@ -88,22 +102,26 @@ def get_vs_cpp_defines():
             "TOOLS_ENABLED",
             "DEBUG_ENABLED",
             "TESTS_ENABLED",
-            "DEBUG"
+            "DEBUG",
+            "DOCTEST_CONFIG_NO_EXCEPTIONS_BUT_WITH_ALL_ASSERTS"
         ],
         # android template_release
         [
             "PLATFORM_ANDROID",
-            "RELEASE"
+            "RELEASE",
+            "DOCTEST_CONFIG_NO_EXCEPTIONS_BUT_WITH_ALL_ASSERTS"
         ],
         # android profile
         [
             "PLATFORM_ANDROID",
-            "PROFILE"
+            "PROFILE",
+            "DOCTEST_CONFIG_NO_EXCEPTIONS_BUT_WITH_ALL_ASSERTS"
         ],
         # android production
         [
             "PLATFORM_ANDROID",
-            "PRODUCTION"
+            "PRODUCTION",
+            "DOCTEST_CONFIG_NO_EXCEPTIONS_BUT_WITH_ALL_ASSERTS"
         ]
     ])
 
@@ -118,6 +136,10 @@ def get_vs_cpp_flags():
             "/nologo /utf-8 /MT /Zi /FS /O2 /TP /std:c++17 /Zc:__cplusplus"
         ],
         # android editor_game
+        [
+            "/nologo /utf-8 /MT /Zi /FS /O2 /TP /std:c++17 /Zc:__cplusplus"
+        ],
+        # android development
         [
             "/nologo /utf-8 /MT /Zi /FS /O2 /TP /std:c++17 /Zc:__cplusplus"
         ],
