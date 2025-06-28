@@ -20,7 +20,7 @@ This will let you create a copy of this repository with a clean git history. Mak
 
 For getting started after cloning your own copy to your local machine, you should: 
 * initialize the godot-cpp git submodule via `git submodule update --init`
-* run setup.py
+* run setup.py as administrator
 * restart your machine (for environment variable updates to take effect)
 * run generate_project_files.py if you want to generate a visual studio solution
 
