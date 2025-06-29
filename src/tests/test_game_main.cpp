@@ -2,6 +2,8 @@
 
 #include "test_game_main.h"
 
+#include <doctest.h>
+
 #include <godot_cpp/classes/os.hpp>
 #include <godot_cpp/templates/local_vector.hpp>
 #include <godot_cpp/variant/packed_string_array.hpp>

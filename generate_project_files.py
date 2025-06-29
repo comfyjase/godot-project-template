@@ -3,6 +3,7 @@
 import platform
 import os
 import subprocess
+import sys
 
 generate_command = "scons platform=<p> target=editor arch=x86_64 precision=single dev_build=yes dev_mode=yes vsproj=yes"
 if platform.system() == "Windows":
