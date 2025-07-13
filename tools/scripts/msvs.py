@@ -105,8 +105,8 @@ def update_vs_solution_file(target, source, env):
     set_vs_environment_variables(env)
     
     lines = []
-    
     godot_project_unique_identifier = ""
+    should_use_godot_engine_build_commands = False
     
     # Read all lines in sln file
     # ["MSVSSOLUTIONSUFFIX"] gives ${GET_MSVSSOLUTIONSUFFIX} which throws an error, so just using the file extension directly here.
@@ -133,7 +133,11 @@ def update_vs_solution_file(target, source, env):
                         out_file.write("\t\t" + godot_project_unique_identifier + "." + configuration + "|" + vs_platform + ".ActiveCfg = editor|" + godot_platform + "\n")
                         line_write_done = True
                     elif godot_project_unique_identifier + "." + configuration + "|" + vs_platform + ".Build.0" in line:
-                        out_file.write("\t\t" + godot_project_unique_identifier + "." + configuration + "|" + vs_platform + ".Build.0 = editor|" + godot_platform + "\n")
+                        if should_use_godot_engine_build_commands:
+                            out_file.write("\t\t" + godot_project_unique_identifier + "." + configuration + "|" + vs_platform + ".Build.0 = editor|" + godot_platform + "\n")
+                        # Want to mark it as written regardless so it doesn't just write the build line always.
+                        # In the case that should_use_godot_engine_build_commands is false, we don't want the godot project to build using it's own commands.
+                        # The game project uses a separate build script which will build godot instead.
                         line_write_done = True
             if line_write_done == False:
                 out_file.write(line)

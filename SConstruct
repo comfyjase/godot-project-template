@@ -79,6 +79,7 @@ if should_include_imgui:
     all_directories = ["game/addons/imgui-godot/include", "thirdparty/imgui" ]
     source_files = Glob("thirdparty/imgui/*.cpp", strings=True)
     include_files = Glob("thirdparty/imgui/*.h", strings=True)
+    include_files.extend(get_all_files_recursive("game/addons/imgui-godot/include/", "*.h"))
     cpp_defines = [ 'IMGUI_USER_CONFIG="\\"imconfig-godot.h\\""', "IMGUI_ENABLED" ]
 
 # tests

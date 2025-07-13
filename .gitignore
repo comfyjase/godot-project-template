@@ -19,6 +19,8 @@ game/bin/windows/*
 !game/bin/*.gdextension
 .sconsign*.dblite
 
+game/android/*
+
 # Ignore custom.py
 custom.py
 
