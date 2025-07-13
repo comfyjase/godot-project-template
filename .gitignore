@@ -20,6 +20,7 @@ game/bin/windows/*
 .sconsign*.dblite
 
 game/android/*
+thirdparty/accesskit/*
 
 # Ignore custom.py
 custom.py

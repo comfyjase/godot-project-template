@@ -121,7 +121,7 @@ with open("accesskit-c-0.16.0.zip", "wb") as fd:
 with zipfile.ZipFile("accesskit-c-0.16.0.zip") as archive:
     for file in archive.namelist():
         if file.startswith('accesskit-c-0.16.0'):
-            archive.extract(file, "godot/thirdparty/accesskit")
+            archive.extract(file, "thirdparty/accesskit")
 print("Done", flush=True)
 print("", flush=True)
 
