@@ -58,27 +58,29 @@ print("############################################", flush=True)
 # Installs
 print("Installing software and system dependencies for project", flush=True)
 
-print("==========================================", flush=True)
-print("Installing Git", flush=True)
-print("==========================================", flush=True)
+if (shutil.which("git") is None):
+    print("==========================================", flush=True)
+    print("Installing Git", flush=True)
+    print("==========================================", flush=True)
+    
+    print("Please install git if you haven't already, next step will take you to the git downloads website so you can download it for your platform!", flush=True)
+    input("Press Enter to go to the git website (https://git-scm.com/downloads)...")
+    webbrowser.open("https://git-scm.com/downloads")
+    input("Press Enter once you have installed git...")
+    print("Done", flush=True)
+    print("", flush=True)
 
-print("Please install git if you haven't already, next step will take you to the git downloads website so you can download it for your platform!", flush=True)
-input("Press Enter to go to the git website (https://git-scm.com/downloads)...")
-webbrowser.open("https://git-scm.com/downloads")
-input("Press Enter once you have installed git...")
-print("Done", flush=True)
-print("", flush=True)
-
-print("==========================================", flush=True)
-print("Installing Visual Studio Community", flush=True)
-print("==========================================", flush=True)
-
-print("Please install Visual Studio Community 2022 if you haven't already, next step will take you to the download website.", flush=True)
-input("Press Enter to go to the Visual Studio Community website (https://visualstudio.microsoft.com/vs/community/)...")
-webbrowser.open("https://visualstudio.microsoft.com/vs/community/")
-input("Press Enter once you have installed Visual Studio Community 2022...")
-print("Done", flush=True)
-print("", flush=True)
+if (get_vs_install_directory() == ""):
+    print("==========================================", flush=True)
+    print("Installing Visual Studio Community", flush=True)
+    print("==========================================", flush=True)
+    
+    print("Please install Visual Studio Community 2022 if you haven't already, next step will take you to the download website.", flush=True)
+    input("Press Enter to go to the Visual Studio Community website (https://visualstudio.microsoft.com/vs/community/)...")
+    webbrowser.open("https://visualstudio.microsoft.com/vs/community/")
+    input("Press Enter once you have installed Visual Studio Community 2022...")
+    print("Done", flush=True)
+    print("", flush=True)
 
 print("==========================================", flush=True)
 print("Installing Python Libraries", flush=True)
@@ -120,38 +122,41 @@ with zipfile.ZipFile("accesskit-c-0.16.0.zip") as archive:
     for file in archive.namelist():
         if file.startswith('accesskit-c-0.16.0'):
             archive.extract(file, "godot/thirdparty/accesskit")
-
-print("==========================================", flush=True)
-print("Installing Android SDK", flush=True)
-print("==========================================", flush=True)
-
-print("Next, you will have to manually download OpenJDK 17 from the next website that will open up.", flush=True)
-input("Press Enter to go to the OpenJDK 17 website (https://adoptium.net/en-GB/temurin/releases/?variant=openjdk17&os=any&arch=any&version=17)...")
-webbrowser.open("https://adoptium.net/en-GB/temurin/releases/?variant=openjdk17&os=any&arch=any&version=17")
-input("Press Enter once you have installed OpenJDK 17...")
-
-print("")
-print("Next, this script will open a website link for you where you have to accept the license terms and manually download the android sdk command line tools.", flush=True)
-print("You will have to scroll down towards the bottom of the page until you see the Command line tools only header - download the sdk for your platform.", flush=True)
-downloads_folder = Path.home() / "Downloads/"
-
-print("")
-input("Press Enter to go to the Android SDK download website (https://developer.android.com/studio#command-tools)...")
-webbrowser.open("https://developer.android.com/studio#command-tools")
-print("")
-input("Press Enter to continue once you have downloaded the Android SDK zip folder...")
-android_sdk_version_folder_name = "commandlinetools-win-13114758_latest.zip"
-android_sdk_downloaded_folder = downloads_folder / android_sdk_version_folder_name
-android_sdk_root_folder = Path.home().drive + "/sdks/android/"
-android_sdk_destination_folder = android_sdk_root_folder + "cmdline-tools/latest/"
-shutil.unpack_archive(android_sdk_downloaded_folder, android_sdk_destination_folder)
-shutil.copytree(android_sdk_destination_folder + "cmdline-tools", android_sdk_destination_folder, dirs_exist_ok=True)
-shutil.rmtree(android_sdk_destination_folder + "cmdline-tools")
-input(f"Please add ANDROID_HOME={Path.home().drive}/sdks/android and JAVA_HOME=path/to/Eclipse Adoptium/jdk-17.0.15.6-hotspot to your environment variables, and add {Path.home().drive}/sdks/android/platform-tools to your PATH, then press enter... \nNote: If it fails saying JAVA_HOME doesn't exist, please close this command prompt and open up a new one and run setup.py again (just skip any previous steps you completed).")
-run_subprocess(f"{android_sdk_root_folder}/cmdline-tools/latest/bin/sdkmanager.bat --sdk_root={android_sdk_root_folder} --licenses", f"Failed to install android sdk {android_sdk_version_folder_name}")
-run_subprocess(f"{android_sdk_root_folder}/cmdline-tools/latest/bin/sdkmanager.bat --sdk_root={android_sdk_root_folder} \"platform-tools\" \"build-tools;34.0.0\" \"platforms;android-34\" \"cmdline-tools;latest\" \"cmake;3.10.2.4988404\" \"ndk;23.2.8568313\"", f"Failed to install android sdk {android_sdk_version_folder_name}")
 print("Done", flush=True)
 print("", flush=True)
+
+if os.getenv("JAVA_HOME") == "None" and os.getenv("ANDROID_HOME") == "None":
+    print("==========================================", flush=True)
+    print("Installing Android SDK", flush=True)
+    print("==========================================", flush=True)
+    
+    print("Next, you will have to manually download OpenJDK 17 from the next website that will open up.", flush=True)
+    input("Press Enter to go to the OpenJDK 17 website (https://adoptium.net/en-GB/temurin/releases/?variant=openjdk17&os=any&arch=any&version=17)...")
+    webbrowser.open("https://adoptium.net/en-GB/temurin/releases/?variant=openjdk17&os=any&arch=any&version=17")
+    input("Press Enter once you have installed OpenJDK 17...")
+    
+    print("")
+    print("Next, this script will open a website link for you where you have to accept the license terms and manually download the android sdk command line tools.", flush=True)
+    print("You will have to scroll down towards the bottom of the page until you see the Command line tools only header - download the sdk for your platform.", flush=True)
+    downloads_folder = Path.home() / "Downloads/"
+    
+    print("")
+    input("Press Enter to go to the Android SDK download website (https://developer.android.com/studio#command-tools)...")
+    webbrowser.open("https://developer.android.com/studio#command-tools")
+    print("")
+    input("Press Enter to continue once you have downloaded the Android SDK zip folder...")
+    android_sdk_version_folder_name = "commandlinetools-win-13114758_latest.zip"
+    android_sdk_downloaded_folder = downloads_folder / android_sdk_version_folder_name
+    android_sdk_root_folder = Path.home().drive + "/sdks/android/"
+    android_sdk_destination_folder = android_sdk_root_folder + "cmdline-tools/latest/"
+    shutil.unpack_archive(android_sdk_downloaded_folder, android_sdk_destination_folder)
+    shutil.copytree(android_sdk_destination_folder + "cmdline-tools", android_sdk_destination_folder, dirs_exist_ok=True)
+    shutil.rmtree(android_sdk_destination_folder + "cmdline-tools")
+    input(f"Please add ANDROID_HOME={Path.home().drive}/sdks/android and JAVA_HOME=path/to/Eclipse Adoptium/jdk-17.0.15.6-hotspot to your environment variables, and add {Path.home().drive}/sdks/android/platform-tools to your PATH, then press enter... \nNote: If it fails saying JAVA_HOME doesn't exist, please close this command prompt and open up a new one and run setup.py again (just skip any previous steps you completed).")
+    run_subprocess(f"{android_sdk_root_folder}/cmdline-tools/latest/bin/sdkmanager.bat --sdk_root={android_sdk_root_folder} --licenses", f"Failed to install android sdk {android_sdk_version_folder_name}")
+    run_subprocess(f"{android_sdk_root_folder}/cmdline-tools/latest/bin/sdkmanager.bat --sdk_root={android_sdk_root_folder} \"platform-tools\" \"build-tools;34.0.0\" \"platforms;android-34\" \"cmdline-tools;latest\" \"cmake;3.10.2.4988404\" \"ndk;23.2.8568313\"", f"Failed to install android sdk {android_sdk_version_folder_name}")
+    print("Done", flush=True)
+    print("", flush=True)
 
 print("==========================================", flush=True)
 print(f"Installing System Dependencies For {platform.system()}", flush=True)
@@ -249,6 +254,11 @@ if platform.system() == "Windows":
         
         x64_bit_platform_folder = vs_platforms_directory + "x64"
         new_platform_folder = vs_platforms_directory + platform_name
+        
+        # If it already exists, just return early - no need to copy over it again
+        # Can happen if you are working on multiple projects using this template.
+        if os.path.isdir(new_platform_folder):
+            return
         
         shutil.copytree(x64_bit_platform_folder, new_platform_folder, dirs_exist_ok=True)
         print(f"Added {platform_name} to Visual Studio", flush=True)
