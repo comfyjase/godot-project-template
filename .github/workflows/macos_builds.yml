@@ -10,7 +10,7 @@ jobs:
       matrix:
         target:
           [
-            { platform: macos, arch: x86_64, os: macos-latest }
+            { platform: macos, arch: x86_64, os: macos-latest, upload-artifact: false }
           ]
         #target-type: [template_debug, template_release, profile, production]
         #float-precision: [single, double]
@@ -92,6 +92,7 @@ jobs:
 
       # Upload the build
       - name: Upload Artifact
+        if: ${{ matrix.target.upload-artifact }}
         uses: actions/upload-artifact@v4
         with:
           name: game_${{ matrix.target.platform }}_${{ matrix.target-type }}_${{ matrix.target.arch }}_${{ matrix.float-precision }}_${{ env.BUILD_TIME }}_${{ github.ref_name }}_${{ env.SHA_SHORT }}

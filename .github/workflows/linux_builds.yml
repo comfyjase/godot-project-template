@@ -10,10 +10,10 @@ jobs:
       matrix:
         target:
           [
-            #{ platform: linux, arch: arm32, os: ubuntu-22.04-arm },
-            #{ platform: linux, arch: arm64, os: ubuntu-22.04-arm },
-            #{ platform: linux, arch: x86_32, os: ubuntu-22.04 },
-            { platform: linux, arch: x86_64, os: ubuntu-22.04 },
+            #{ platform: linux, arch: arm32, os: ubuntu-22.04-arm, upload-artifact: false },
+            #{ platform: linux, arch: arm64, os: ubuntu-22.04-arm, upload-artifact: false },
+            #{ platform: linux, arch: x86_32, os: ubuntu-22.04, upload-artifact: false },
+            { platform: linux, arch: x86_64, os: ubuntu-22.04, upload-artifact: false },
           ]
         #target-type: [template_debug, template_release, profile, production]
         #float-precision: [single, double]
@@ -107,7 +107,7 @@ jobs:
 
       # Upload the build
       - name: Upload Artifact
-        if: ${{ matrix.target.arch != 'arm32' }}
+        if: ${{ matrix.target.upload-artifact }}
         uses: actions/upload-artifact@v4
         with:
           name: game_${{ matrix.target.platform }}_${{ matrix.target-type }}_${{ matrix.target.arch }}_${{ matrix.float-precision }}_${{ env.BUILD_TIME }}_${{ github.ref_name }}_${{ env.SHA_SHORT }}

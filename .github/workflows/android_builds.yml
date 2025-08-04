@@ -14,10 +14,10 @@ jobs:
       matrix:
         target:
           [
-            #{ platform: android, arch: arm32, os: ubuntu-22.04 },
-            { platform: android, arch: arm64, os: ubuntu-22.04 },
-            #{ platform: android, arch: x86_32, os: ubuntu-22.04 },
-            #{ platform: android, arch: x86_64, os: ubuntu-22.04 },
+            #{ platform: android, arch: arm32, os: ubuntu-22.04, upload-artifact: false },
+            { platform: android, arch: arm64, os: ubuntu-22.04, upload-artifact: false },
+            #{ platform: android, arch: x86_32, os: ubuntu-22.04, upload-artifact: false },
+            #{ platform: android, arch: x86_64, os: ubuntu-22.04, upload-artifact: false },
           ]
         # Leaving here for future reference if you need to make more flavours of builds you can specify these here.
         #target-type: [template_debug, template_release, profile, production]
@@ -108,7 +108,7 @@ jobs:
 
       # Upload the build
       - name: Upload Artifact
-        if: ${{ matrix.target-type == 'template_debug' || ( matrix.target-type != 'template_debug' && env.ANDROID_KEYSTORE_ALIAS != null && env.ANDROID_KEYSTORE_PASSWORD != null) }}
+        if: ${{ matrix.target.upload-artifact }}
         uses: actions/upload-artifact@v4
         with:
           name: game_${{ matrix.target.platform }}_${{ matrix.target-type }}_${{ matrix.target.arch }}_${{ matrix.float-precision }}_${{ env.BUILD_TIME }}_${{ github.ref_name }}_${{ env.SHA_SHORT }}
