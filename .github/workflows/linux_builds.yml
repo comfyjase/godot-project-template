@@ -113,3 +113,4 @@ jobs:
           name: game_${{ matrix.target.platform }}_${{ matrix.target-type }}_${{ matrix.target.arch }}_${{ matrix.float-precision }}_${{ env.BUILD_TIME }}_${{ github.ref_name }}_${{ env.SHA_SHORT }}
           path: |
             ${{ github.workspace }}/bin/${{ matrix.target.platform }}/**
+          retention-days: 2

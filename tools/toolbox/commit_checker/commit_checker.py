@@ -19,6 +19,7 @@ if not os.path.exists(os.path.join(f"{current_directory}", "game")):
     os.chdir("..")
     os.chdir("..")
 project_directory = os.getcwd()
+print(project_directory)
 
 customtkinter.set_appearance_mode("System")  # Modes: "System" (standard), "Dark", "Light"
 customtkinter.set_default_color_theme("blue")  # Themes: "blue" (standard), "green", "dark-blue"
@@ -106,7 +107,7 @@ class App(customtkinter.CTk):
         self.create_commit_message_frame()
         
         # Default values
-        self.appearance_mode_optionemenu.set("Dark")
+        self.appearance_mode_optionemenu.set("System")
         self.scaling_optionemenu.set("100%")
 
         # Set first frame as visible
@@ -213,17 +214,19 @@ class App(customtkinter.CTk):
         self.log_output_label.grid_forget()
         
         # Images
-        self.images_folder_path = os.path.join(project_directory, "tools", "commit_checker", "assets", "images")
-        loading_image_file_path = os.path.join(self.images_folder_path, "loading_cog.png")
+        self.images_folder_path = os.path.join(project_directory, "tools", "toolbox", "commit_checker", "assets", "images")
+        loading_light_image_file_path = os.path.join(self.images_folder_path, "loading_cog_light.png")
+        loading_dark_image_file_path = os.path.join(self.images_folder_path, "loading_cog_dark.png")
         passed_image_file_path = os.path.join(self.images_folder_path, "green_tick.png")
         failed_image_file_path = os.path.join(self.images_folder_path, "red_cross.png")
         
-        self.loading_image_object = Image.open(loading_image_file_path)
+        self.loading_light_image_object = Image.open(loading_light_image_file_path)
+        self.loading_dark_image_object = Image.open(loading_dark_image_file_path)
         self.passed_image_object = Image.open(passed_image_file_path)
         self.failed_image_object = Image.open(failed_image_file_path)
         
         self.image_size = (20, 20)
-        self.loading_image = customtkinter.CTkImage(self.loading_image_object, size=self.image_size)
+        self.loading_image = customtkinter.CTkImage(light_image = self.loading_light_image_object, dark_image = self.loading_dark_image_object, size=self.image_size)
         self.passed_image = customtkinter.CTkImage(self.passed_image_object, size=self.image_size)
         self.failed_image = customtkinter.CTkImage(self.failed_image_object, size=self.image_size)
 
@@ -483,8 +486,9 @@ class App(customtkinter.CTk):
             if degrees >= 360:
                 degrees %= 360
             
-            rotated_image_object = self.loading_image_object.rotate(degrees)
-            rotated_image = customtkinter.CTkImage(rotated_image_object, size=self.image_size)
+            rotated_light_image_object = self.loading_light_image_object.rotate(degrees)
+            rotated_dark_image_object = self.loading_dark_image_object.rotate(degrees)
+            rotated_image = customtkinter.CTkImage(light_image = rotated_light_image_object, dark_image = rotated_dark_image_object, size=self.image_size)
             loading_image_label.configure(image = rotated_image)
             
             await asyncio.sleep(self.animation_interval)
