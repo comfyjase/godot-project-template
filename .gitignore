@@ -3,23 +3,27 @@
 .godot/
 
 # Ignore library files but not the gdextension file
-game/bin/*
-!game/bin/android
-game/bin/android/*
-!game/bin/android/.gitkeep
-!game/bin/linux
-game/bin/linux/*
-!game/bin/linux/.gitkeep
-!game/bin/macos
-game/bin/macos/*
-!game/bin/macos/.gitkeep
-!game/bin/windows
-game/bin/windows/*
-!game/bin/windows/.gitkeep
-!game/bin/*.gdextension
+project/bin/*
+!project/bin/android
+project/bin/android/*
+!project/bin/android/.gitkeep
+!project/bin/linux
+project/bin/linux/*
+!project/bin/linux/.gitkeep
+!project/bin/macos
+project/bin/macos/*
+!project/bin/macos/.gitkeep
+!project/bin/windows
+project/bin/windows/*
+!project/bin/windows/.gitkeep
+!project/bin/*.gdextension
 .sconsign*.dblite
 
-game/android/*
+.scons_cache/*
+project/android/build/*
+project/android/.build_version
+project/android/development/*
+project/android/editor_game/*
 thirdparty/accesskit/*
 
 # Ignore custom.py
@@ -444,4 +448,6 @@ $RECYCLE.BIN/
 *.generated.props
 
 # Godot Addons
-!game/addons/imgui-godot/bin/*
+!project/addons/imgui-godot/bin/*
+/project/addons/core/.scons_cache
+project/addons/core/tools/scripts/__init__.py

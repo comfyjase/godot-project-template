@@ -3,13 +3,13 @@ import os
 import platform
 import sys
 
+import tools.scripts.system as system
+
 from methods import *
 from tools.scripts.msvs import *
 from tools.scripts.options import *
-from tools.scripts.system import *
 
-lib_name = "game"
-project_dir = "game"
+CacheDir('.scons_cache')
 
 local_env = Environment(tools=["default"], PLATFORM="")
 
@@ -35,14 +35,11 @@ if local_env["vsproj"]:
 
 env = environment_to_clone.Clone()
 
-dir_name = 'godot'
-if not is_submodule_initialized(dir_name):
+if not is_submodule_initialized(system.engine_godot_dir):
     sys.exit(1)
-dir_name = 'godot-cpp'
-if not is_submodule_initialized(dir_name):
+if not is_submodule_initialized(system.engine_godot_cpp_dir):
     sys.exit(1)
-dir_name = 'thirdparty/imgui'
-if not is_submodule_initialized(dir_name):
+if not is_submodule_initialized(system.thirdparty_imgui_dir_path):
     sys.exit(1)
 
 # Convert from game configuration to something godot/godot-cpp understands
@@ -56,7 +53,7 @@ elif game_target == "production":
 
 ARGUMENTS["target"] = env["target"]
 
-env = SConscript("godot-cpp/SConstruct", {"env": env, "customs": customs})
+env = SConscript(os.path.join(system.engine_godot_cpp_dir, "SConstruct"), {"env": env, "customs": customs})
 
 # Then convert back to the original target value
 env["target"] = game_target
@@ -64,32 +61,48 @@ ARGUMENTS["target"] = env["target"]
 
 if env["target"] in ["editor", "editor_game", "development", "template_debug"]:
     try:
-        doc_data = env.GodotCPPDocData("src/gen/doc_data.gen.cpp", source=Glob("doc_classes/*.xml", strings=True))
+        doc_data = env.GodotCPPDocData(os.path.join(system.project_src_dir, "gen", "doc_data.gen.cpp"), source=Glob("doc_classes/*.xml", strings=True))
     except AttributeError:
         print("Not including class reference as we're targeting a pre-4.4 baseline.")
 
 all_directories = []
-source_files = []
-include_files = []
+all_source_files = []
+project_source_files = []
+all_include_files = []
 cpp_defines = []
 
 # imgui
 should_include_imgui = (env["arch"] not in ["x86_32", "arm32", "arm64"]) and (env["platform"] not in ["web", "android", "ios"])
 if should_include_imgui:
-    all_directories = ["game/addons/imgui-godot/include", "thirdparty/imgui" ]
-    source_files = Glob("thirdparty/imgui/*.cpp", strings=True)
-    include_files = Glob("thirdparty/imgui/*.h", strings=True)
-    include_files.extend(get_all_files_recursive("game/addons/imgui-godot/include/", "*.h"))
+    all_directories = [os.path.join(system.addons_dir_path, "imgui-godot", "include"), system.thirdparty_imgui_dir_path ]
+    all_source_files = Glob(f"{system.thirdparty_imgui_dir_path}/*.cpp", strings=True)
+    project_source_files = Glob(f"{system.thirdparty_imgui_dir_path}/*.cpp", strings=True)
+    all_include_files = Glob(f"{system.thirdparty_imgui_dir_path}/*.h", strings=True)
+    all_include_files.extend(get_all_files_recursive(os.path.join(system.addons_dir_path, "imgui-godot", "include"), "*.h"))
     cpp_defines = [ 'IMGUI_USER_CONFIG="\\"imconfig-godot.h\\""', "IMGUI_ENABLED" ]
 
 # tests
-all_directories.append("godot/thirdparty/doctest")
-include_files.append("godot/thirdparty/doctest/doctest.h")
+all_directories.append(os.path.join(system.godot_thirdparty_dir_path, "doctest"))
+all_include_files.append(os.path.join(system.godot_thirdparty_dir_path, "doctest", "doctest.h"))
 
-# game
-all_directories.extend(get_all_directories_recursive("src/"))
-source_files.extend(get_all_files_recursive("src/", "*.cpp"))
-include_files.extend(get_all_files_recursive("src/", "*.h"))
+# godot-cpp
+all_directories.extend(get_all_directories_recursive(system.godot_cpp_extension_dir_path))
+all_directories.extend(get_all_directories_recursive(system.godot_cpp_gen_include_dir_path))
+all_directories.extend(get_all_directories_recursive(system.godot_cpp_gen_src_dir_path))
+all_directories.extend(get_all_directories_recursive(system.godot_cpp_include_dir_path))
+all_directories.extend(get_all_directories_recursive(system.godot_cpp_src_dir_path))
+
+all_include_files.extend(get_all_files_recursive(system.godot_cpp_extension_dir_path, "*.h"))
+all_include_files.extend(get_all_files_recursive(system.godot_cpp_gen_include_dir_path, "*.hpp"))
+all_source_files.extend(get_all_files_recursive(system.godot_cpp_gen_src_dir_path, "*.cpp"))
+all_include_files.extend(get_all_files_recursive(system.godot_cpp_include_dir_path, "*.hpp"))
+all_source_files.extend(get_all_files_recursive(system.godot_cpp_src_dir_path, "*.cpp"))
+
+# project
+all_directories.extend(get_all_directories_recursive(system.project_src_dir))
+all_source_files.extend(get_all_files_recursive(system.project_src_dir, "*.cpp"))
+project_source_files.extend(get_all_files_recursive(system.project_src_dir, "*.cpp"))
+all_include_files.extend(get_all_files_recursive(system.project_src_dir, "*.h"))
 if env["target"] in ["editor", "editor_game", "development", "template_debug"]:
     cpp_defines.append("TOOLS_ENABLED")
     cpp_defines.append("DEBUG_ENABLED")
@@ -119,6 +132,9 @@ else:
 
 cpp_defines.append("DOCTEST_CONFIG_NO_EXCEPTIONS_BUT_WITH_ALL_ASSERTS")
 
+# Add plugins
+system.add_plugins(system.project_plugins, env, customs, all_directories, all_source_files, all_include_files)
+
 env.Append(CPPPATH=all_directories)
 env.Append(CPPDEFINES=cpp_defines)
 
@@ -140,31 +156,27 @@ if platform.system() == "Windows" and (env["platform"] in ["web", "android"]):
 
 library = env.SharedLibrary(
     "bin/{}/{}".format(env['platform'], lib_filename),
-    source=source_files,
+    source=project_source_files,
 )
 
-copy = env.Install("{}/bin/{}/".format(project_dir, env["platform"]), library)
+copy = env.Install("{}/bin/{}/".format(project_dir_name, env["platform"]), library)
 
 if env["vsproj"]:
     init_msvs()
     
     resource_files = []
+    misc_files = []
     
-    misc_files = get_all_files_recursive("godot-cpp/gdextension/", "*.h")
-    misc_files.extend(get_all_files_recursive("godot-cpp/gen/include/", "*.hpp"))
-    misc_files.extend(get_all_files_recursive("godot-cpp/gen/src/", "*.cpp"))
-    misc_files.extend(get_all_files_recursive("godot-cpp/include/", "*.hpp"))
-    misc_files.extend(get_all_files_recursive("godot-cpp/src/", "*.cpp"))
     misc_files.append(".runsettings")
     misc_files.append(".editorconfig")
     
-    game_project_file = generate_vs_project(env, source_files, include_files, resource_files, misc_files)
+    game_project_file = generate_vs_project(env, all_source_files, all_include_files, resource_files, misc_files)
         
     vcxproj_files = []
-    vcxproj_files.append("godot/godot.vcxproj")
+    vcxproj_files.append(os.path.join(system.godot_dir_path, "godot.vcxproj"))
     vcxproj_files.append(game_project_file)
     
-    game_solution_file = generate_and_build_vs_solution(env, vcxproj_files)
+    game_solution_file = generate_vs_solution(env, vcxproj_files)
 else:
     default_args = [library, copy]
     Default(*default_args)

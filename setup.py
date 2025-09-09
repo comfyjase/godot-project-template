@@ -23,14 +23,17 @@ def run_subprocess(subprocess_command, return_code_error_message):
         print(return_code_error_message)
         exit()
 
-# TODO: Test...
 def get_vs_install_directory():
     if platform.system() != "Windows":
         print("Getting vs install directory not supported for non Windows platform, aborting!")
         exit()
         
+    vs_instances_directory_path = "C:/ProgramData/Microsoft/VisualStudio/Packages/_Instances/"
+    if not os.path.exists(vs_instances_directory_path):
+        return ""
+    
     vs_install_directory_path = ""
-    vs_install_directories = os.listdir("C:/ProgramData/Microsoft/VisualStudio/Packages/_Instances/")
+    vs_install_directories = os.listdir(vs_instances_directory_path)
     
     for vs_install_directory in vs_install_directories:
         directory_name = vs_install_directory
@@ -107,7 +110,7 @@ URL = "https://github.com/godotengine/godot-swappy/releases/download/from-source
 r = requests.get(URL)
 with open("godot-swappy.zip", "wb") as fd:
     fd.write(r.content)
-shutil.unpack_archive("godot-swappy.zip", "godot/thirdparty/swappy-frame-pacing")
+shutil.unpack_archive("godot-swappy.zip", "engine/godot/thirdparty/swappy-frame-pacing")
 print("Done", flush=True)
 print("", flush=True)
 
@@ -125,7 +128,7 @@ with zipfile.ZipFile("accesskit-c-0.16.0.zip") as archive:
 print("Done", flush=True)
 print("", flush=True)
 
-if os.getenv("JAVA_HOME") == "None" and os.getenv("ANDROID_HOME") == "None":
+if (os.getenv("JAVA_HOME") is None and os.getenv("ANDROID_HOME") is None) or not os.path.exists(f"{Path.home().drive}/sdks/android/platform-tools"):
     print("==========================================", flush=True)
     print("Installing Android SDK", flush=True)
     print("==========================================", flush=True)
@@ -169,15 +172,15 @@ if platform.system() == "Windows":
             wsl_install_output = subprocess.check_output(f"wsl -l -v", shell=True).decode('ascii').strip()
             if "Windows subsystem for Linux has no installed distributions" in wsl_install_output:
                 print("Once the WSL install has finished, please type exit and press enter to return back to setup.", flush=True)
-                run_subprocess("wsl --install", "Error: Failed to install WSL, aborting!")
+                run_subprocess("wsl --install", "Error: Failed to install WSL, aborting! If you have seen HCS_E_SERVICE_NOT_AVAILABLE please make sure that Turn Windows features on or off -> Windows Hypervisor Platform is ticked and restart your PC.")
         else:
             print("Once the WSL install has finished, please type exit and press enter to return back to setup.", flush=True)
-            run_subprocess("wsl --install", "Error: Failed to install WSL, aborting! If you have seen HCS_E_SERVICE_NOT_AVAILABLE please make sure that Turn Windows features on or off -> Windows Hypervisor Platform is ticked.")
+            run_subprocess("wsl --install", "Error: Failed to install WSL, aborting! If you have seen HCS_E_SERVICE_NOT_AVAILABLE please make sure that Turn Windows features on or off -> Windows Hypervisor Platform is ticked and restart your PC.")
     if (shutil.which("gh") is None):
         run_subprocess("winget install --id GitHub.cli", "Error: Failed to install Github CLI (gh) using winget. Aborting!")
     
     # WSL Installs
-    run_subprocess("wsl sudo apt-get update", "Error: Failed to update linux somehow, aborting!")
+    run_subprocess("wsl sudo apt-get update", "Error: Failed to update linux, aborting! If you have seen HCS_E_SERVICE_NOT_AVAILABLE please make sure that Turn Windows features on or off -> Windows Hypervisor Platform is ticked and restart your PC.")
     run_subprocess("wsl sudo apt-get install -y build-essential scons pkg-config libx11-dev libxcursor-dev libxinerama-dev libgl1-mesa-dev libglu1-mesa-dev libasound2-dev libpulse-dev libudev-dev libxi-dev libxrandr-dev libwayland-dev", "Error: Failed to install linux libraries, aborting!")
     run_subprocess("wsl sudo apt-get install -y libembree-dev libenet-dev libfreetype-dev libpng-dev zlib1g-dev libgraphite2-dev libharfbuzz-dev libogg-dev libtheora-dev libvorbis-dev libwebp-dev libmbedtls-dev libminiupnpc-dev libpcre2-dev libzstd-dev libsquish-dev libicu-dev", "Error: Failed to install linux libraries part 2, aborting!")   
 # (Linux Only) 
@@ -269,6 +272,9 @@ if platform.system() == "Windows":
         
     print("Done", flush=True)
     print("", flush=True)
+
+run_subprocess("git update-index --skip-worktree project/export_presets.cfg", "Error: Failed to set git to ignore changes to export_presets.cfg. Aborting!")
+print("If you want to make changes to export presets, please run: 'git update-index --no-skip-worktree project/export_presets.cfg', make your changes, then run 'git update-index --skip-worktree project/export_presets.cfg' if you want to ignore changes for that file again.", flush=True)
 
 print("############################################", flush=True)
 print("######### PROJECT SETUP FINISHED ###########", flush=True)

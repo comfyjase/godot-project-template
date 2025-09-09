@@ -92,8 +92,10 @@ project_cache_path = os.path.join(repo_dir_path, ".scons_cache").replace("\\", "
 project_dir_path = os.path.join(repo_dir_path, project_dir_name).replace("\\", "/")
 project_src_path = os.path.join(project_dir_path, "src").replace("\\", "/")
 addons_dir_path = os.path.join(project_dir_name, "addons").replace("\\", "/")
-thirdparty_dir_path = os.path.join(repo_dir_path, "thirdparty").replace("\\", "/")
-access_kit_path = os.path.join(thirdparty_dir_path, "accesskit", "accesskit-c-0.16.0").replace("\\", "/")
+absolute_thirdparty_dir_path = os.path.join(repo_dir_path, "thirdparty").replace("\\", "/")
+thirdparty_dir_path = "thirdparty"
+thirdparty_imgui_dir_path = os.path.join(thirdparty_dir_path, "imgui").replace("\\", "/")
+access_kit_path = os.path.join(absolute_thirdparty_dir_path, "accesskit", "accesskit-c-0.16.0").replace("\\", "/")
 tools_scripts_dir_path = os.path.join("tools", "scripts").replace("\\", "/")
 
 build_information_file_path = os.path.join(project_dir_path, "bin", "build.info").replace("\\", "/")
@@ -103,11 +105,9 @@ engine_godot_dir = os.path.join(engine_dir_name, "godot").replace("\\", "/")
 engine_godot_cpp_dir = os.path.join(engine_dir_name, "godot-cpp").replace("\\", "/")
 
 absolute_godot_dir_path = os.path.join(repo_dir_path, engine_godot_dir).replace("\\", "/")
-godot_dir_path = engine_godot_dir
-godot_thirdparty_dir_path = os.path.join(godot_dir_path, "thirdparty").replace("\\", "/")
-godot_bin_path = os.path.join(godot_dir_path, "bin").replace("\\", "/")
+godot_thirdparty_dir_path = os.path.join(engine_godot_dir, "thirdparty").replace("\\", "/")
+godot_bin_path = os.path.join(engine_godot_dir, "bin").replace("\\", "/")
 godot_cache_path = os.path.join(absolute_godot_dir_path, ".scons_cache").replace("\\", "/")
-#godot_cpp_dir_path = os.path.join(f"{repo_dir_path}", engine_godot_cpp_dir).replace("\\", "/")
 godot_cpp_dir_path = engine_godot_cpp_dir
 absolute_godot_cpp_extension_dir_path = os.path.join(repo_dir_path, godot_cpp_dir_path, "gdextension").replace("\\", "/")
 godot_cpp_extension_dir_path = os.path.join(godot_cpp_dir_path, "gdextension").replace("\\", "/")
