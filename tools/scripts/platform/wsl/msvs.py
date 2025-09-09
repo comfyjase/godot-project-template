@@ -7,7 +7,7 @@ script_path_to_append = os.path.join(os.path.dirname(os.path.abspath(__file__)),
 if script_path_to_append not in sys.path:
     sys.path.append(script_path_to_append)
 
-from tools.scripts.system import *
+import tools.scripts.system as system
 
 def get_platforms():
     return [
@@ -16,7 +16,7 @@ def get_platforms():
 
 def get_vs_variants():
     vs_variants = []
-    for (configuration) in configurations:
+    for (configuration) in system.configurations:
         for (vs_platform) in get_platforms():
             vs_variants.append(configuration + '|' + vs_platform)
             
@@ -27,8 +27,8 @@ def get_vs_debug_settings():
     
     binary_file_name = "godot.linuxbsd.editor.dev.x86_64"
       
-    wsl_command_arguments_to_open_project_in_editor = f"./godot/bin/{binary_file_name} --editor --path \"game\""
-    wsl_command_arguments_to_run_project_as_game = f"./godot/bin/{binary_file_name} --path \"game\""
+    wsl_command_arguments_to_open_project_in_editor = f"./{system.godot_bin_path}/{binary_file_name} --editor --path \"{system.project_dir_name}\""
+    wsl_command_arguments_to_run_project_as_game = f"./{system.godot_bin_path}/{binary_file_name} --path \"{system.project_dir_name}\""
     
     vs_debug_settings.extend([
         # linux editor

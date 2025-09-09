@@ -8,7 +8,7 @@ script_path_to_append = os.path.join(os.path.dirname(os.path.abspath(__file__)),
 if script_path_to_append not in sys.path:
     sys.path.append(script_path_to_append)
 
-from tools.scripts.system import *
+import tools.scripts.system as system
 
 def get_platforms():
     return [
@@ -17,7 +17,7 @@ def get_platforms():
 
 def get_vs_variants():
     vs_variants = []
-    for (configuration) in configurations:
+    for (configuration) in system.configurations:
         for (vs_platform) in get_platforms():   
             vs_variants.append(configuration + '|' + vs_platform)
             
@@ -32,8 +32,8 @@ def get_vs_debug_settings():
         binary_file_name = "python"
 
     # TODO: Pass $(Configuration) for architecture for arm32 and other configs...
-    android_editor_command_arguments_to_install_and_run = "tools/scripts/android_install_and_run.py $(Configuration) arm64 single"
-    android_editor_game_command_arguments_to_install_and_run = "tools/scripts/export_and_run.py android $(Configuration) arm64 single"    
+    android_editor_command_arguments_to_install_and_run = f"$(SolutionDir){system.tools_scripts_dir_path}/android_install_and_run.py $(Configuration) arm64 single"
+    android_editor_game_command_arguments_to_install_and_run = f"$(SolutionDir){system.tools_scripts_dir_path}/export_and_run.py android $(Configuration) arm64 single"    
 
     vs_debug_settings.extend([
         # android editor

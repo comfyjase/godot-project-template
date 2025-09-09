@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import os
+import pathlib
 import platform
 import shutil
 import subprocess
@@ -11,38 +12,38 @@ if script_path_to_append not in sys.path:
     sys.path.append(script_path_to_append)
 
 from glob import glob
-from tools.scripts.system import *
 
-# Change to project directory if we are not already there
-project_directory = os.getcwd()
-if not os.path.exists(os.path.join(f"{project_directory}", "game")):
-    os.chdir("..")
-    os.chdir("..")
+import tools.scripts.system as system
 
-platform_arg = sys.argv[1]
-configuration_arg = sys.argv[2]
-architecture_arg = sys.argv[3]
-precision_arg = sys.argv[4]
-is_ci = False
-if len(sys.argv) == 6:
-    is_ci = sys.argv[5]
+system.parse_arguments()
 
 # ===============================================
-# Visual Studio 2022 specific stuff
-if platform_arg == "Win32" or platform_arg == "x64":
-    platform_arg = "windows"
-
-if architecture_arg == platform_arg:
-    if architecture_arg == "Win32":
-        architecture_arg = "x86_32"
-    elif architecture_arg == "x64" or architecture_arg == "linux":
-        architecture_arg = "x86_64"
-    elif architecture_arg == "web":
-        architecture_arg = "wasm32"
-    elif architecture_arg == "android": # TODO: Add different android processor platforms? E.g. android_arm32, android_arm64, android_x86_32, android_x86_64?
-        architecture_arg = "arm64"
+# Clean Up Old Gradle Build Files
+if system.platform_arg == "android":
     
-using_wsl = wsl_available and platform_arg == "linux"
+    # Removing any temporary files so that we don't get false failures.
+    # I think this happens because the commit checker compiles files with production flags.
+    # Then this checks for any local .os files and editor_game isn't compatible with production - so it fails.
+    system.clean_up_files(system.godot_dir_path, ".os")
+    
+    android_build_folder = os.path.join(project_dir_path, "android", "build")
+    if os.path.exists(android_build_folder):
+        print("=====================================", flush=True)
+        print("Cleaning Up Previous Gradle Files", flush=True)
+        print("=====================================", flush=True)
+    
+        os.chdir(android_build_folder)
+        
+        if platform.system() == "Windows":
+            gradle_clean_command = "gradlew clean"
+        else:
+            gradle_clean_command = "./gradlew clean"
+        print(gradle_clean_command, flush=True)
+        return_code = subprocess.call(gradle_clean_command, shell=True)
+        if return_code != 0:
+            sys.exit(f"Error: Failed to clean gradle files for {system.platform_arg} {system.configuration_arg} {system.architecture_arg} {system.precision_arg}")
+        
+        os.chdir(os.path.join("..", "..", ".."))
 
 # ===============================================
 # Build Godot
@@ -51,101 +52,48 @@ os.chdir("godot")
 print("=====================================", flush=True)
 print("Creating Custom Export Template", flush=True)
 print("=====================================", flush=True)
-
-godot_configuration_arg = configuration_arg
-if godot_configuration_arg in ["profile", "production"]:
-    godot_configuration_arg = "template_release"
-elif godot_configuration_arg == "editor_game":
-    godot_configuration_arg = "template_debug"
-
-build_command = ""
-if using_wsl:
-    build_command = "wsl "
     
-if configuration_arg == "production":
-    build_command += f"scons platform={platform_arg} target={godot_configuration_arg} arch={architecture_arg} precision={precision_arg} production=yes"
-elif configuration_arg == "profile":
-    build_command += f"scons platform={platform_arg} target={godot_configuration_arg} arch={architecture_arg} precision={precision_arg} production=yes debug_symbols=yes"
-    if is_ci:
-        build_command = build_command.replace(" debug_symbols=yes", "")
-elif configuration_arg == "template_release":
-    build_command += f"scons platform={platform_arg} target={godot_configuration_arg} arch={architecture_arg} precision={precision_arg}"
-else:
-    build_command += f"scons platform={platform_arg} target={godot_configuration_arg} arch={architecture_arg} precision={precision_arg} dev_build=yes dev_mode=yes"
-    if is_ci:
-        build_command = build_command.replace(" dev_build=yes dev_mode=yes", "")
-
-if is_ci:
-    build_command += " debug_symbols=no"
-if configuration_arg in ["editor", "editor_game", "template_debug"]:
-    build_command += " tests=yes"
-    
-if platform_arg == "macos":
-    if is_ci:
-        build_command += " vulkan=yes"
-    build_command += " generate_bundle=yes"
-elif platform_arg == "web":
-    if configuration_arg in ["editor", "editor_game", "template_debug"]:
-        build_command = build_command.replace(" dev_build=yes dev_mode=yes", "")
-        if os.path.isdir(f"bin/.web_zip"):
-            shutil.rmtree(f"bin/.web_zip", True)
-    else:
-        if os.path.isdir(f"bin/web_{configuration_arg}.zip"):
-            shutil.rmtree(f"bin/web_{configuration_arg}.zip", True)
-            
-    build_command += " dlink_enabled=yes threads=no"
-    if is_ci:
-        build_command += " lto=none"
-elif platform_arg == "android":
-    build_command += " generate_apk=yes"
-elif platform_arg == "ios":
-    build_command += " generate_bundle=yes"
-    
-if not is_ci:
-    cache_path = project_directory.replace("\\", "/") + "/godot/.scons_cache"
-    build_command += f" cache_path={cache_path}"
-    
-print(build_command, flush=True)
-return_code = subprocess.call(build_command, shell=True)
+print(system.get_godot_custom_export_template_scons_command(), flush=True)
+return_code = subprocess.call(system.get_godot_custom_export_template_scons_command(), shell=True)
 if return_code != 0:
-    sys.exit(f"Error: Failed to build godot export template for {platform_arg} {configuration_arg} {architecture_arg} {precision_arg}")
+    sys.exit(f"Error: Failed to build godot export template for {system.platform_arg} {system.configuration_arg} {system.architecture_arg} {system.precision_arg}")
 
 # ===============================================
 # Rename Files
 os.chdir("bin")
 
 template_suffix = ""
-if platform_arg == "windows":
+if system.platform_arg == "windows":
     template_suffix = ".exe"
-elif platform_arg == "macos":
+elif system.platform_arg == "macos":
     template_suffix = ".zip"
-elif platform_arg == "linux":
+elif system.platform_arg == "linux":
     template_suffix = ""
-elif platform_arg == "web":
+elif system.platform_arg == "web":
     template_suffix = ".zip"
-elif platform_arg == "android":
+elif system.platform_arg == "android":
     template_suffix = ".apk"
-elif platform_arg == "ios":
+elif system.platform_arg == "ios":
     template_suffix = ".zip"
 
 godot_files = []
-suffix = f"{configuration_arg}.{architecture_arg}{template_suffix}"
-if precision_arg == "double":
-    suffix = suffix.replace(f"{architecture_arg}", f"{precision_arg}.{architecture_arg}")
-if platform_arg == "web":
-    if configuration_arg in ["editor", "editor_game"]:
-        shutil.copytree(".web_zip", f"web.{configuration_arg}.{architecture_arg}", dirs_exist_ok=True)
-        shutil.make_archive(f"web.{configuration_arg}.{architecture_arg}", "zip", f"web.{configuration_arg}.{architecture_arg}")
+suffix = f"{system.configuration_arg}.{system.architecture_arg}{template_suffix}"
+if system.precision_arg == "double":
+    suffix = suffix.replace(f"{system.architecture_arg}", f"{system.precision_arg}.{system.architecture_arg}")
+if system.platform_arg == "web":
+    if system.configuration_arg in ["editor", "editor_game"]:
+        shutil.copytree(".web_zip", f"web.{system.configuration_arg}.{system.architecture_arg}", dirs_exist_ok=True)
+        shutil.make_archive(f"web.{system.configuration_arg}.{system.architecture_arg}", "zip", f"web.{system.configuration_arg}.{system.architecture_arg}")
     else:
-        old_name = f"godot.web.{godot_configuration_arg}.{architecture_arg}.nothreads.dlink{template_suffix}"
-        if precision_arg == "double":
-            old_name = old_name.replace(f"{architecture_arg}", f"{precision_arg}.{architecture_arg}")
+        old_name = f"godot.web.{godot_configuration_arg}.{system.architecture_arg}.nothreads.dlink{template_suffix}"
+        if system.precision_arg == "double":
+            old_name = old_name.replace(f"{system.architecture_arg}", f"{system.precision_arg}.{system.architecture_arg}")
         new_name = f"web.{suffix}"
         os.replace(f"{old_name}", f"{new_name}")
-elif platform_arg == "android":
+elif system.platform_arg == "android":
     old_name = f"android_dev{template_suffix}"
-    if (configuration_arg in ["editor", "editor_game", "template_debug"]):
-        if is_ci:  
+    if (system.configuration_arg in ["editor", "editor_game", "template_debug"]):
+        if system.is_ci:  
             old_name = f"android_debug{template_suffix}"
     else:
         old_name = f"android_release{template_suffix}"
@@ -156,18 +104,18 @@ elif platform_arg == "android":
     else:
         print(f"{old_name} custom export template file not found, here are the available files: ", flush=True)
         print_files()
-elif platform_arg == "macos" or platform_arg == "ios":
-    platform_name_to_use = platform_arg
+elif system.platform_arg == "macos" or system.platform_arg == "ios":
+    platform_name_to_use = system.platform_arg
     
     old_name = f"godot_{platform_name_to_use}{template_suffix}"
     new_name = f"{platform_name_to_use}.{suffix}"
     
-    if (configuration_arg in ["editor", "editor_game", "template_debug"]) and not is_ci:
+    if (system.configuration_arg in ["editor", "editor_game", "template_debug"]) and not system.is_ci:
         old_name = old_name.replace(f"{platform_name_to_use}", f"{platform_name_to_use}_dev")
-        if precision_arg == "double":
+        if system.precision_arg == "double":
             old_name = old_name.replace(f"{platform_name_to_use}_dev", f"{platform_name_to_use}_dev_double")
     
-    if precision_arg == "double":
+    if system.precision_arg == "double":
         old_name = old_name.replace(f"{platform_name_to_use}", f"{platform_name_to_use}_double")
         
     if os.path.isfile(f"{old_name}"):
@@ -175,33 +123,44 @@ elif platform_arg == "macos" or platform_arg == "ios":
     else:
         print_files()
 else:
-    godot_platform_name = platform_arg
-    if platform_arg == "linux":
+    godot_platform_name = system.platform_arg
+    if system.platform_arg == "linux":
         godot_platform_name = "linuxbsd"
     godot_files = glob(f"godot.{godot_platform_name}.{godot_configuration_arg}.*")
     for file in godot_files:
         old_name = file
-        new_name = file.replace("godot.", "").replace(f"{godot_configuration_arg}", f"{configuration_arg}")
+        new_name = file.replace("godot.", "").replace(f"{godot_configuration_arg}", f"{system.configuration_arg}")
         os.replace(old_name, new_name)
 
 # ===============================================
 # Update export_presets.cfg with this template
 os.chdir(os.path.join("..", "..", "game"))
 
-godot_platform_name = platform_arg
-if platform_arg == "linux":
+godot_platform_name = system.platform_arg
+if system.platform_arg == "linux":
     godot_platform_name = "linuxbsd"
-export_template_file_path = os.path.join(project_directory, "godot", "bin", f"{godot_platform_name}.{suffix}")
+
+# Android specific
+gradle_source_file_path = os.path.join(system.godot_bin_path, "android_source.zip")
+gradle_source_file_path = os.path.normpath(gradle_source_file_path).replace("\\", "/")
+
+export_template_file_path = os.path.join(system.godot_bin_path, f"{godot_platform_name}.{suffix}")
 export_template_file_path = os.path.normpath(export_template_file_path).replace("\\", "/")
-if using_wsl:
+if system.using_wsl:
     export_template_file_path = "/mnt/" + export_template_file_path.replace(":", "").lower()
 elif platform.system() == "Linux" or platform.system() == "Darwin":
     export_template_file_path = export_template_file_path.lower()
     
-if not os.path.exists(export_template_file_path):
-    print("Available files:", flush=True)
-    print_files()
-    sys.exit(f"Error: Failed to create {export_template_file_path} for {platform_arg} {configuration_arg} {architecture_arg} {precision_arg}")
+if system.platform_arg == "android":
+    if not os.path.exists(gradle_source_file_path):
+        print("Available files:", flush=True)
+        print_files()
+        sys.exit(f"Error: Failed to create {export_template_file_path} for {system.platform_arg} {system.configuration_arg} {system.architecture_arg} {system.precision_arg}")
+else:
+    if not os.path.exists(export_template_file_path):
+        print("Available files:", flush=True)
+        print_files()
+        sys.exit(f"Error: Failed to create {export_template_file_path} for {system.platform_arg} {system.configuration_arg} {system.architecture_arg} {system.precision_arg}")
 
 if platform.system() == "Linux" or platform.system() == "Darwin":
     print(f"Called chmod a+rwx {export_template_file_path}", flush=True)
@@ -212,18 +171,46 @@ with open("export_presets.cfg", "r") as export_presets_read:
     
     found_export = False
     for index, line in enumerate(all_lines):
-        if f"name=\"{platform_arg} {configuration_arg} {architecture_arg} {precision_arg}" in line:
+        if f"name=\"{system.platform_arg} {system.configuration_arg} {system.architecture_arg} {system.precision_arg}" in line:
             found_export = True
-            print(f"Found export preset for {platform_arg} {configuration_arg} {architecture_arg} {precision_arg}", flush=True)
+            print(f"Found export preset for {system.platform_arg} {system.configuration_arg} {system.architecture_arg} {system.precision_arg}", flush=True)
             
         if found_export:
-            if "custom_template/debug=" in line:
-                all_lines[index] = f"custom_template/debug=\"{export_template_file_path}\"\n"
-                print(f"Updating template debug to {export_template_file_path}", flush=True)
-            elif "custom_template/release=" in line:
-                all_lines[index] = f"custom_template/release=\"{export_template_file_path}\"\n"
-                print(f"Updating template release to {export_template_file_path}", flush=True)
-                break
+            if system.platform_arg == "android":
+                if "gradle_build/android_source_template=" in line:
+                    all_lines[index] = f"gradle_build/android_source_template=\"{gradle_source_file_path}\"\n"
+                    print(f"Updating gradle_build/android_source_template to {gradle_source_file_path}", flush=True)
+                    break
+            else:
+                if "custom_template/debug=" in line:
+                    all_lines[index] = f"custom_template/debug=\"{export_template_file_path}\"\n"
+                    print(f"Updating template debug to {export_template_file_path}", flush=True)
+                elif "custom_template/release=" in line:
+                    all_lines[index] = f"custom_template/release=\"{export_template_file_path}\"\n"
+                    print(f"Updating template release to {export_template_file_path}", flush=True)
+                    break
 
     with open("export_presets.cfg", "w") as export_presets_write:
         export_presets_write.writelines(all_lines)
+
+# Hacky workaround to fix godot 4.x gradle build issues (see https://github.com/godotengine/godot/issues/81668)
+if system.platform_arg == "android":
+    print("=====================================", flush=True)
+    print("Copying Godot Lib File To Correct Gradle Build Folder", flush=True)
+    print("=====================================", flush=True)
+    
+    godot_android_library_file = os.path.join(system.godot_bin_path, "godot-lib.template_debug.dev.aar")
+    if godot_configuration_arg == "template_release":
+        godot_android_library_file = godot_android_library_file.replace("godot-lib.template_debug.dev.aar", "godot-lib.template_release.aar")
+    
+    if not os.path.exists(godot_android_library_file):
+        sys.exit(f"{godot_android_library_file} is missing! Are the file names correct?")
+        print_files()
+    
+    android_build_folder = "debug"
+    if godot_configuration_arg == "template_release":
+        android_build_folder = "release"
+    
+    game_project_android_library_file_destination_folder = os.path.join(system.project_dir_path, "android", "build", "libs", android_build_folder)
+    pathlib.Path(game_project_android_library_file_destination_folder).mkdir(parents=True, exist_ok=True)
+    shutil.copy(godot_android_library_file, game_project_android_library_file_destination_folder)

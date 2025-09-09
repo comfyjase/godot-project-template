@@ -7,7 +7,7 @@ script_path_to_append = os.path.join(os.path.dirname(os.path.abspath(__file__)),
 if script_path_to_append not in sys.path:
     sys.path.append(script_path_to_append)
 
-from tools.scripts.system import *
+import tools.scripts.system as system
 
 def get_platforms():
     return [
@@ -17,7 +17,7 @@ def get_platforms():
 
 def get_vs_variants():
     vs_variants = []
-    for (configuration) in configurations:
+    for (configuration) in system.configurations:
         for (vs_platform) in get_platforms():
             vs_variants.append(configuration + '|' + vs_platform)
             
@@ -26,8 +26,8 @@ def get_vs_variants():
 def get_vs_debug_settings():
     vs_debug_settings = []
     
-    command_arguments_to_open_project_in_editor = "--editor --path \"$(SolutionDir)game\""
-    command_arguments_to_run_project_as_game = "--path \"$(SolutionDir)game\""
+    command_arguments_to_open_project_in_editor = f"--editor --path \"$(SolutionDir){system.project_dir_name}\""
+    command_arguments_to_run_project_as_game = f"--path \"$(SolutionDir){system.project_dir_name}\""
     
     binary_file_names = [
         "godot.windows.editor.dev.x86_32",
@@ -37,22 +37,22 @@ def get_vs_debug_settings():
     vs_debug_settings.extend([
         # Win32 editor
         {
-            'LocalDebuggerCommand': f"$(SolutionDir)godot/bin/{binary_file_names[0]}", 
+            'LocalDebuggerCommand': f"$(SolutionDir){system.godot_bin_path}/{binary_file_names[0]}", 
             'LocalDebuggerCommandArguments': command_arguments_to_open_project_in_editor
         },
         # x64 editor
         {
-            'LocalDebuggerCommand': f"$(SolutionDir)godot/bin/{binary_file_names[1]}",
+            'LocalDebuggerCommand': f"$(SolutionDir){system.godot_bin_path}/{binary_file_names[1]}",
             'LocalDebuggerCommandArguments': command_arguments_to_open_project_in_editor
         },
         # Win32 editor_game
         {
-            'LocalDebuggerCommand': f"$(SolutionDir)godot/bin/{binary_file_names[0]}",
+            'LocalDebuggerCommand': f"$(SolutionDir){system.godot_bin_path}/{binary_file_names[0]}",
             'LocalDebuggerCommandArguments': command_arguments_to_run_project_as_game
         },
         # x64 editor_game
         {
-            'LocalDebuggerCommand': f"$(SolutionDir)godot/bin/{binary_file_names[1]}",
+            'LocalDebuggerCommand': f"$(SolutionDir){system.godot_bin_path}/{binary_file_names[1]}",
             'LocalDebuggerCommandArguments': command_arguments_to_run_project_as_game
         },
         # Win32 development

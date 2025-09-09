@@ -8,7 +8,7 @@ script_path_to_append = os.path.join(os.path.dirname(os.path.abspath(__file__)),
 if script_path_to_append not in sys.path:
     sys.path.append(script_path_to_append)
 
-from tools.scripts.system import *
+import tools.scripts.system as system
 
 def get_platforms():
     return [
@@ -17,7 +17,7 @@ def get_platforms():
 
 def get_vs_variants():
     vs_variants = []
-    for (configuration) in configurations:
+    for (configuration) in system.configurations:
         for (vs_platform) in get_platforms():
             vs_variants.append(configuration + '|' + vs_platform)
             
@@ -32,8 +32,8 @@ def get_vs_debug_settings():
     else:
         binary_file_name = "python"
     
-    web_command_arguments_to_run_editor = "godot/platform/web/serve.py --root ../../bin/.web_zip"
-    web_command_arguments_to_run_project_as_game = "tools/scripts/export_and_run.py web editor_game wasm32 single"    
+    web_command_arguments_to_run_editor = f"$(SolutionDir){system.godot_dir_path}/platform/web/serve.py --root ../../../bin/.web_zip"
+    web_command_arguments_to_run_project_as_game = f"$(SolutionDir){system.tools_scripts_dir_path}/export_and_run.py web editor_game wasm32 single"    
     
     vs_debug_settings.extend([
         # web editor

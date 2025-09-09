@@ -11,10 +11,11 @@ if script_path_to_append not in sys.path:
     sys.path.append(script_path_to_append)
 
 from SCons.Script import *
-from tools.scripts.system import *
+
+import tools.scripts.system as system
 
 import tools.scripts.platform.windows.msvs
-if wsl_available:
+if system.wsl_available:
     import tools.scripts.platform.wsl.msvs
 import tools.scripts.platform.web.msvs
 import tools.scripts.platform.android.msvs
@@ -25,7 +26,7 @@ def init_msvs():
     global vs_platforms
     
     vs_platforms.extend(tools.scripts.platform.windows.msvs.get_platforms())
-    if wsl_available:
+    if system.wsl_available:
         vs_platforms.extend(tools.scripts.platform.wsl.msvs.get_platforms())
     vs_platforms.extend(tools.scripts.platform.web.msvs.get_platforms())
     vs_platforms.extend(tools.scripts.platform.android.msvs.get_platforms())
@@ -39,7 +40,7 @@ def get_vs_variants():
     vs_variants = []
     
     vs_variants.extend(tools.scripts.platform.windows.msvs.get_vs_variants())
-    if wsl_available:
+    if system.wsl_available:
         vs_variants.extend(tools.scripts.platform.wsl.msvs.get_vs_variants())
     vs_variants.extend(tools.scripts.platform.web.msvs.get_vs_variants())
     vs_variants.extend(tools.scripts.platform.android.msvs.get_vs_variants())
@@ -50,7 +51,7 @@ def get_vs_debug_settings():
     vs_debug_settings = []
     
     vs_debug_settings.extend(tools.scripts.platform.windows.msvs.get_vs_debug_settings())
-    if wsl_available:
+    if system.wsl_available:
         vs_debug_settings.extend(tools.scripts.platform.wsl.msvs.get_vs_debug_settings())
     vs_debug_settings.extend(tools.scripts.platform.web.msvs.get_vs_debug_settings())
     vs_debug_settings.extend(tools.scripts.platform.android.msvs.get_vs_debug_settings())
@@ -61,7 +62,7 @@ def get_vs_cpp_defines():
     vs_cpp_defines = []
     
     vs_cpp_defines.extend(tools.scripts.platform.windows.msvs.get_vs_cpp_defines())
-    if wsl_available:
+    if system.wsl_available:
         vs_cpp_defines.extend(tools.scripts.platform.wsl.msvs.get_vs_cpp_defines())
     vs_cpp_defines.extend(tools.scripts.platform.web.msvs.get_vs_cpp_defines())
     vs_cpp_defines.extend(tools.scripts.platform.android.msvs.get_vs_cpp_defines())
@@ -72,7 +73,7 @@ def get_vs_cpp_flags():
     vs_cpp_flags = []
     
     vs_cpp_flags.extend(tools.scripts.platform.windows.msvs.get_vs_cpp_flags())
-    if wsl_available:
+    if system.wsl_available:
         vs_cpp_flags.extend(tools.scripts.platform.wsl.msvs.get_vs_cpp_flags())
     vs_cpp_flags.extend(tools.scripts.platform.web.msvs.get_vs_cpp_flags())
     vs_cpp_flags.extend(tools.scripts.platform.android.msvs.get_vs_cpp_flags())
@@ -121,10 +122,10 @@ def update_vs_solution_file(target, source, env):
     with open(env["vsproj_name"] + ".sln", "w") as out_file:
         for line in lines:
             line_write_done = False
-            for configuration in configurations:
+            for configuration in system.configurations:
                 for vs_platform in vs_platforms:
                     godot_platform = vs_platform
-                    if wsl_available:
+                    if system.wsl_available:
                         if godot_platform == "linux":
                             godot_platform = "x64"  # Convert to map to Win64 instead since the godot engine project doesn't have a windows -> linux config mapping
                     if godot_platform in ["web", "android"]:
@@ -142,7 +143,7 @@ def update_vs_solution_file(target, source, env):
             if line_write_done == False:
                 out_file.write(line)
     
-def generate_and_build_vs_solution(env, vcxproj_files):
+def generate_vs_solution(env, vcxproj_files):
     set_vs_environment_variables(env)
     
     solution_file = env.MSVSSolution(target = env["vsproj_name"] + env["MSVSSOLUTIONSUFFIX"], 
