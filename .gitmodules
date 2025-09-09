@@ -7,3 +7,13 @@
 	path = thirdparty/emsdk
 	url = https://github.com/emscripten-core/emsdk.git
 	ignore = dirty
+[submodule "engine/godot"]
+	path = engine/godot
+	url = https://github.com/comfyjase/godot.git
+	branch = 4.4
+	ignore = dirty
+[submodule "engine/godot-cpp"]
+	path = engine/godot-cpp
+	url = https://github.com/comfyjase/godot-cpp.git
+	branch = 4.4
+	ignore = dirty
