@@ -75,8 +75,7 @@ cpp_defines = []
 system.add_imgui(env, all_directories, all_source_files, project_source_files, all_include_files, cpp_defines)
 
 # tests
-all_directories.append(os.path.join(system.godot_thirdparty_dir_path, "doctest"))
-all_include_files.append(os.path.join(system.godot_thirdparty_dir_path, "doctest", "doctest.h"))
+system.add_doctest(all_directories, all_include_files)
 
 # godot-cpp
 all_directories.extend(get_all_directories_recursive(system.godot_cpp_extension_dir_path))

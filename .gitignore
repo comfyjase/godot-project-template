@@ -450,5 +450,5 @@ $RECYCLE.BIN/
 # Godot Addons
 !project/addons/imgui-godot/bin/*
 /project/addons/core/.scons_cache
-project/addons/core/tools/scripts/__init__.py
 *.uid
+/project/addons/gdextension_cpp_example/.scons_cache

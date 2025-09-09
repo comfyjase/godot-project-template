@@ -29,11 +29,14 @@ public:
 	void _process(double delta) override;
 
 private:
-	void init_build_information_rich_text_label(RichTextLabel *&rich_text_label, String label_name, const Vector2 &size);
+	void init_build_information_rich_text_label(RichTextLabel *rich_text_label, String label_name, const Vector2 &size);
 
 	void draw_build_information(double delta);
 	void draw_node_hierarchy(Node *node);
 	void draw_debug_menu(Node *node, bool include_all_children_draw_debug = false);
+
+	void on_enable_focus();
+	void on_disable_focus();
 
 	bool always_show_build_information;
 
@@ -49,6 +52,7 @@ private:
 	RID viewport_rid;
 	Node *selected_node;
 	bool any_hierarchy_item_selected;
+	bool only_show_nodes_with_debug_draw_available;
 
 	Label *build_name_label;
 	RichTextLabel *fps_label;
@@ -56,7 +60,10 @@ private:
 	RichTextLabel *cpu_frame_time_label;
 	RichTextLabel *gpu_frame_time_label;
 
-	bool joypad_button_just_pressed;
+	bool joypad_show_imgui_debug_button_just_pressed;
+	bool joypad_focus_imgui_debug_button_just_pressed;
 	bool show;
+	bool focus;
 };
+
 } //namespace godot

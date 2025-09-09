@@ -4,7 +4,7 @@
 
 namespace godot {
 	
-class CustomSprite : public Sprite2D {
+class GDE_EXPORT CustomSprite : public Sprite2D {
 	GDCLASS(CustomSprite, Sprite2D)
 
 protected:

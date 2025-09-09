@@ -18,6 +18,8 @@
 #include <imgui-godot.h>
 #endif
 
+#include "macros.h"
+
 using namespace godot;
 
 void BuildInformation::_bind_methods() {}
@@ -33,30 +35,30 @@ BuildInformation::BuildInformation() :
 		viewport_rid(),
 		selected_node(nullptr),
 		any_hierarchy_item_selected(false),
+		only_show_nodes_with_debug_draw_available(true),
 		build_name_label(nullptr),
 		fps_label(nullptr),
 		frame_time_label(nullptr),
 		cpu_frame_time_label(nullptr),
 		gpu_frame_time_label(nullptr),
-		joypad_button_just_pressed(false),
-		show(false) {}
+		joypad_show_imgui_debug_button_just_pressed(false),
+		joypad_focus_imgui_debug_button_just_pressed(false),
+		show(false),
+		focus(true) {}
 
 BuildInformation::~BuildInformation() {}
 
 void BuildInformation::_ready() {
-#if IMGUI_ENABLED
-	ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
-#endif
+	GD_PTR(input, Input::get_singleton());
+	GD_PTR(viewport, get_viewport());
+	GD_PTR(rendering_server, RenderingServer::get_singleton());
+	GD_PTR(build_name_label, memnew(Label));
+	GD_PTR(fps_label, memnew(RichTextLabel));
+	GD_PTR(frame_time_label, memnew(RichTextLabel));
+	GD_PTR(cpu_frame_time_label, memnew(RichTextLabel));
+	GD_PTR(gpu_frame_time_label, memnew(RichTextLabel));
 
-	input = Input::get_singleton();
-	ERR_FAIL_NULL_MSG(input, "Input hasn't been initialized yet?");
-
-	viewport = get_viewport();
-	ERR_FAIL_NULL_MSG(viewport, "Viewport hasn't been initialized yet?");
 	viewport_rid = viewport->get_viewport_rid();
-
-	rendering_server = RenderingServer::get_singleton();
-	ERR_FAIL_NULL_MSG(rendering_server, "Rendering server is invalid");
 	rendering_server->viewport_set_measure_render_time(viewport_rid, true);
 
 	const double initial_frame_time = (1000.0 / 120.0);
@@ -70,16 +72,15 @@ void BuildInformation::_ready() {
 	// Mobiles only to make sure build info appears in the edges of the screen
 	// Even if the device has rounded corners.
 #if PLATFORM_IOS || PLATFORM_ANDROID
-	constexpr float padding = 30.0f;
+	static constexpr float padding = 30.0f;
 	set_position(Vector2(get_position().x - padding, get_position().y + padding));
 #endif
 
 	Vector2 debug_ui_minimum_size = Vector2(30.0f, 30.0f);
 
 	// Build Name
-	String build_information_file_path = "res://bin/build.info";
-	String build_name = FileAccess::open(build_information_file_path, FileAccess::READ)->get_as_text();
-	build_name_label = memnew(Label);
+	const String &build_information_file_path = "res://bin/build.info";
+	const String &build_name = FileAccess::open(build_information_file_path, FileAccess::READ)->get_as_text();
 	build_name_label->set_name("BuildNameLabel");
 	build_name_label->set_horizontal_alignment(HorizontalAlignment::HORIZONTAL_ALIGNMENT_RIGHT);
 	build_name_label->set_text(build_name);
@@ -100,21 +101,66 @@ void BuildInformation::_ready() {
 
 void BuildInformation::_input(const Ref<InputEvent> &p_event) {
 #if IMGUI_ENABLED
-	bool imgui_toggle_debug_joypad_input = (input->is_joy_button_pressed(0, JoyButton::JOY_BUTTON_LEFT_STICK) && input->is_joy_button_pressed(0, JoyButton::JOY_BUTTON_RIGHT_STICK));
+	ERR_FAIL_NULL(input);
+
+	const bool imgui_toggle_debug_joypad_input = (input->is_joy_button_pressed(0, JoyButton::JOY_BUTTON_LEFT_STICK) && input->is_joy_button_pressed(0, JoyButton::JOY_BUTTON_RIGHT_STICK));
+	const bool imgui_toggle_focus_joypad_input = (input->is_joy_button_pressed(0, JoyButton::JOY_BUTTON_LEFT_STICK) && input->is_joy_button_pressed(0, JoyButton::JOY_BUTTON_DPAD_DOWN));
 
 	// Keyboard input
 	if (input->is_action_just_pressed("imgui_toggle_debug")) {
 		show = !show;
+
+		if (show) {
+			// Always focus when explicitly showing the debug menu.
+			focus = true;
+			on_enable_focus();
+		} else {
+			focus = false;
+			on_disable_focus();
+		}
+	}
+
+	if (input->is_action_just_pressed("imgui_toggle_focus")) {
+		focus = !focus;
+
+		if (focus) {
+			on_enable_focus();
+		} else {
+			on_disable_focus();
+		}
 	}
 
 	// Joypad input
 	if (imgui_toggle_debug_joypad_input) {
-		if (!joypad_button_just_pressed) {
+		if (!joypad_show_imgui_debug_button_just_pressed) {
 			show = !show;
-			joypad_button_just_pressed = true;
+			joypad_show_imgui_debug_button_just_pressed = true;
+
+			if (show) {
+				focus = true;
+				on_enable_focus();
+			} else {
+				focus = false;
+				on_disable_focus();
+			}
 		}
 	} else {
-		joypad_button_just_pressed = false;
+		joypad_show_imgui_debug_button_just_pressed = false;
+	}
+
+	if (imgui_toggle_focus_joypad_input) {
+		if (!joypad_focus_imgui_debug_button_just_pressed) {
+			focus = !focus;
+			joypad_focus_imgui_debug_button_just_pressed = true;
+
+			if (focus) {
+				on_enable_focus();
+			} else {
+				on_disable_focus();
+			}
+		}
+	} else {
+		joypad_focus_imgui_debug_button_just_pressed = false;
 	}
 #endif
 }
@@ -133,14 +179,24 @@ void BuildInformation::_process(double delta) {
 	draw_build_information(delta);
 
 #if IMGUI_ENABLED
-	// Game Specific Debug
-	SceneTree *scene_tree = get_tree();
-	ERR_FAIL_NULL_MSG(scene_tree, "Failed to get scene tree somehow");
-	Node *root_node = scene_tree->get_current_scene();
-	ERR_FAIL_NULL_MSG(root_node, "Failed to find root node somehow");
+	GD_LOCAL_PTR(scene_tree, get_tree());
+	GD_LOCAL_PTR(root_node, scene_tree->get_current_scene());
 
+	if (focus) {
+		ImVec4 focused_colour = ImGui::GetStyle().Colors[ImGuiCol_WindowBg];
+		focused_colour.w = 1.0f;
+		ImGui::GetStyle().Colors[ImGuiCol_WindowBg] = focused_colour;
+	} else {
+		ImVec4 not_focused_colour = ImGui::GetStyle().Colors[ImGuiCol_WindowBg];
+		not_focused_colour.w = 0.5f;
+		ImGui::GetStyle().Colors[ImGuiCol_WindowBg] = not_focused_colour;
+	}
+
+	// Game Specific Debug
 	ImGui::Begin("Scene Hierarchy");
 	{
+		ImGui::Checkbox("Only Show Nodes With Debug Draw Available", &only_show_nodes_with_debug_draw_available);
+
 		any_hierarchy_item_selected = false;
 
 		draw_node_hierarchy(root_node);
@@ -161,8 +217,7 @@ void BuildInformation::_process(double delta) {
 #endif
 }
 
-void BuildInformation::init_build_information_rich_text_label(RichTextLabel *&rich_text_label, String label_name, const Vector2 &size) {
-	rich_text_label = memnew(RichTextLabel);
+void BuildInformation::init_build_information_rich_text_label(RichTextLabel *rich_text_label, String label_name, const Vector2 &size) {
 	rich_text_label->set_name(label_name);
 	rich_text_label->set_horizontal_alignment(HorizontalAlignment::HORIZONTAL_ALIGNMENT_RIGHT);
 	rich_text_label->set_fit_content(true);
@@ -173,6 +228,12 @@ void BuildInformation::init_build_information_rich_text_label(RichTextLabel *&ri
 }
 
 void BuildInformation::draw_build_information(double delta) {
+	ERR_FAIL_NULL(fps_label);
+	ERR_FAIL_NULL(frame_time_label);
+	ERR_FAIL_NULL(cpu_frame_time_label);
+	ERR_FAIL_NULL(gpu_frame_time_label);
+	ERR_FAIL_NULL(rendering_server);
+
 	const double fps = 1.0 / delta;
 
 	String text_colour = "green";
@@ -230,39 +291,59 @@ void BuildInformation::draw_build_information(double delta) {
 
 void BuildInformation::draw_node_hierarchy(Node *node) {
 #if IMGUI_ENABLED
-	ImGuiTreeNodeFlags flag = ImGuiTreeNodeFlags_DefaultOpen;
+	ERR_FAIL_NULL(node);
 
+	ImGuiTreeNodeFlags flag = ImGuiTreeNodeFlags_DefaultOpen;
 	if (node->get_child_count() == 0) {
 		flag |= ImGuiTreeNodeFlags_Leaf;
 	} else {
 		flag |= ImGuiTreeNodeFlags_OpenOnArrow;
 		flag |= ImGuiTreeNodeFlags_OpenOnDoubleClick;
 	}
-
 	if (selected_node == node) {
 		flag |= ImGuiTreeNodeFlags_Selected;
 		any_hierarchy_item_selected = true;
 	}
 
-	if (ImGui::TreeNodeEx(node->get_name().c_unescape().utf8().get_data(), flag)) {
-		if (ImGui::IsItemClicked() || ImGui::IsItemActivated()) {
-			selected_node = node;
-			any_hierarchy_item_selected = true;
-		}
+	const String &node_name = node->get_name().c_unescape();
 
-		Array children_nodes = node->get_children();
-		for (int i = 0; i < children_nodes.size(); ++i) {
-			Node *child = node->get_child(i);
-			draw_node_hierarchy(child);
-		}
+	auto draw_node_and_children_func = [&]() {
+		if (ImGui::TreeNodeEx(node_name.utf8().get_data(), flag)) {
+			if (ImGui::IsItemClicked() || ImGui::IsItemActivated()) {
+				selected_node = node;
+				any_hierarchy_item_selected = true;
+			}
 
-		ImGui::TreePop();
+			Array children_nodes = node->get_children();
+			for (int i = 0; i < children_nodes.size(); ++i) {
+				GD_LOCAL_PTR(child, node->get_child(i));
+				draw_node_hierarchy(child);
+			}
+
+			ImGui::TreePop();
+		}
+	};
+
+	if (only_show_nodes_with_debug_draw_available) {
+		if (node->has_method("draw_debug")) {
+			draw_node_and_children_func();
+		} else {
+			Array children_nodes = node->get_children();
+			for (int i = 0; i < children_nodes.size(); ++i) {
+				GD_LOCAL_PTR(child, node->get_child(i));
+				draw_node_hierarchy(child);
+			}
+		}
+	} else {
+		draw_node_and_children_func();
 	}
 #endif
 }
 
 void BuildInformation::draw_debug_menu(Node *node, bool include_all_children_draw_debug /* = false*/) {
 #if IMGUI_ENABLED
+	ERR_FAIL_NULL(node);
+
 	if (node->has_method("draw_debug")) {
 		ImGui::Text("%s", node->get_name().c_unescape().utf8().get_data());
 		ImGui::Separator();
@@ -273,9 +354,27 @@ void BuildInformation::draw_debug_menu(Node *node, bool include_all_children_dra
 	if (include_all_children_draw_debug) {
 		TypedArray<Node> children_nodes = node->get_children();
 		for (int i = 0; i < children_nodes.size(); ++i) {
-			Node *child = node->get_child(i);
+			GD_LOCAL_PTR(child, node->get_child(i));
 			draw_debug_menu(child, include_all_children_draw_debug);
 		}
 	}
+#endif
+}
+
+void BuildInformation::on_enable_focus() {
+#if IMGUI_ENABLED
+	ERR_FAIL_NULL(input);
+
+	input->set_mouse_mode(Input::MOUSE_MODE_VISIBLE);
+	ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
+#endif
+}
+
+void BuildInformation::on_disable_focus() {
+#if IMGUI_ENABLED
+	ERR_FAIL_NULL(input);
+
+	input->set_mouse_mode(Input::MOUSE_MODE_CAPTURED);
+	ImGui::GetIO().ConfigFlags &= ~ImGuiConfigFlags_NavEnableGamepad;
 #endif
 }

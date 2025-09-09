@@ -1,0 +1,108 @@
+#!/usr/bin/env python
+
+import fnmatch
+import os
+import platform
+import sys
+
+from methods import print_error
+from tools.scripts.options import *
+from tools.scripts.system import *
+
+try:
+    Import("env")
+except Exception:
+    # Default tools with no platform defaults to gnu toolchain.
+    # We apply platform specific toolchains via our custom tools.
+    env = Environment(tools=["default"], PLATFORM="")
+
+customs = ["custom.py"]
+try:
+    customs += Import("customs")
+except Exception:
+    pass
+profile = ARGUMENTS.get("profile", "")
+if profile:
+    if os.path.isfile(profile):
+        customs.append(profile)
+    elif os.path.isfile(profile + ".py"):
+        customs.append(profile + ".py")
+
+opts = Variables(customs, ARGUMENTS)
+init_options(env, opts, lib_name)
+opts.Update(env)
+
+Help(opts.GenerateHelpText(env))
+
+CacheDir('.scons_cache')
+
+current_dir = os.getcwd()
+root_project_dir = os.path.join(current_dir, "..", "..", "..")
+
+# Build profiles can be used to decrease compile times.
+# You can either specify "disabled_classes", OR
+# explicitly specify "enabled_classes" which disables all other classes.
+# Modify the example file as needed and uncomment the line below or
+# manually specify the build_profile parameter when running SCons.
+
+# localEnv["build_profile"] = "build_profile.json"
+# Convert from game configuration to something godot/godot-cpp understands
+
+game_target = env["target"]
+if game_target in ["editor_game", "development"]:
+    env["target"] = "editor"
+elif game_target == "profile":
+    env["target"] = "template_release"
+elif game_target == "production":
+    env["target"] = "template_release"
+
+ARGUMENTS["target"] = env["target"]
+
+env = SConscript(os.path.join(root_godot_cpp_dir, "SConstruct"), {"env": env, "customs": customs})
+
+# Then convert back to the original target value
+env["target"] = game_target
+ARGUMENTS["target"] = env["target"]
+
+all_directories = []
+sources = []
+cpp_defines = []
+
+add_imgui(env, all_directories, sources, cpp_defines)
+add_doctest(all_directories)
+
+all_directories.extend(get_all_directories_recursive(project_src_dir))
+sources.extend(get_all_files_recursive(project_src_dir, "*.cpp"))
+add_cpp_defines(env, cpp_defines)
+
+add_plugins(plugins, env, customs, all_directories)
+
+env.Append(CPPPATH=all_directories)
+env.Append(CPPDEFINES=cpp_defines)
+
+if env["target"] in ["editor", "editor_game", "development", "template_debug"]:
+    try:
+        doc_data = env.GodotCPPDocData(f"{project_src_dir}/gen/doc_data.gen.cpp", source=Glob("doc_classes/*.xml"))
+    except AttributeError:
+        print("Not including class reference as we're targeting a pre-4.3 baseline.")
+
+# .dev doesn't inhibit compatibility, so we don't need to key it.
+# .universal just means "compatible with all relevant arches" so we don't need to key it.
+suffix = env['suffix'].replace(".dev", "").replace(".universal", "")
+library_suffix = env.subst('$SHLIBSUFFIX')
+if platform.system() == "Linux" and env["platform"] == "macos":
+    library_suffix = ".dylib"
+lib_filename = "{}{}{}{}".format(env.subst('$SHLIBPREFIX'), lib_name, suffix, library_suffix)
+if platform.system() == "Windows" and (env["platform"] in ["web", "android"]):
+    lib_filename = "lib" + lib_filename
+
+library = env.SharedLibrary(
+    "bin/{}/{}".format(env['platform'], lib_filename),
+    source=sources,
+)
+
+copy = env.Install("{}/bin/{}/".format(project_dir_name, env["platform"]), library)
+project_bin_copy = env.Install(os.path.join(root_project_dir, project_dir_name, "bin", env["platform"]), library)
+
+default_args = [library, copy, project_bin_copy]
+Default(*default_args)

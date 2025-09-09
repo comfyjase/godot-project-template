@@ -3,29 +3,20 @@
 #include "test_game_main.h"
 
 #include <doctest.h>
-
 #include <godot_cpp/classes/os.hpp>
 #include <godot_cpp/templates/local_vector.hpp>
 #include <godot_cpp/variant/packed_string_array.hpp>
 
-#include "test_custom_sprite.h"
+#include "tests.h"
 
 using namespace godot;
 
-int godot::test_game_main(bool &tests_need_run) {
+int godot::test_game_main() {
 	PackedStringArray cmd_line_args = OS::get_singleton()->get_cmdline_args();
 
 	LocalVector<String> test_args;
 	for (const String &s : cmd_line_args) {
-		if (s == "--game-test") {
-			tests_need_run = true;
-		} else {
-			test_args.push_back(s);
-		}
-	}
-
-	if (!tests_need_run) {
-		return 0;
+		test_args.push_back(s);
 	}
 
 	doctest::Context context;

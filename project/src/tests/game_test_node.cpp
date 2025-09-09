@@ -10,18 +10,17 @@ using namespace godot;
 
 void GameTest::_bind_methods() {}
 
-GameTest::GameTest() {}
+GameTest::GameTest() : Node() {}
 
 GameTest::~GameTest() {}
 
 void GameTest::_ready() {
+	Node::_ready();
+
 #if TESTS_ENABLED
-	bool tests_need_to_run = false;
-	int test_results = test_game_main(tests_need_to_run);
-	if (tests_need_to_run) {
-		if (test_results != 0) {
-			print_error("Error: Game unit tests failed.");
-		}
+	int test_results = test_game_main();
+	if (test_results != 0) {
+		print_error("Error: Game unit tests failed.");
 	}
 	get_tree()->quit(test_results);
 #endif
