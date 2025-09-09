@@ -1,5 +1,42 @@
 # Core
 
+## ImGui
+Includes `imgui-godot` to allow users to implement `draw_debug` functions in their nodes to draw to the debug menu at runtime. Useful for debugging.
+
+Example:
+.h
+```
+class CustomSprite : public Sprite2D {
+	GDCLASS(CustomSprite, Sprite2D)
+
+protected:
+	static void _bind_methods();
+	
+public:
+	void draw_debug();
+};
+```
+
+.cpp
+```
+#if IMGUI_ENABLED
+#include <imgui-godot.h>
+#endif
+
+void CustomSprite::_bind_methods() {
+#if IMGUI_ENABLED
+	ClassDB::bind_method(D_METHOD("draw_debug"), &CustomSprite::draw_debug);
+#endif
+}
+
+void CustomSprite::draw_debug() {
+#if IMGUI_ENABLED
+	ImGui::DragFloat("Amplitude", &amplitude);
+	ImGui::DragFloat("Speed", &speed);
+#endif
+}
+```
+
 ## Macros
 These macros have been created to help reduce repeated code and provide automatic error checking.
 

@@ -64,8 +64,18 @@ env = SConscript(os.path.join(root_godot_cpp_dir, "SConstruct"), {"env": env, "c
 env["target"] = game_target
 ARGUMENTS["target"] = env["target"]
 
-env.Append(CPPPATH=[get_all_directories_recursive(project_src_dir)])
-sources = get_all_files_recursive(project_src_dir, "*.cpp")
+all_directories = []
+sources = []
+cpp_defines = []
+
+add_imgui(env, all_directories, sources, cpp_defines)
+
+all_directories.extend(get_all_directories_recursive(project_src_dir))
+sources.extend(get_all_files_recursive(project_src_dir, "*.cpp"))
+add_cpp_defines(env, cpp_defines)
+
+env.Append(CPPPATH=all_directories)
+env.Append(CPPDEFINES=cpp_defines)
 
 if env["target"] in ["editor", "editor_game", "development", "template_debug"]:
     try:
@@ -92,6 +102,5 @@ copy = env.Install("{}/bin/{}/".format(project_dir_name, env["platform"]), libra
 #project_copy = env.Install(os.path.join(root_project_dir, "bin", env["platform"]), library)
 project_bin_copy = env.Install(os.path.join(root_project_dir, project_dir_name, "bin", env["platform"]), library)
 
-if not env["vsproj"]:
-    default_args = [library, copy, project_bin_copy]
-    Default(*default_args)
+default_args = [library, copy, project_bin_copy]
+Default(*default_args)

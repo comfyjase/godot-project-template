@@ -3,6 +3,7 @@
 #include <godot_cpp/classes/sprite2d.hpp>
 
 namespace godot {
+	
 class CustomSprite : public Sprite2D {
 	GDCLASS(CustomSprite, Sprite2D)
 

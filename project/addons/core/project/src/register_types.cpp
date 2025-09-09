@@ -5,6 +5,11 @@
 #include <godot_cpp/core/defs.hpp>
 #include <godot_cpp/godot.hpp>
 
+#if IMGUI_ENABLED
+#include <imgui-godot.h>
+#endif
+
+#include "build_information.h"
 #include "macros.h"
 
 using namespace godot;
@@ -13,6 +18,12 @@ void initialize_core_gdextension_types(ModuleInitializationLevel p_level) {
 	if (p_level != MODULE_INITIALIZATION_LEVEL_SCENE) {
 		return;
 	}
+	
+#if IMGUI_ENABLED
+	ImGui::Godot::SyncImGuiPtrs();
+#endif
+
+	GDREGISTER_RUNTIME_CLASS(BuildInformation);
 }
 
 void uninitialize_core_gdextension_types(ModuleInitializationLevel p_level) {

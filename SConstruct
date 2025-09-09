@@ -72,14 +72,7 @@ all_include_files = []
 cpp_defines = []
 
 # imgui
-should_include_imgui = (env["arch"] not in ["x86_32", "arm32", "arm64"]) and (env["platform"] not in ["web", "android", "ios"])
-if should_include_imgui:
-    all_directories = [os.path.join(system.addons_dir_path, "imgui-godot", "include"), system.thirdparty_imgui_dir_path ]
-    all_source_files = Glob(f"{system.thirdparty_imgui_dir_path}/*.cpp", strings=True)
-    project_source_files = Glob(f"{system.thirdparty_imgui_dir_path}/*.cpp", strings=True)
-    all_include_files = Glob(f"{system.thirdparty_imgui_dir_path}/*.h", strings=True)
-    all_include_files.extend(get_all_files_recursive(os.path.join(system.addons_dir_path, "imgui-godot", "include"), "*.h"))
-    cpp_defines = [ 'IMGUI_USER_CONFIG="\\"imconfig-godot.h\\""', "IMGUI_ENABLED" ]
+system.add_imgui(env, all_directories, all_source_files, project_source_files, all_include_files, cpp_defines)
 
 # tests
 all_directories.append(os.path.join(system.godot_thirdparty_dir_path, "doctest"))
@@ -103,34 +96,7 @@ all_directories.extend(get_all_directories_recursive(system.project_src_dir))
 all_source_files.extend(get_all_files_recursive(system.project_src_dir, "*.cpp"))
 project_source_files.extend(get_all_files_recursive(system.project_src_dir, "*.cpp"))
 all_include_files.extend(get_all_files_recursive(system.project_src_dir, "*.h"))
-if env["target"] in ["editor", "editor_game", "development", "template_debug"]:
-    cpp_defines.append("TOOLS_ENABLED")
-    cpp_defines.append("DEBUG_ENABLED")
-    cpp_defines.append("TESTS_ENABLED")
-
-if env["platform"] == "windows":
-    cpp_defines.append("PLATFORM_WINDOWS")
-elif env["platform"] == "linux":
-    cpp_defines.append("PLATFORM_LINUX")
-elif env["platform"] == "macos":
-    cpp_defines.append("PLATFORM_MACOS")
-elif env["platform"] == "android":
-    cpp_defines.append("PLATFORM_ANDROID")
-elif env["platform"] == "ios":
-    cpp_defines.append("PLATFORM_IOS")
-elif env["platform"] == "web":
-    cpp_defines.append("PLATFORM_WEB")
-    
-if env["target"] == "production":
-    cpp_defines.append("PRODUCTION")
-elif env["target"] == "profile":
-    cpp_defines.append("PROFILE")
-elif env["target"] == "template_release":
-    cpp_defines.append("RELEASE")
-else:
-    cpp_defines.append("DEBUG")
-
-cpp_defines.append("DOCTEST_CONFIG_NO_EXCEPTIONS_BUT_WITH_ALL_ASSERTS")
+system.add_cpp_defines(env, cpp_defines)
 
 # Add plugins
 system.add_plugins(system.project_plugins, env, customs, all_directories, all_source_files, all_include_files)
@@ -173,7 +139,7 @@ if env["vsproj"]:
     game_project_file = generate_vs_project(env, all_source_files, all_include_files, resource_files, misc_files)
         
     vcxproj_files = []
-    vcxproj_files.append(os.path.join(system.godot_dir_path, "godot.vcxproj"))
+    vcxproj_files.append(os.path.join(system.engine_godot_dir, "godot.vcxproj"))
     vcxproj_files.append(game_project_file)
     
     game_solution_file = generate_vs_solution(env, vcxproj_files)

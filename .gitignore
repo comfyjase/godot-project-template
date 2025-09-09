@@ -451,3 +451,4 @@ $RECYCLE.BIN/
 !project/addons/imgui-godot/bin/*
 /project/addons/core/.scons_cache
 project/addons/core/tools/scripts/__init__.py
+*.uid

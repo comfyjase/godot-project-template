@@ -17,8 +17,14 @@ from SCons.Script import *
 # Default values
 lib_name = "core"
 project_dir_name = "project"
-project_src_dir = os.path.join("project", "src")
-root_godot_cpp_dir = os.path.join("..", "..", "..", "engine", "godot-cpp")
+project_src_dir = os.path.join("project", "src").replace("\\", "/")
+root_dir = os.path.join("..", "..", "..").replace("\\", "/")
+root_godot_cpp_dir = os.path.join(root_dir, "engine", "godot-cpp").replace("\\", "/")
+addons_dir_path = ".."
+addons_imgui_godot_dir_path = os.path.join(addons_dir_path, "imgui-godot").replace("\\", "/")
+addons_imgui_godot_include_dir_path = os.path.join(addons_imgui_godot_dir_path, "include").replace("\\", "/")
+thirdparty_dir_path = os.path.join(root_dir, "thirdparty").replace("\\", "/")
+thirdparty_imgui_dir_path = os.path.join(thirdparty_dir_path, "imgui").replace("\\", "/")
 
 platforms = ["linux", "macos", "windows", "android", "ios", "web"]
 
@@ -92,3 +98,38 @@ def get_all_files_recursive(root_directory, filetype='*.*'):
                 files_matching_type.append(str(search_path_with_ending_slash + file))
                 
     return files_matching_type
+
+def add_imgui(env, all_directories, all_source_files, cpp_defines):
+    should_include_imgui = (env["arch"] not in ["x86_32", "arm32", "arm64"]) and (env["platform"] not in ["web", "android", "ios"])
+    if should_include_imgui:
+        all_directories.extend([addons_imgui_godot_include_dir_path, thirdparty_imgui_dir_path ])
+        all_source_files.extend(Glob(f"{thirdparty_imgui_dir_path}/*.cpp", strings=True))
+        cpp_defines.extend([ 'IMGUI_USER_CONFIG="\\"imconfig-godot.h\\""', "IMGUI_ENABLED" ])
+
+def add_cpp_defines(env, cpp_defines):
+    if env["target"] in ["editor", "editor_game", "development", "template_debug"]:
+        cpp_defines.append("TOOLS_ENABLED")
+        cpp_defines.append("DEBUG_ENABLED")
+        cpp_defines.append("TESTS_ENABLED")
+    
+    if env["platform"] == "windows":
+        cpp_defines.append("PLATFORM_WINDOWS")
+    elif env["platform"] == "linux":
+        cpp_defines.append("PLATFORM_LINUX")
+    elif env["platform"] == "macos":
+        cpp_defines.append("PLATFORM_MACOS")
+    elif env["platform"] == "android":
+        cpp_defines.append("PLATFORM_ANDROID")
+    elif env["platform"] == "ios":
+        cpp_defines.append("PLATFORM_IOS")
+    elif env["platform"] == "web":
+        cpp_defines.append("PLATFORM_WEB")
+        
+    if env["target"] == "production":
+        cpp_defines.append("PRODUCTION")
+    elif env["target"] == "profile":
+        cpp_defines.append("PROFILE")
+    elif env["target"] == "template_release":
+        cpp_defines.append("RELEASE")
+    else:
+        cpp_defines.append("DEBUG")

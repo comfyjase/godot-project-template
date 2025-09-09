@@ -26,8 +26,9 @@ if not os.path.exists(f"{system.engine_godot_dir}/godot.vcxproj"):
     print("Build godot", flush=True)
     print("=====================================", flush=True)
     
-    print("Build Command: " + system.get_godot_scons_command(), flush=True)
-    return_code = subprocess.call(system.get_godot_scons_command(), shell=True)
+    build_command = generate_command.replace("vsproj=yes build_library=no", "")
+    print("Build Command: " + build_command, flush=True)
+    return_code = subprocess.call(build_command, shell=True)
     if return_code != 0:
         sys.exit(f"Error: Failed to build godot")
     
