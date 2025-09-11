@@ -26,7 +26,7 @@ if not os.path.exists(f"{system.engine_godot_dir}/godot.vcxproj"):
     print("Build godot", flush=True)
     print("=====================================", flush=True)
     
-    build_command = generate_command.replace("vsproj=yes build_library=no", "")
+    build_command = generate_command.replace("vsproj=yes build_library=no", f" tests=yes cache_path={system.godot_cache_path} accesskit_sdk_path={system.access_kit_path}")
     print("Build Command: " + build_command, flush=True)
     return_code = subprocess.call(build_command, shell=True)
     if return_code != 0:
@@ -44,7 +44,7 @@ for (i, plugin_name) in enumerate(system.project_plugins):
     print(f"Building plugin {plugin_name}", flush=True)
     print("=====================================", flush=True)
     
-    build_plugin_command = (generate_command + " symbols_visibility=visible").replace(" vsproj=yes build_library=no", "")
+    build_plugin_command = generate_command.replace(" vsproj=yes build_library=no", f" cache_path={system.project_cache_path} symbols_visibility=visible")
     print(build_plugin_command, flush=True)
     return_code = subprocess.call(build_plugin_command, shell=True)
     if return_code != 0:

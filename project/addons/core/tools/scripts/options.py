@@ -46,6 +46,7 @@ def init_options(env, opts, library_name):
             map=architecture_aliases,
         )
     )
+    opts.Add("cache_path", "Path to a directory where SCons cache files will be stored. No value defaults to a .scons_cache folder.", "")
     opts.Add(BoolVariable("debug_symbols", "Build with debugging symbols", True))
     opts.Add(BoolVariable("dev_build", "Developer build with dev-only debugging code (DEV_ENABLED)", False))
     opts.Add(BoolVariable("production", "Used for shipping a build", False))

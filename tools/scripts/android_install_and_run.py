@@ -5,18 +5,20 @@ import os
 import subprocess
 import sys
 
-# Change to project directory if we are not already there
-current_directory = os.getcwd()
-if not os.path.exists(os.path.join(f"{current_directory}", "game")):
-    os.chdir("..")
-    os.chdir("..")
+script_path_to_append = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..")
+if script_path_to_append not in sys.path:
+    sys.path.append(script_path_to_append)
+
+import tools.scripts.system as system
+
+#system.parse_arguments()
 
 project_directory = os.getcwd()
 
 platform_arg = "android"
-configuration = sys.argv[1]
-architecture = sys.argv[2]
-precision = sys.argv[3]
+configuration_arg = sys.argv[1]
+architecture_arg = sys.argv[2]
+precision_arg = sys.argv[3]
 
 # ===============================================
 # Visual Studio 2022 specific stuff

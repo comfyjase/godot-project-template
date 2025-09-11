@@ -276,6 +276,11 @@ if platform.system() == "Windows":
 run_subprocess("git update-index --skip-worktree project/export_presets.cfg", "Error: Failed to set git to ignore changes to export_presets.cfg. Aborting!")
 print("If you want to make changes to export presets, please run: 'git update-index --no-skip-worktree project/export_presets.cfg', make your changes, then run 'git update-index --skip-worktree project/export_presets.cfg' if you want to ignore changes for that file again.", flush=True)
 
+project_scons_cache_path = os.path.join(current_directory, ".scons_cache")
+if (os.getenv("SCONS_CACHE") is None or if os.environ["SCONS_CACHE"] != project_scons_cache_path):
+    print(f"Please update the `SCONS_CACHE` environment variable to use {project_scons_cache_path}", flush=True)
+    input("Press Enter to continue...")
+
 print("############################################", flush=True)
 print("######### PROJECT SETUP FINISHED ###########", flush=True)
 print("############################################", flush=True)

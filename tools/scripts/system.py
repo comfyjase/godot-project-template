@@ -432,7 +432,7 @@ def get_godot_custom_export_template_scons_command():
     elif platform_arg == "ios":
         scons_command += " generate_bundle=yes"
     
-    scons_command += f" cache_path={cache_path}"    
+    scons_command += f" cache_path={godot_cache_path}"
     scons_command += f" accesskit_sdk_path={access_kit_path}"
 
     return scons_command

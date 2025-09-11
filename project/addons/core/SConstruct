@@ -34,7 +34,10 @@ opts.Update(env)
 
 Help(opts.GenerateHelpText(env))
 
-CacheDir('.scons_cache')
+cache_path = env["cache_path"]
+if cache_path == "":
+    cache_path = ".scons_cache"
+CacheDir(cache_path)
 
 current_dir = os.getcwd()
 root_project_dir = os.path.join(current_dir, "..", "..", "..")
@@ -82,6 +85,12 @@ if env["target"] in ["editor", "editor_game", "development", "template_debug"]:
         doc_data = env.GodotCPPDocData(f"{project_src_dir}/gen/doc_data.gen.cpp", source=Glob("doc_classes/*.xml"))
     except AttributeError:
         print("Not including class reference as we're targeting a pre-4.3 baseline.")
+
+# Fixing warnings for LNK4099: PDB '' was not found with...
+# This is only needed for CI purposes but included in the main build
+# to avoid having to add extra CI build parameter in this script
+if env["platform"] == "windows":
+    env.Append(LINKFLAGS=["/ignore:4099"])
 
 # .dev doesn't inhibit compatibility, so we don't need to key it.
 # .universal just means "compatible with all relevant arches" so we don't need to key it.

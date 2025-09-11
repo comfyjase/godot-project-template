@@ -9,8 +9,6 @@ from methods import *
 from tools.scripts.msvs import *
 from tools.scripts.options import *
 
-CacheDir('.scons_cache')
-
 local_env = Environment(tools=["default"], PLATFORM="")
 
 customs = ["custom.py"]
@@ -20,6 +18,11 @@ opts = Variables(customs, ARGUMENTS)
 init_system_variables(ARGUMENTS)
 init_options(local_env, opts, lib_name)
 opts.Update(local_env)
+
+cache_path = local_env["cache_path"]
+if cache_path == "":
+    cache_path = ".scons_cache"
+CacheDir(cache_path)
 
 Help(opts.GenerateHelpText(local_env))
 
@@ -136,12 +139,14 @@ if env["vsproj"]:
     misc_files.append(".editorconfig")
     
     game_project_file = generate_vs_project(env, all_source_files, all_include_files, resource_files, misc_files)
-        
+    env.NoCache(game_project_file)
+    
     vcxproj_files = []
     vcxproj_files.append(os.path.join(system.engine_godot_dir, "godot.vcxproj"))
     vcxproj_files.append(game_project_file)
     
     game_solution_file = generate_vs_solution(env, vcxproj_files)
+    env.NoCache(game_solution_file)
 else:
     default_args = [library, copy]
     Default(*default_args)

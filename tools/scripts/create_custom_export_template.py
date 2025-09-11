@@ -24,9 +24,9 @@ if system.platform_arg == "android":
     # Removing any temporary files so that we don't get false failures.
     # I think this happens because the commit checker compiles files with production flags.
     # Then this checks for any local .os files and editor_game isn't compatible with production - so it fails.
-    system.clean_up_files(system.godot_dir_path, ".os")
+    system.clean_up_files(system.engine_godot_dir, ".os")
     
-    android_build_folder = os.path.join(project_dir_path, "android", "build")
+    android_build_folder = os.path.join(system.project_dir_path, "android", "build")
     if os.path.exists(android_build_folder):
         print("=====================================", flush=True)
         print("Cleaning Up Previous Gradle Files", flush=True)
@@ -47,7 +47,7 @@ if system.platform_arg == "android":
 
 # ===============================================
 # Build Godot
-os.chdir("godot")
+os.chdir(system.engine_godot_dir)
 
 print("=====================================", flush=True)
 print("Creating Custom Export Template", flush=True)
@@ -134,7 +134,7 @@ else:
 
 # ===============================================
 # Update export_presets.cfg with this template
-os.chdir(os.path.join("..", "..", "game"))
+os.chdir(os.path.join("..", "..", "..", system.project_dir_name))
 
 godot_platform_name = system.platform_arg
 if system.platform_arg == "linux":
