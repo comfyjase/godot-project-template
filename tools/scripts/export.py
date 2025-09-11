@@ -3,6 +3,7 @@
 import datetime
 import platform
 import os
+import os.path
 import re
 import shutil
 import subprocess
@@ -17,51 +18,6 @@ import tools.scripts.system as system
 system.parse_arguments()
 
 # ===============================================
-# Plugin Cleanup
-if system.is_ci:
-    print("=====================================", flush=True)
-    print("Plugin Cleanup", flush=True)
-    print("=====================================", flush=True)
-
-    # Disable plugins in the project file.
-    with open("game/project.godot", "r") as godot_project_file_read:
-        with open("game/project.godot", "r") as godot_project_file_read:
-            all_lines = godot_project_file_read.readlines()    
-            strings_to_remove = [
-                # Godot Git Plugin - should be editor only, not needed for export.
-                "version_control/plugin_name=\"GitPlugin\"",
-                "version_control/autoload_on_startup=true",
-            ]
-            
-            # imgui-godot plugin
-            # No imgui support on these platforms.
-            if system.platform_arg in ["web", "android", "ios"]:
-                strings_to_remove.append("ImGuiRoot=\"*res://addons/imgui-godot/data/ImGuiRoot.tscn\"")
-                strings_to_remove.append("enabled=PackedStringArray(\"res://addons/imgui-godot/plugin.cfg\")")
-                strings_to_remove.append(", \"res://addons/imgui-godot/plugin.cfg\"")
-            
-            for i, line in enumerate(all_lines):
-                for j, string_to_remove in enumerate(strings_to_remove):
-                    if string_to_remove in line:
-                        all_lines[i] = line.replace(string_to_remove, "")
-                        print(f"Line: {line} changed to -> \"\"", flush=True)
-                    
-            with open("game/project.godot", "w") as godot_project_file_write:
-                godot_project_file_write.writelines(all_lines)
-
-    # Remove plugin specific files so the export process doesn't pick them up.
-    os.remove("game/addons/godot-git-plugin/git_plugin.gdextension")
-    os.remove("game/addons/godot-git-plugin/git_plugin.gdextension.uid")
-    os.remove("game/addons/godot-git-plugin/plugin.cfg")
-    
-    if platform_arg in ["web", "android", "ios"]:
-        os.remove("game/addons/imgui-godot/imgui-godot-native.gdextension")
-        os.remove("game/addons/imgui-godot/imgui-godot-native.gdextension.uid")
-        os.remove("game/addons/imgui-godot/plugin.cfg")
-    
-    print("Done", flush=True)
-
-# ===============================================
 # Export
 git_command = ""
 if system.using_wsl:
@@ -69,7 +25,7 @@ if system.using_wsl:
 git_command += "git rev-parse --short HEAD"
 latest_git_commit_id = subprocess.check_output(git_command, shell=True).decode('ascii').strip()
 
-os.chdir(os.path.join("godot", "bin"))
+os.chdir(system.godot_bin_path)
 
 build_suffix = ""
 if system.platform_arg == "windows":
@@ -116,7 +72,7 @@ if system.platform_arg == "web":
 elif system.platform_arg == "android" and system.configuration_arg == "editor_game":
     build_file_name_and_type = f"android_{system.configuration_arg}.apk"
 else:
-    build_file_name_and_type = f"game{build_suffix}"
+    build_file_name_and_type = f"{system.lib_name}{build_suffix}"
 print(f"Build Name: {build_file_name_and_type}", flush=True)
 
 necessary_file_path = ""
@@ -124,15 +80,15 @@ export_command_type = ""
 if system.configuration_arg in ["editor", "editor_game", "template_debug"]:
     export_command_type = "debug"
     if system.platform_arg == "windows":
-        necessary_file_path = os.path.join(system.project_dir_path, "bin", system.platform_arg, f"game.{system.platform_arg}.template_debug.{system.architecture_arg}.dev{library_suffix}")
+        necessary_file_path = os.path.join(system.project_dir_path, "bin", system.platform_arg, f"{system.lib_name}.{system.platform_arg}.template_debug.{system.architecture_arg}.dev{library_suffix}")
     else:
-        necessary_file_path = os.path.join(system.project_dir_path, "bin", system.platform_arg, f"libgame.{system.platform_arg}.template_debug.{system.architecture_arg}.dev{library_suffix}")
+        necessary_file_path = os.path.join(system.project_dir_path, "bin", system.platform_arg, f"lib{system.lib_name}.{system.platform_arg}.template_debug.{system.architecture_arg}.dev{library_suffix}")
 else:
     export_command_type = "release"
     if system.platform_arg == "windows":
-        necessary_file_path = os.path.join(system.project_dir_path, "bin", system.platform_arg, f"game.{system.platform_arg}.template_release.{system.architecture_arg}{library_suffix}")
+        necessary_file_path = os.path.join(system.project_dir_path, "bin", system.platform_arg, f"{system.lib_name}.{system.platform_arg}.template_release.{system.architecture_arg}{library_suffix}")
     else:
-        necessary_file_path = os.path.join(system.project_dir_path, "bin", system.platform_arg, f"libgame.{system.platform_arg}.template_release.{system.architecture_arg}{library_suffix}")
+        necessary_file_path = os.path.join(system.project_dir_path, "bin", system.platform_arg, f"lib{system.lib_name}.{system.platform_arg}.template_release.{system.architecture_arg}{library_suffix}")
 
 imgui_file_path = os.path.join(system.project_dir_path, "addons", "imgui-godot", "bin", f"libimgui-godot-native.{system.platform_arg}.{export_command_type}.{system.architecture_arg}{library_suffix}")
 
@@ -141,7 +97,7 @@ if system.precision_arg == "double":
     imgui_file_path = imgui_file_path.replace(export_command_type, f"{export_command_type}.{system.precision_arg}")
     
 if system.platform_arg == "web":
-    necessary_file_path = necessary_file_path.replace(system.architecture_arg}", f"{system.architecture_arg}.nothreads")
+    necessary_file_path = necessary_file_path.replace(system.architecture_arg, f"{system.architecture_arg}.nothreads")
 elif system.platform_arg == "macos":
     necessary_file_path = necessary_file_path.replace(f".{system.architecture_arg}", "")
     imgui_file_path = imgui_file_path.replace(f"{system.architecture_arg}{library_suffix}", "framework")
@@ -150,7 +106,7 @@ if system.configuration_arg in ["editor", "editor_game", "template_debug"]:
     necessary_file_path = necessary_file_path.replace(".dev", "")
 
 if system.platform_arg == "android" and platform.system() == "Windows":
-    android_binary_made_on_windows_file_path = necessary_file_path.replace("libgame.", "game.").replace("\\", "/")
+    android_binary_made_on_windows_file_path = necessary_file_path.replace(f"lib{system.lib_name}.", f"{system.lib_name}.").replace("\\", "/")
     if not os.path.exists(android_binary_made_on_windows_file_path) and not os.path.exists(necessary_file_path):
         sys.exit(f"{android_binary_made_on_windows_file_path} or {necessary_file_path} don't exist. Has build.py created editor_game custom export template correctly?")
     
@@ -177,7 +133,7 @@ if native_platform == "linux" or native_platform == "macos":
 
 project_path = system.project_dir_path
 build_output_path = f"{os.path.join(system.repo_dir_path, "bin", system.platform_arg, build_file_name_and_type)}".replace("\\", "/")
-if using_wsl:
+if system.using_wsl:
     project_path = "/mnt/" + project_path.replace(":", "").lower()
     build_output_path = "/mnt/" + build_output_path.replace(":", "").lower()
 elif native_platform == "linux" or native_platform == "macos":
@@ -205,10 +161,10 @@ def update_gdextension_file(gdextension_file_path):
 
 # (CI Only) Update GDExtension File
 if system.is_ci:
-    game_gdextension_file_path = os.path.join(system.project_dir_path, "bin", "game.gdextension").replace("\\", "/")
+    game_gdextension_file_path = os.path.join(system.project_dir_path, "bin", f"{system.lib_name}.gdextension").replace("\\", "/")
     update_gdextension_file(game_gdextension_file_path)
 
-    # Android CI only, import project first so we know .godot folder exists
+    # Android CI only, import project first so we know .godot folder exists to write stuff to
     if system.platform_arg == "android" and system.configuration_arg != "template_debug":
         # Check for generated keystore file
         release_keystore_file_path = os.path.join(system.repo_dir_path, "release.keystore")
@@ -223,7 +179,7 @@ if system.is_ci:
         print(system.get_godot_import_command(), flush=True)
         return_code = subprocess.call(system.get_godot_import_command(), shell=True)
         if return_code != 0:
-            sys.exit(f"Error: Failed to import project for {system.platform_arg} {system.configuration_arg} {system.architecture_arg} {system.precision_arg} from godot binary {system.get_godot_binary_file_name()}")
+            sys.exit(f"Error: Failed to import project for {system.platform_arg} {system.configuration_arg} {system.architecture_arg} {system.precision_arg} from godot binary {system.get_godot_binary_file_name_for_system()}")
         
         # Update export credentials with keystore file information
         export_credentials_file_path = f"{project_path}/.godot/export_credentials.cfg"
@@ -261,14 +217,13 @@ if system.is_ci:
         app_data_file_path = subprocess.check_output("echo %APPDATA%", shell=True).decode('ascii').strip().replace("\\", "/")
         godot_editor_settings_file_path = f"{app_data_file_path}/Godot/editor_settings-4.4.tres"
         
-        import_command = f"{system.get_godot_binary_file_name()} --path \"{project_path}\" --headless --import"
         print("=====================================", flush=True)
         print("Importing Game", flush=True)
         print("=====================================", flush=True)
-        print(import_command, flush=True)
-        return_code = subprocess.call(import_command, shell=True)
+        print(system.get_godot_import_command(), flush=True)
+        return_code = subprocess.call(system.get_godot_import_command(), shell=True)
         if return_code != 0:
-            sys.exit(f"Error: Failed to import game for {system.platform_arg} {system.configuration_arg} {system.architecture_arg} {system.precision_arg} from godot binary {system.get_godot_binary_file_name()}")
+            sys.exit(f"Error: Failed to import {system.lib_name} for {system.platform_arg} {system.configuration_arg} {system.architecture_arg} {system.precision_arg} from godot binary {system.get_godot_binary_file_name_for_system()}")
         
         if not os.path.exists(godot_editor_settings_file_path):
             print_files(f"{app_data_file_path}/Godot")
@@ -297,7 +252,7 @@ return_code = subprocess.call(system.get_godot_export_command(export_command_typ
 if not os.path.exists(build_output_path):
     print("Available godot binary files:", flush=True)
     print_files()
-    print("Available game binary files:", flush=True)
+    print(f"Available {system.lib_name} binary files:", flush=True)
     print_files(os.path.dirname(os.path.abspath(necessary_file_path)))
     print_files(os.path.join(system.repo_dir_path, "bin", platform_arg))
     with open(f"{project_path}/export_presets.cfg", "r") as export_presets_read:
@@ -311,7 +266,7 @@ if not os.path.exists(build_output_path):
             elif ("custom_template/release" in line and "custom_template/release=\"\"" not in line):
                 print(line, flush=True)
 
-    sys.exit(f"Error: Failed to export game for {system.platform_arg} {system.configuration_arg} {system.architecture_arg} {system.precision_arg} from godot binary {system.get_godot_binary_file_name()}")
+    sys.exit(f"Error: Failed to export {system.lib_name} for {system.platform_arg} {system.configuration_arg} {system.architecture_arg} {system.precision_arg} from godot binary {system.get_godot_binary_file_name_for_system()}")
 
 # (Web Only) - Copy serve.py to bin folder for ease of use.
 if system.platform_arg == "web":

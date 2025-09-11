@@ -107,6 +107,7 @@ engine_godot_dir = os.path.join(engine_dir_name, "godot").replace("\\", "/")
 engine_godot_cpp_dir = os.path.join(engine_dir_name, "godot-cpp").replace("\\", "/")
 
 absolute_godot_dir_path = os.path.join(repo_dir_path, engine_godot_dir).replace("\\", "/")
+absolute_godot_bin_dir_path = os.path.join(absolute_godot_dir_path, "bin").replace("\\", "/")
 godot_thirdparty_dir_path = os.path.join(engine_godot_dir, "thirdparty").replace("\\", "/")
 godot_bin_path = os.path.join(engine_godot_dir, "bin").replace("\\", "/")
 godot_cache_path = os.path.join(absolute_godot_dir_path, ".scons_cache").replace("\\", "/")
@@ -468,11 +469,11 @@ def get_godot_binary_file_name_for_system():
 def get_godot_import_command():
     import_command = ""
     
-    if system.using_wsl:
+    if using_wsl:
         import_command += "wsl ./"
     elif platform.system() == "Linux" or platform.system() == "Darwin":
         import_command += "./"
-    import_command += f"{system.get_godot_binary_file_name()} --path \"{project_dir_path}\" --headless --import"
+    import_command += f"{get_godot_binary_file_name_for_system()} --path \"{project_dir_path}\" --headless --import"
     
     return import_command
 
@@ -484,7 +485,7 @@ def get_godot_export_command(export_type, output_path):
     elif platform.system() == "Linux" or platform.system() == "Darwin":
         export_command += "./"
     
-    export_command += f"{system.get_godot_binary_file_name()} --path \"{project_dir_path}\" --headless --export-{export_type} \"{platform_arg} {configuration_arg} {architecture_arg} {precision_arg}\" \"{output_path}\" --verbose"
+    export_command += f"{get_godot_binary_file_name_for_system()} --path \"{project_dir_path}\" --headless --export-{export_type} \"{platform_arg} {configuration_arg} {architecture_arg} {precision_arg}\" \"{output_path}\" --verbose"
     if platform_arg == "android":
         export_command += " --install-android-build-template"
         

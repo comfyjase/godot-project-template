@@ -114,18 +114,11 @@ if system.platform_arg == "web" and system.configuration_arg == "editor":
 # ===============================================
 # (Web/Android Only) Create Custom Export Template If Needed
 if system.configuration_arg == "editor_game":
-    if system.platform_arg in ["web", "android"]:        
-        print("=====================================", flush=True)
-        print(f"{system.platform_arg.capitalize()} Creating Custom Export Template For Editor Game", flush=True)
-        print("=====================================", flush=True)
-    
+    if system.platform_arg in ["web", "android"]:
         return_code = subprocess.call(f"python {os.path.join(system.tools_scripts_dir_path, "create_custom_export_template.py")} {system.platform_arg} {system.configuration_arg} {system.architecture_arg} {system.precision_arg}", shell=True)
         if return_code != 0:
             sys.exit(f"Error: create_custom_export_template.py {system.platform_arg} {system.configuration_arg} {system.architecture_arg} {system.precision_arg} failed")
-
-        print("=====================================", flush=True)
-        print(f"{system.platform_arg.capitalize()} Exporting For Editor Game", flush=True)
-        print("=====================================", flush=True)
+        
         return_code = subprocess.call(f"python {os.path.join(system.tools_scripts_dir_path, "export.py")} {system.platform_arg} {system.configuration_arg} {system.architecture_arg} {system.precision_arg}", shell=True)
         if return_code != 0:
             sys.exit(f"Error: export.py {system.platform_arg} {system.configuration_arg} {system.architecture_arg} {system.precision_arg} failed")
