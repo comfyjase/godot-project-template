@@ -33,7 +33,7 @@ def get_vs_debug_settings():
         binary_file_name = "python"
     
     web_command_arguments_to_run_editor = f"$(SolutionDir){system.engine_godot_dir}/platform/web/serve.py --root ../../../bin/.web_zip"
-    web_command_arguments_to_run_project_as_game = f"$(SolutionDir){system.engine_godot_dir}/platform/web/serve.py --root ../../../bin/web"    
+    web_command_arguments_to_run_project_as_game = f"$(SolutionDir){system.engine_godot_dir}/platform/web/serve.py --root ../../../../bin/web"    
     
     vs_debug_settings.extend([
         # web editor

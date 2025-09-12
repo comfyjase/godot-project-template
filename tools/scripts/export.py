@@ -270,13 +270,13 @@ if not os.path.exists(build_output_path):
 
 # (Web Only) - Copy serve.py to bin folder for ease of use.
 if system.platform_arg == "web":
-    bin_folder_path = os.path.join(system.repo_dir_path, "bin", platform_arg)
+    bin_folder_path = os.path.join(system.repo_dir_path, "bin", system.platform_arg)
     
-    serve_source_file_path = os.path.join(system.godot_dir_path, "platform", platform_arg, "serve.py")
+    serve_source_file_path = os.path.join(system.absolute_godot_dir_path, "platform", system.platform_arg, "serve.py")
     serve_destination_file_path = bin_folder_path
     print(f"Copying godot serve.py from {serve_source_file_path} to {serve_destination_file_path}", flush=True)
     
-    run_web_build_script_source_file_path = os.path.join(system.tools_scripts_dir_path, "run_web_build.py")
+    run_web_build_script_source_file_path = os.path.join(system.absolute_tools_scripts_dir_path, "run_web_build.py")
     run_web_build_script_destination_file_path = bin_folder_path
     print(f"Copying run_web_build.py from {run_web_build_script_source_file_path} to {run_web_build_script_destination_file_path}", flush=True)
     

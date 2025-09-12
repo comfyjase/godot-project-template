@@ -101,7 +101,7 @@ all_include_files.extend(get_all_files_recursive(system.project_src_dir, "*.h"))
 system.add_cpp_defines(env, cpp_defines)
 
 # Add plugins
-system.add_plugins(system.project_plugins, env, customs, all_directories, all_source_files, all_include_files)
+system.add_plugins(system.project_plugins, env, customs, all_directories, project_source_files, all_source_files, all_include_files)
 
 env.Append(CPPPATH=all_directories)
 env.Append(CPPDEFINES=cpp_defines)

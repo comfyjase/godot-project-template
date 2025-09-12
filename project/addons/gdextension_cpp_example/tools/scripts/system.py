@@ -17,6 +17,7 @@ from SCons.Script import *
 # Default values
 lib_name = "gdextension_cpp_example"
 project_dir_name = "project"
+absolute_repo_dir = os.path.join(script_path_to_append, "..", "..", "..")
 project_src_dir = os.path.join("project", "src").replace("\\", "/")
 root_dir = os.path.join("..", "..", "..").replace("\\", "/")
 root_godot_dir = os.path.join(root_dir, "engine", "godot").replace("\\", "/")
@@ -149,6 +150,10 @@ def add_plugins(plugin_names, env, customs, all_directories_array):
         plugin_src_dir = os.path.join(addons_dir_path, plugin_name, project_dir_name, "src")
         all_directories_array.extend(get_all_directories_recursive(plugin_src_dir))
 
+    dynamically_link_plugins = (env["platform"] != "web")
+    if not dynamically_link_plugins:
+        return
+        
     # Link all the plugins
     suffix = env['suffix'].replace(".dev", "").replace(".universal", "")
     library_suffix = env.subst('$SHLIBSUFFIX')

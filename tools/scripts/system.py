@@ -98,6 +98,7 @@ absolute_thirdparty_dir_path = os.path.join(repo_dir_path, "thirdparty").replace
 thirdparty_dir_path = "thirdparty"
 thirdparty_imgui_dir_path = os.path.join(thirdparty_dir_path, "imgui").replace("\\", "/")
 access_kit_path = os.path.join(absolute_thirdparty_dir_path, "accesskit", "accesskit-c-0.16.0").replace("\\", "/")
+absolute_tools_scripts_dir_path = os.path.join(repo_dir_path, "tools", "scripts").replace("\\", "/")
 tools_scripts_dir_path = os.path.join("tools", "scripts").replace("\\", "/")
 
 build_information_file_path = os.path.join(project_dir_path, "bin", "build.info").replace("\\", "/")
@@ -299,13 +300,21 @@ def generate_cpp_bindings():
     except IOError as e:
         sys.exit(f"Error: Failed to copy extension api files from godot/bin -> godot_cpp/gdextension/ {e}")
         
-def add_plugins(plugin_names, env, customs, all_directories_array, all_source_files_array, all_include_files_array):
+def add_plugins(plugin_names, env, customs, all_directories_array, project_source_files, all_source_files_array, all_include_files_array):
+    dynamically_link_plugins = (env["platform"] != "web")
+    
     # Include all plugin files so they can be seen in the IDE.
     for (i, plugin_name) in enumerate(plugin_names):
         plugin_src_dir_path = os.path.join(addons_dir_path, plugin_name, project_dir_name, "src")
         all_directories_array.extend(get_all_directories_recursive(plugin_src_dir_path))
         all_source_files_array.extend(get_all_files_recursive(plugin_src_dir_path, "*.cpp"))
+        if not dynamically_link_plugins:
+            project_source_files.extend(get_all_files_recursive(plugin_src_dir_path, "*.cpp"))
         all_include_files_array.extend(get_all_files_recursive(plugin_src_dir_path, "*.h"))
+
+    if not dynamically_link_plugins:
+        print("Plugins will all be built into single project library", flush=True)
+        return;
 
     # Link all the plugins
     suffix = env['suffix'].replace(".dev", "").replace(".universal", "")
