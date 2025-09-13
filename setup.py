@@ -97,6 +97,7 @@ run_subprocess("pip install scons", "Error: Failed to install scons somehow... a
 run_subprocess("pip install customtkinter", "Error: Failed to install customtkinter... aborting!")
 run_subprocess("pip install pillow", "Error: Failed to install pillow... aborting!")
 run_subprocess("pip install requests", "Error: Failed to install requests... aborting!")
+run_subprocess("pip install psutil", "Error: Failed to install psutil... aborting!")
 print("Done", flush=True)
 print("", flush=True)
 

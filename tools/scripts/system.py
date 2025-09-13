@@ -4,6 +4,7 @@ import fnmatch
 import os
 import pathlib
 import platform
+import psutil
 import shutil
 import subprocess
 import sys
@@ -188,10 +189,11 @@ def add_cpp_defines(env, cpp_defines):
         cpp_defines.append("DEBUG")
     
 def process_exists(process_name):
-    call = "TASKLIST", "/FO", "csv", "/FI", "imagename eq %s" % process_name
-    output = subprocess.check_output(call).decode()
-    last_line = output.strip().split('\r\n')[-1]
-    return (process_name.lower() in last_line.lower())
+    for (i, process) in enumerate(psutil.process_iter(attrs=["name"])):
+        if process_name in process.name():
+            return True
+            
+    return False
 
 def parse_arguments():
     global platform_arg

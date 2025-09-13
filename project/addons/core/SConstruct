@@ -108,7 +108,6 @@ library = env.SharedLibrary(
 )
 
 copy = env.Install("{}/bin/{}/".format(project_dir_name, env["platform"]), library)
-#project_copy = env.Install(os.path.join(root_project_dir, "bin", env["platform"]), library)
 project_bin_copy = env.Install(os.path.join(root_project_dir, project_dir_name, "bin", env["platform"]), library)
 
 default_args = [library, copy, project_bin_copy]
