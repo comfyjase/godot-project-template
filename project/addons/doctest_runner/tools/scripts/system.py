@@ -15,7 +15,7 @@ if script_path_to_append not in sys.path:
 from SCons.Script import *
 
 # Default values
-lib_name = "gdextension_cpp_example"
+lib_name = "doctest_runner"
 project_dir_name = "project"
 absolute_repo_dir = os.path.join(script_path_to_append, "..", "..", "..")
 project_src_dir = os.path.join("project", "src").replace("\\", "/")
@@ -82,7 +82,7 @@ architecture_aliases = {
     "ppc64le": "ppc64",
 }
 
-plugins = ["core", "doctest_runner"]
+plugins = ["core"]
 
 def get_all_directories_recursive(root_directory):
     directories = []
@@ -112,15 +112,16 @@ def add_imgui(env, all_directories, all_source_files, cpp_defines):
         all_source_files.extend(Glob(f"{thirdparty_imgui_dir_path}/*.cpp", strings=True))
         cpp_defines.extend([ 'IMGUI_USER_CONFIG="\\"imconfig-godot.h\\""', "IMGUI_ENABLED" ])
 
-def add_doctest(all_directories):
+def add_doctest(env, all_directories, cpp_defines):
     all_directories.append(os.path.join(godot_thirdparty_dir_path, "doctest"))
+    if env["target"] in ["editor", "editor_game", "development", "template_debug"]:
+        cpp_defines.append("DOCTEST_CONFIG_NO_EXCEPTIONS_BUT_WITH_ALL_ASSERTS")
     
 def add_cpp_defines(env, cpp_defines):
     if env["target"] in ["editor", "editor_game", "development", "template_debug"]:
         cpp_defines.append("TOOLS_ENABLED")
         cpp_defines.append("DEBUG_ENABLED")
-        cpp_defines.append("TESTS_ENABLED")
-        cpp_defines.append("DOCTEST_CONFIG_NO_EXCEPTIONS_BUT_WITH_ALL_ASSERTS")
+        cpp_defines.append("TESTS_ENABLED")    
     
     if env["platform"] == "windows":
         cpp_defines.append("PLATFORM_WINDOWS")

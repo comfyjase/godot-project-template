@@ -1,0 +1,52 @@
+#!/usr/bin/env python
+
+import os
+import platform
+import sys
+
+script_path_to_append = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..")
+if script_path_to_append not in sys.path:
+    sys.path.append(script_path_to_append)
+
+from SCons.Variables import *
+from tools.scripts.system import platforms, default_platform, configurations, architectures, architecture_aliases
+
+def init_options(env, opts, library_name):
+    opts.Add(
+        EnumVariable(
+            key="platform",
+            help="Target platform",
+            default=env.get("platform", default_platform),
+            allowed_values=platforms,
+            ignorecase=2,
+        )
+    )
+    opts.Add(
+        EnumVariable(
+            key="target",
+            help="Compilation target",
+            default=env.get("target", configurations[0]),
+            allowed_values=(configurations),
+        )
+    )
+    opts.Add(
+        EnumVariable(
+            key="precision",
+            help="Set the floating-point precision level",
+            default=env.get("precision", "single"),
+            allowed_values=("single", "double"),
+        )
+    )
+    opts.Add(
+        EnumVariable(
+            key="arch",
+            help="CPU architecture",
+            default=env.get("arch", ""),
+            allowed_values=architectures,
+            map=architecture_aliases,
+        )
+    )
+    opts.Add("cache_path", "Path to a directory where SCons cache files will be stored. No value defaults to a .scons_cache folder.", "")
+    opts.Add(BoolVariable("debug_symbols", "Build with debugging symbols", True))
+    opts.Add(BoolVariable("dev_build", "Developer build with dev-only debugging code (DEV_ENABLED)", False))
+    opts.Add(BoolVariable("production", "Used for shipping a build", False))

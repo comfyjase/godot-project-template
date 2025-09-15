@@ -70,7 +70,7 @@ architecture_aliases = {
     "ppc64le": "ppc64",
 }
 
-project_plugins = ["core", "gdextension_cpp_example"]
+project_plugins = ["core", "doctest_runner", "gdextension_cpp_example"]
 
 if (shutil.which("wsl") is not None):
     return_code = subprocess.call("wsl -l -v", shell=True)

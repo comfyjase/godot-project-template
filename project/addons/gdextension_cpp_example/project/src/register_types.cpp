@@ -8,6 +8,9 @@
 #if IMGUI_ENABLED
 #include <imgui-godot.h>
 #endif
+#if TESTS_ENABLED
+#include "gdextension_cpp_example_doctest_node.h"
+#endif
 
 #include "custom_sprite.h"
 
@@ -17,9 +20,13 @@ void initialize_gdextension_cpp_example_gdextension_types(ModuleInitializationLe
 	if (p_level != MODULE_INITIALIZATION_LEVEL_SCENE) {
 		return;
 	}
-	
+
 #if IMGUI_ENABLED
 	ImGui::Godot::SyncImGuiPtrs();
+#endif
+
+#if TESTS_ENABLED
+	GDREGISTER_RUNTIME_CLASS(GDExtensionCPPExampleDoctestNode);
 #endif
 
 	GDREGISTER_CLASS(CustomSprite);
@@ -32,12 +39,12 @@ void uninitialize_gdextension_cpp_example_gdextension_types(ModuleInitialization
 }
 
 extern "C" {
-	// Initialization
+// Initialization
 GDExtensionBool GDE_EXPORT gdextension_cpp_example_library_init(GDExtensionInterfaceGetProcAddress p_get_proc_address, GDExtensionClassLibraryPtr p_library, GDExtensionInitialization *r_initialization) {
-		GDExtensionBinding::InitObject init_obj(p_get_proc_address, p_library, r_initialization);
-		init_obj.register_initializer(initialize_gdextension_cpp_example_gdextension_types);
-		init_obj.register_terminator(uninitialize_gdextension_cpp_example_gdextension_types);
-		init_obj.set_minimum_library_initialization_level(MODULE_INITIALIZATION_LEVEL_SCENE);
-		return init_obj.init();
-	}
+	GDExtensionBinding::InitObject init_obj(p_get_proc_address, p_library, r_initialization);
+	init_obj.register_initializer(initialize_gdextension_cpp_example_gdextension_types);
+	init_obj.register_terminator(uninitialize_gdextension_cpp_example_gdextension_types);
+	init_obj.set_minimum_library_initialization_level(MODULE_INITIALIZATION_LEVEL_SCENE);
+	return init_obj.init();
+}
 }

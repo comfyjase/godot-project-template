@@ -9,10 +9,6 @@
 #include <imgui-godot.h>
 #endif
 
-#if TESTS_ENABLED
-#include "tests/game_test_node.h"
-#endif
-
 using namespace godot;
 
 void initialize_game_gdextension_types(ModuleInitializationLevel p_level) {
@@ -22,10 +18,6 @@ void initialize_game_gdextension_types(ModuleInitializationLevel p_level) {
 
 #if IMGUI_ENABLED
 	ImGui::Godot::SyncImGuiPtrs();
-#endif
-
-#if TESTS_ENABLED
-	GDREGISTER_RUNTIME_CLASS(GameTest);
 #endif
 }
 
