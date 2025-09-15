@@ -28,7 +28,6 @@ jobs:
       # Removing other thirdparty folders locally so /godot/* and /src/* are the only ones considered
       - name: Cleanup files
         run: |
-          rm -r bin
           rm -r project/bin
           rm -r project/addons
           rm -r engine/godot-cpp/test
