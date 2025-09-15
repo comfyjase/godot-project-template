@@ -159,90 +159,97 @@ def update_gdextension_file(gdextension_file_path):
     with open(f"{gdextension_file_path}", "w") as gdextension_file_write:
         gdextension_file_write.writelines(all_lines)
 
-# (CI Only) Update GDExtension File
-if system.is_ci:
-    game_gdextension_file_path = os.path.join(system.project_dir_path, "bin", f"{system.lib_name}.gdextension").replace("\\", "/")
-    update_gdextension_file(game_gdextension_file_path)
+def revert_file(path):
+    if os.path.isfile(path):
+        os.remove(path)
 
-    # Android CI only, import project first so we know .godot folder exists to write stuff to
-    if system.platform_arg == "android" and system.configuration_arg != "template_debug":
-        # Check for generated keystore file
-        release_keystore_file_path = os.path.join(system.repo_dir_path, "release.keystore")
-        if not os.path.exists(release_keystore_file_path):
-            print("Project directory files:", flush=True)
-            print_files(system.repo_dir_path)
-            sys.exit(f"Error: {release_keystore_file_path} doesn't exist under {system.repo_dir_path}. Is it located somewhere else?")
-            
-        print("=====================================", flush=True)
-        print("Importing Game", flush=True)
-        print("=====================================", flush=True)
-        print(system.get_godot_import_command(), flush=True)
-        return_code = subprocess.call(system.get_godot_import_command(), shell=True)
-        if return_code != 0:
-            sys.exit(f"Error: Failed to import project for {system.platform_arg} {system.configuration_arg} {system.architecture_arg} {system.precision_arg} from godot binary {system.get_godot_binary_file_name_for_system()}")
+def revert_copy_file(copy_path, original_path):
+    if os.path.isfile(copy_path):
+        os.remove(original_path) # This was the temp version of the gdextension file, so remove it.
+        os.rename(copy_path, original_path)
+
+game_gdextension_file_path = os.path.join(system.project_dir_path, "bin", f"{system.lib_name}.gdextension").replace("\\", "/")
+copy_game_gdextension_file_path = os.path.join(system.project_dir_path, "bin", f"{system.lib_name}_gdextension.copy").replace("\\", "/")
+shutil.copy(game_gdextension_file_path, copy_game_gdextension_file_path)
+update_gdextension_file(game_gdextension_file_path)
+
+# Import the project first, to guarantee .godot folder is valid
+print("=====================================", flush=True)
+print("Importing Game", flush=True)
+print("=====================================", flush=True)
+print(system.get_godot_import_command(), flush=True)
+return_code = subprocess.call(system.get_godot_import_command(), shell=True)
+if return_code != 0:
+    sys.exit(f"Error: Failed to import project for {system.platform_arg} {system.configuration_arg} {system.architecture_arg} {system.precision_arg} from godot binary {system.get_godot_binary_file_name_for_system()}")
+
+export_credentials_file_path = f"{project_path}/.godot/export_credentials.cfg"
+if system.platform_arg == "android":
+     # Check for generated keystore file
+    release_keystore_file_path = os.path.join(system.repo_dir_path, "release.keystore").replace("\\", "/")
+    if not os.path.exists(release_keystore_file_path):
+        print("Project directory files:", flush=True)
+        print_files(system.repo_dir_path)
+        sys.exit(f"Error: {release_keystore_file_path} doesn't exist under {system.repo_dir_path}. Is it located somewhere else?")    
+    
+    # Update export credentials with keystore file information
+    export_godot_preset_tag = ""
+    export_godot_preset_tag_options = ""
+    all_lines = []
+    with open(f"{project_path}/export_presets.cfg", "r") as export_presets_read:
+        all_lines=export_presets_read.readlines()
         
-        # Update export credentials with keystore file information
-        export_credentials_file_path = f"{project_path}/.godot/export_credentials.cfg"
-        export_godot_preset_tag = ""
-        export_godot_preset_tag_options = ""
-        all_lines = []
-        with open(f"{project_path}/export_presets.cfg", "r") as export_presets_read:
-            all_lines=export_presets_read.readlines()
+        for index, line in enumerate(all_lines):
+            if line == f"name=\"{system.platform_arg} {system.configuration_arg} {system.architecture_arg} {system.precision_arg}\"\n":
+                export_godot_preset_tag = all_lines[index - 2]
+                export_godot_preset_tag_options = export_godot_preset_tag.replace("]", ".options]")
+                break
+
+    if os.path.exists(export_credentials_file_path):
+        sys.exit(f"Error: {export_credentials_file_path} already exists, you need to modify it instead of just writing to it.")
+    else:
+        with open(export_credentials_file_path, "w") as export_credentials_write:
+            print(f"Created {export_credentials_file_path}", flush=True)
             
-            for index, line in enumerate(all_lines):
-                if line == f"name=\"{system.platform_arg} {system.configuration_arg} {system.architecture_arg} {system.precision_arg}\"\n":
-                    export_godot_preset_tag = all_lines[index - 2]
-                    export_godot_preset_tag_options = export_godot_preset_tag.replace("]", ".options]")
-                    break
-        
-        if os.path.exists(export_credentials_file_path):
-            sys.exit(f"Error: {export_credentials_file_path} already exists, you need to modify it instead of just writing to it.")
-        else:
-            with open(export_credentials_file_path, "w") as export_credentials_write:
-                print(f"Created {export_credentials_file_path}", flush=True)
+            android_keystore_alias = "$ANDROID_KEYSTORE_ALIAS"
+            android_keystore_password = "$ANDROID_KEYSTORE_PASSWORD"
+            if platform.system() == "Windows":
+                android_keystore_alias = os.getenv("ANDROID_KEYSTORE_ALIAS")
+                android_keystore_password = os.getenv("ANDROID_KEYSTORE_PASSWORD")
+                print(f"JASE DEBUG - Alias = {android_keystore_alias} Password = {android_keystore_password}", flush=True)
                 
-                export_credentials_write.write(export_godot_preset_tag + "\n")
-                export_credentials_write.write("\n")
-                export_credentials_write.write("script_encryption_key=\"\"\n")
-                export_credentials_write.write("\n")
-                export_credentials_write.write(export_godot_preset_tag_options + "\n")
-                export_credentials_write.write("\n")
-                export_credentials_write.write("keystore/debug=\"\"\n")
-                export_credentials_write.write("keystore/debug_user=\"\"\n")
-                export_credentials_write.write("keystore/debug_password=\"\"\n")
-                export_credentials_write.write(f"keystore/release=\"{release_keystore_file_path}\"\n")
-                export_credentials_write.write(f"keystore/release_user=\"$ANDROID_KEYSTORE_ALIAS\"\n")
-                export_credentials_write.write(f"keystore/release_password=\"$ANDROID_KEYSTORE_PASSWORD\"\n")
-    elif system.platform_arg == "windows":
-        app_data_file_path = subprocess.check_output("echo %APPDATA%", shell=True).decode('ascii').strip().replace("\\", "/")
-        godot_editor_settings_file_path = f"{app_data_file_path}/Godot/editor_settings-4.4.tres"
+            export_credentials_write.write(export_godot_preset_tag + "\n")
+            export_credentials_write.write("\n")
+            export_credentials_write.write("script_encryption_key=\"\"\n")
+            export_credentials_write.write("\n")
+            export_credentials_write.write(export_godot_preset_tag_options + "\n")
+            export_credentials_write.write("\n")
+            export_credentials_write.write("keystore/debug=\"\"\n")
+            export_credentials_write.write("keystore/debug_user=\"\"\n")
+            export_credentials_write.write("keystore/debug_password=\"\"\n")
+            export_credentials_write.write(f"keystore/release=\"{release_keystore_file_path}\"\n")
+            export_credentials_write.write(f"keystore/release_user=\"{android_keystore_alias}\"\n")
+            export_credentials_write.write(f"keystore/release_password=\"{android_keystore_password}\"\n")
+elif system.platform_arg == "windows":
+    app_data_file_path = subprocess.check_output("echo %APPDATA%", shell=True).decode('ascii').strip().replace("\\", "/")
+    godot_editor_settings_file_path = f"{app_data_file_path}/Godot/editor_settings-4.5.tres"
+    if not os.path.exists(godot_editor_settings_file_path):
+        print_files(f"{app_data_file_path}/Godot")
+        sys.exit(f"Error: Godot editor settings file {godot_editor_settings_file_path} does not exist under {app_data_file_path}/Godot/. Does project need to be imported first or is {app_data_file_path} not expanding correctly?")
+    
+    rcedit_file_path = f"{system.thirdparty_dir_path}/rcedit/rcedit_x64.exe".replace("\\", "/")
+    if system.architecture_arg == "x86_32":
+        rcedit_file_path = rcedit_file_path.replace("rcedit_x64", "rcedit_x32")
         
-        print("=====================================", flush=True)
-        print("Importing Game", flush=True)
-        print("=====================================", flush=True)
-        print(system.get_godot_import_command(), flush=True)
-        return_code = subprocess.call(system.get_godot_import_command(), shell=True)
-        if return_code != 0:
-            sys.exit(f"Error: Failed to import {system.lib_name} for {system.platform_arg} {system.configuration_arg} {system.architecture_arg} {system.precision_arg} from godot binary {system.get_godot_binary_file_name_for_system()}")
-        
-        if not os.path.exists(godot_editor_settings_file_path):
-            print_files(f"{app_data_file_path}/Godot")
-            sys.exit(f"Error: Godot editor settings file {godot_editor_settings_file_path} does not exist under {app_data_file_path}/Godot/. Does project need to be imported first or is {app_data_file_path} not expanding correctly?")
-        
-        rcedit_file_path = f"{system.thirdparty_dir_path}/rcedit/rcedit_x64.exe".replace("\\", "/")
-        if system.architecture_arg == "x86_32":
-            rcedit_file_path = rcedit_file_path.replace("rcedit_x64", "rcedit_x32")
+    all_lines = []
+    with open(godot_editor_settings_file_path, "r") as editor_settings_file_read:
+        all_lines = editor_settings_file_read.readlines()
+        for index, line in enumerate(all_lines):
+            if "export/windows/rcedit" in line:
+                all_lines[index] = f"export/windows/rcedit = \"{rcedit_file_path}\"\n"
+                print(f"Updated editor settings rcedit file path to {rcedit_file_path}", flush=True)
             
-        all_lines = []
-        with open(godot_editor_settings_file_path, "r") as editor_settings_file_read:
-            all_lines = editor_settings_file_read.readlines()
-            for index, line in enumerate(all_lines):
-                if "export/windows/rcedit" in line:
-                    all_lines[index] = f"export/windows/rcedit = \"{rcedit_file_path}\"\n"
-                    print(f"Updated editor settings rcedit file path to {rcedit_file_path}", flush=True)
-                
-        with open(godot_editor_settings_file_path, "w") as editor_settings_file_write:
-            editor_settings_file_write.writelines(all_lines)
+    with open(godot_editor_settings_file_path, "w") as editor_settings_file_write:
+        editor_settings_file_write.writelines(all_lines)
 
 print("=====================================", flush=True)
 print("Exporting Game", flush=True)
@@ -286,5 +293,12 @@ if system.platform_arg == "web":
     
     shutil.copy(serve_source_file_path, serve_destination_file_path)
     shutil.copy(run_web_build_script_source_file_path, run_web_build_script_destination_file_path)
+
+export_presets_file_path = os.path.join(system.project_dir_path, "export_presets.cfg").replace("\\", "/")
+copy_export_presets_file_path = os.path.join(system.project_dir_path, "export_presets_cfg.copy").replace("\\", "/")
+
+revert_copy_file(copy_game_gdextension_file_path, game_gdextension_file_path)
+revert_copy_file(copy_export_presets_file_path, export_presets_file_path)
+revert_file(export_credentials_file_path)
 
 print("Done")

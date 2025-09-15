@@ -209,9 +209,9 @@ def parse_arguments():
     configuration_arg = sys.argv[2]
     architecture_arg = sys.argv[3]
     precision_arg = sys.argv[4]
-    if len(sys.argv) == 6:
+    if len(sys.argv) >= 6:
         is_ci = sys.argv[5]
-    if len(sys.argv) == 7:
+    if len(sys.argv) >= 7:
         macos_vulkan_installed = sys.argv[6]
         
     if is_ci:

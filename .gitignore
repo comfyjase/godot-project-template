@@ -4,18 +4,6 @@
 
 # Ignore library files but not the gdextension file
 project/bin/*
-!project/bin/android
-project/bin/android/*
-!project/bin/android/.gitkeep
-!project/bin/linux
-project/bin/linux/*
-!project/bin/linux/.gitkeep
-!project/bin/macos
-project/bin/macos/*
-!project/bin/macos/.gitkeep
-!project/bin/windows
-project/bin/windows/*
-!project/bin/windows/.gitkeep
 !project/bin/*.gdextension
 .sconsign*.dblite
 

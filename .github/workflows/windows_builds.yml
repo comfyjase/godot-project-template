@@ -34,7 +34,7 @@ jobs:
 
       # Setup dependencies
       - name: Setup godot-cpp
-        uses: ./godot-cpp/.github/actions/setup-godot-cpp
+        uses: ./engine/godot-cpp/.github/actions/setup-godot-cpp
         with:
           platform: ${{ matrix.target.platform }}
           windows-compiler: msvc
@@ -45,7 +45,7 @@ jobs:
     
       # Restore .scons_cache
       - name: Restore .scons_cache
-        uses: ./godot-cpp/.github/actions/godot-cache-restore
+        uses: ./engine/godot-cpp/.github/actions/godot-cache-restore
         with:
           scons-cache: ${{ github.workspace }}/.scons_cache/
           cache-name: ${{ matrix.target.platform }}_${{ matrix.target.arch }}_${{ matrix.float-precision }}_${{ matrix.target-type }}
@@ -53,27 +53,25 @@ jobs:
       # Build Engine + GDExtension (with caches)
       - name: Build Project
         shell: sh
-        env:
-          SCONS_CACHE: ${{ github.workspace }}/.scons_cache/
         run: |
           python tools/scripts/build.py ${{ matrix.target.platform }} ${{ matrix.target-type }} ${{ matrix.target.arch }} ${{ matrix.float-precision }} True
       
       - name: Create Custom Export Template
+        if: ${{ matrix.target.upload-artifact }}
         shell: sh
-        env:
-          SCONS_CACHE: ${{ github.workspace }}/.scons_cache/
         run: |
           python tools/scripts/create_custom_export_template.py ${{ matrix.target.platform }} ${{ matrix.target-type }} ${{ matrix.target.arch }} ${{ matrix.float-precision }} True
       
       # Save scons cache
       - name: Save .scons_cache
-        uses: ./godot-cpp/.github/actions/godot-cache-save
+        uses: ./engine/godot-cpp/.github/actions/godot-cache-save
         with:
           scons-cache: ${{ github.workspace }}/.scons_cache/
           cache-name: ${{ matrix.target.platform }}_${{ matrix.target.arch }}_${{ matrix.float-precision }}_${{ matrix.target-type }}
         continue-on-error: true
         
       - name: Export Project
+        if: ${{ matrix.target.upload-artifact }}
         shell: sh
         run: |
           python tools/scripts/export.py ${{ matrix.target.platform }} ${{ matrix.target-type }} ${{ matrix.target.arch }} ${{ matrix.float-precision }} True

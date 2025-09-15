@@ -24,6 +24,49 @@ project_directory = os.getcwd()
 customtkinter.set_appearance_mode("System")  # Modes: "System" (standard), "Dark", "Light"
 customtkinter.set_default_color_theme("blue")  # Themes: "blue" (standard), "green", "dark-blue"
 
+class TargetPlatformSelection(customtkinter.CTkFrame):
+    def __init__(self, master):
+        super().__init__(master)
+        self.target_configurations = [ "template_debug", "template_release", "profile", "production" ]
+        self.target_platforms = [ "linux", "windows", "web", "android" ]
+        
+        self.configuration_labels = [ "Template Debug", "Template Release", "Profile", "Production" ]
+        self.platform_labels = [ "🐧 Linux", "🪟 Windows", "🌐 Web", "🤖 Android" ]
+        
+        self.configuration_titles = []
+        self.platform_titles = []
+        self.checkboxes = []
+
+        for i, target_configuration in enumerate(self.configuration_labels):
+            configuration_title = customtkinter.CTkLabel(master, text=target_configuration, fg_color=("#3B8ED0", "#1F6AA5"), text_color="white", corner_radius=6, width=150)
+            configuration_title.grid(row=0, column=i+2, padx=10, pady=10)
+            self.configuration_titles.append(configuration_title)
+            
+        for i, target_platform in enumerate(self.platform_labels):
+            platform_title = customtkinter.CTkLabel(master, text=target_platform, fg_color=("#3B8ED0", "#1F6AA5"), text_color="white", corner_radius=6, width=150)
+            platform_title.grid(row=i+1, column=1, padx=10, pady=10)
+            self.platform_titles.append(platform_title)
+
+        for i, target_configuration in enumerate(self.target_configurations):
+            for j, target_platform in enumerate(self.target_platforms):
+                string_value = f"{target_platform}+{target_configuration}+{self.platform_labels[j]}+{self.configuration_labels[i]}"
+                check_var = customtkinter.StringVar(value=string_value)
+                checkbox = customtkinter.CTkCheckBox(master, text="",
+                    variable=check_var, onvalue=string_value, offvalue="off", command=self.checkbox_callback)
+                checkbox.grid(row=j+1, column=i+2, padx=(20, 0), pady=(10, 0), sticky="ne")
+                checkbox.deselect()
+                self.checkboxes.append(checkbox)
+
+    def get(self):
+        checkbox_values = []
+        for checkbox in self.checkboxes:
+            if checkbox.get() != "off":
+                checkbox_values.append(checkbox.cget("onvalue"))
+        return checkbox_values
+
+    def checkbox_callback(self):
+        print("Target Platform Selection:", self.get())
+
 class Build():
     def __init__(self):
         self.name = ""
@@ -48,6 +91,7 @@ class App(customtkinter.CTk):
         # Create app frames
         self.create_sidebar_frame()
         self.create_github_builds_frame()
+        self.create_export_frame()
         
         # Default values
         self.appearance_mode_optionemenu.set("System")
@@ -59,6 +103,7 @@ class App(customtkinter.CTk):
     def select_frame_by_name(self, name):
         # set button color for selected button
         self.navigation_frame_github_builds_button.configure(fg_color=("#36719F", "#144870") if name == "download" else ("#3B8ED0", "#1F6AA5"))
+        self.navigation_frame_export_builds_button.configure(fg_color=("#36719F", "#144870") if name == "export" else ("#3B8ED0", "#1F6AA5"))
 
         # show selected frame
         if name == "download":
@@ -66,9 +111,17 @@ class App(customtkinter.CTk):
         else:
             self.github_builds_frame.grid_forget()
 
+        if name == "export":
+            self.export_builds_frame.grid(row=0, column=1, sticky="nsew")
+        else:
+            self.export_builds_frame.grid_forget()
+            
     def github_builds_button_event(self):
         self.select_frame_by_name("download")
-
+    
+    def export_builds_button_event(self):
+        self.select_frame_by_name("export")
+        
     def create_sidebar_frame(self):
         # Sidebar With Title
         self.navigation_frame = customtkinter.CTkFrame(self, width=140, corner_radius=0)
@@ -80,7 +133,10 @@ class App(customtkinter.CTk):
         self.navigation_frame_github_builds_button = customtkinter.CTkButton(self.navigation_frame, corner_radius=0, height=40, border_spacing=10, text="📦 Download",
                                                       text_color="white", hover_color=("#36719F", "#144870"), anchor="w", command=self.github_builds_button_event)
         self.navigation_frame_github_builds_button.grid(row=2, column=0, sticky="ew")
-
+        self.navigation_frame_export_builds_button = customtkinter.CTkButton(self.navigation_frame, corner_radius=0, height=40, border_spacing=10, text="📤 Export",
+                                                      text_color="white", hover_color=("#36719F", "#144870"), anchor="w", command=self.export_builds_button_event)
+        self.navigation_frame_export_builds_button.grid(row=3, column=0, sticky="ew")
+        
         # Appearance Theme Dropdown
         self.appearance_mode_label = customtkinter.CTkLabel(self.navigation_frame, text="Appearance Mode:", anchor="w")
         self.appearance_mode_label.grid(row=5, column=0, padx=20, pady=(10, 0))
@@ -173,6 +229,15 @@ class App(customtkinter.CTk):
         self.github_builds = []
         self.github_builds_checkboxes = []
         self.create_github_builds_list()
+        
+    def create_export_frame(self):
+        # Perform checks frame
+        self.export_builds_frame = customtkinter.CTkFrame(self, corner_radius=0)
+        self.export_builds_frame.grid(row=0, column=1, sticky="nsew")
+        self.export_builds_frame.configure(fg_color="transparent")
+
+        # Target platform/configuration selection        
+        self.target_platform_selection = TargetPlatformSelection(self.export_builds_frame)
         
     def get_github_builds(self):
         github_builds = []

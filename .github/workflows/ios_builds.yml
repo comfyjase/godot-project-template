@@ -30,22 +30,40 @@ jobs:
 
       # Setup dependencies
       - name: Setup godot-cpp
-        uses: ./godot-cpp/.github/actions/setup-godot-cpp
+        uses: ./engine/godot-cpp/.github/actions/setup-godot-cpp
         with:
           platform: ${{ matrix.target.platform }}
 
-      - name: Install Vulkan
-        shell: sh
+      - name: Setup Vulkan SDK
+        id: vulkan-sdk
         run: |
-          ./godot/misc/scripts/install_vulkan_sdk_macos.sh
+          if sh engine/godot/misc/scripts/install_vulkan_sdk_macos.sh; then
+            echo "VULKAN_ENABLED=yes" >> "$GITHUB_OUTPUT"
+          else
+            echo "::warning::macOS: Vulkan SDK installation failed, building without Vulkan support."
+            echo "VULKAN_ENABLED=no" >> "$GITHUB_OUTPUT"
+          fi
+        continue-on-error: true
     
+      - name: Download pre-built AccessKit
+        uses: dsaltares/fetch-gh-release-asset@1.1.2
+        with:
+          repo: AccessKit/accesskit-c
+          version: tags/0.16.0
+          file: accesskit-c-0.16.0.zip
+          target: thirdparty/accesskit/accesskit-c-0.16.0/accesskit_c.zip
+
+      - name: Extract pre-built AccessKit
+        run: | 
+          unzip -o thirdparty/accesskit/accesskit-c-0.16.0/accesskit_c.zip -d thirdparty/accesskit/
+          
       - name: Setup Workflow Variables
         run: |
           python tools/scripts/write_to_github_actions_environment.py
     
       # Restore .scons_cache
       - name: Restore .scons_cache
-        uses: ./godot-cpp/.github/actions/godot-cache-restore
+        uses: ./engine/godot-cpp/.github/actions/godot-cache-restore
         with:
           scons-cache: ${{ github.workspace }}/.scons_cache/
           cache-name: ${{ matrix.target.platform }}_${{ matrix.target.arch }}_${{ matrix.float-precision }}_${{ matrix.target-type }}
@@ -53,21 +71,18 @@ jobs:
       # Build Engine + GDExtension (with caches)
       - name: Build Project
         shell: sh
-        env:
-          SCONS_CACHE: ${{ github.workspace }}/.scons_cache/
         run: |
-          python tools/scripts/build.py ${{ matrix.target.platform }} ${{ matrix.target-type }} ${{ matrix.target.arch }} ${{ matrix.float-precision }} True
+          python tools/scripts/build.py ${{ matrix.target.platform }} ${{ matrix.target-type }} ${{ matrix.target.arch }} ${{ matrix.float-precision }} True ${{ steps.vulkan-sdk.outputs.VULKAN_ENABLED }}
       
       - name: Create Custom Export Template
+        if: ${{ matrix.target.upload-artifact }}
         shell: sh
-        env:
-          SCONS_CACHE: ${{ github.workspace }}/.scons_cache/
         run: |
-          python tools/scripts/create_custom_export_template.py ${{ matrix.target.platform }} ${{ matrix.target-type }} ${{ matrix.target.arch }} ${{ matrix.float-precision }} True
+          python tools/scripts/create_custom_export_template.py ${{ matrix.target.platform }} ${{ matrix.target-type }} ${{ matrix.target.arch }} ${{ matrix.float-precision }} True ${{ steps.vulkan-sdk.outputs.VULKAN_ENABLED }}
       
       # Save scons cache
       - name: Save .scons_cache
-        uses: ./godot-cpp/.github/actions/godot-cache-save
+        uses: ./engine/godot-cpp/.github/actions/godot-cache-save
         with:
           scons-cache: ${{ github.workspace }}/.scons_cache/
           cache-name: ${{ matrix.target.platform }}_${{ matrix.target.arch }}_${{ matrix.float-precision }}_${{ matrix.target-type }}
@@ -80,6 +95,7 @@ jobs:
 
       # Can comment if you are part of the apple developer program
       #- name: Export Project
+      #  if: ${{ matrix.target.upload-artifact }}
       #  shell: sh
       #  run: |
       #    python tools/scripts/export.py ${{ matrix.target.platform }} ${{ matrix.target-type }} ${{ matrix.target.arch }} ${{ matrix.float-precision }} True

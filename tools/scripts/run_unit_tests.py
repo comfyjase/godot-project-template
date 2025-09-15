@@ -45,7 +45,7 @@ print("=====================================", flush=True)
 
 os.chdir(os.path.join("..", ".."))
 
-run_unit_test_command = f"\"{system.engine_godot_dir}/bin/{godot_binary_file_name}\" --path \"{system.project_dir_name}\" --headless scenes/unit_tests/test.tscn --game-test"
+run_unit_test_command = f"\"{system.engine_godot_dir}/bin/{godot_binary_file_name}\" --path \"{system.project_dir_name}\" --headless scenes/unit_tests/test.tscn"
 print(run_unit_test_command, flush=True)
 return_code = subprocess.call(run_unit_test_command, shell=True)
 if return_code != 0:

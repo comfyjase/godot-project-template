@@ -8,7 +8,7 @@ body:
   attributes:
     value: |
       - Write a descriptive issue title above.
-      - Search [open](https://github.com/comfyjase/godot-cpp-template/issues) and [closed](https://github.com/comfyjase/godot-cpp-template/issues?q=is%3Aissue+is%3Aclosed) issues to ensure it has not already been reported.
+      - Search [open](https://github.com/comfyjase/godot-project-template/issues) and [closed](https://github.com/comfyjase/godot-project-template/issues?q=is%3Aissue+is%3Aclosed) issues to ensure it has not already been reported.
 
 - type: input
   attributes:

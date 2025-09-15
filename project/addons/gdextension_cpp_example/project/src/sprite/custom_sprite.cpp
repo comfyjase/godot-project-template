@@ -13,7 +13,7 @@ using namespace godot;
 void CustomSprite::_bind_methods() {
 	GD_BIND_PROPERTY("amplitude", Variant::FLOAT, &CustomSprite::set_amplitude, &CustomSprite::get_amplitude);
 	GD_BIND_PROPERTY("speed", Variant::FLOAT, &CustomSprite::set_speed, &CustomSprite::get_speed);
-	
+
 #if IMGUI_ENABLED
 	GD_BIND_METHOD("draw_debug", &CustomSprite::draw_debug);
 #endif
@@ -21,7 +21,8 @@ void CustomSprite::_bind_methods() {
 	ADD_SIGNAL(MethodInfo("position_changed", PropertyInfo(Variant::OBJECT, "node"), PropertyInfo(Variant::VECTOR2, "new_pos")));
 }
 
-CustomSprite::CustomSprite() {
+CustomSprite::CustomSprite() :
+		Sprite2D() {
 	// Initialize any variables here.
 	time_passed = 0.0f;
 	time_emit = 0.0f;

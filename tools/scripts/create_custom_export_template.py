@@ -166,6 +166,10 @@ if platform.system() == "Linux" or platform.system() == "Darwin":
     print(f"Called chmod a+rwx {export_template_file_path}", flush=True)
     subprocess.call(f"chmod a+rwx {export_template_file_path}", shell=True)
 
+export_presets_file_path = os.path.join(system.project_dir_path, "export_presets.cfg").replace("\\", "/")
+copy_export_presets_file_path = os.path.join(system.project_dir_path, "export_presets_cfg.copy").replace("\\", "/")
+shutil.copy(export_presets_file_path, copy_export_presets_file_path)
+
 with open("export_presets.cfg", "r") as export_presets_read:
     all_lines=export_presets_read.readlines()
     
@@ -214,4 +218,5 @@ if system.platform_arg == "android":
     game_project_android_library_file_destination_folder = os.path.join(system.project_dir_path, "android", "build", "libs", android_build_folder)
     pathlib.Path(game_project_android_library_file_destination_folder).mkdir(parents=True, exist_ok=True)
     shutil.copy(godot_android_library_file, game_project_android_library_file_destination_folder)
-    print("Done.", flush=True)
+
+print("Done.", flush=True)

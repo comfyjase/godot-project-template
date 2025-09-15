@@ -126,6 +126,7 @@ library = env.SharedLibrary(
     "bin/{}/{}".format(env['platform'], lib_filename),
     source=project_source_files,
 )
+env.NoCache(library)
 
 copy = env.Install("{}/bin/{}/".format(project_dir_name, env["platform"]), library)
 

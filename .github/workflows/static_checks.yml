@@ -29,16 +29,16 @@ jobs:
       - name: Cleanup files
         run: |
           rm -r bin
-          rm -r game/bin
-          rm -r game/addons
-          rm -r godot-cpp/test
+          rm -r project/bin
+          rm -r project/addons
+          rm -r engine/godot-cpp/test
           rm -r thirdparty/emsdk
           rm -r thirdparty/imgui
 
       # This needs to happen before Python and npm execution; it must happen before any extra files are written.
       - name: .gitignore checks (gitignore_check.sh)
         run: |
-          bash ./godot/misc/scripts/gitignore_check.sh
+          bash ./engine/godot/misc/scripts/gitignore_check.sh
 
       - name: Style checks via pre-commit
         uses: pre-commit/action@v3.0.1
@@ -49,8 +49,8 @@ jobs:
         run: |
           sudo apt update
           sudo apt install -y libxml2-utils
-          xmllint --quiet --noout --schema godot/doc/class.xsd godot/doc/classes/*.xml godot/modules/*/doc_classes/*.xml godot/platform/*/doc_classes/*.xml
+          xmllint --quiet --noout --schema engine/godot/doc/class.xsd engine/godot/doc/classes/*.xml engine/godot/modules/*/doc_classes/*.xml engine/godot/platform/*/doc_classes/*.xml
 
       - name: Run C compiler on `gdextension_interface.h`
         run: |
-          gcc -c godot/core/extension/gdextension_interface.h
+          gcc -c engine/godot/core/extension/gdextension_interface.h
