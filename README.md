@@ -4,7 +4,7 @@ This repository serves as a quickstart template for game development with Godot 
 [![🎮 Build & Export Game](https://github.com/comfyjase/godot-project-template/actions/workflows/builds.yml/badge.svg)](https://github.com/comfyjase/godot-project-template/actions/workflows/builds.yml)
 
 ![Screenshot of a project open in the godot editor with a sprite on screen.](.github_assets/images/gdextension_cpp_example_project.png)
-| Godot C++ GDExtension tutorial implemented in the project.
+> Godot C++ GDExtension tutorial implemented in the project.
 
 ## Features
 * Setup script to help download and install prerequisites.
@@ -15,9 +15,9 @@ This repository serves as a quickstart template for game development with Godot 
 * GitHub issues template (`.github/ISSUE_TEMPLATE.yml`) for bug reports.
 * CI scripts to build and export the game for different platforms.
 * Setup to automatically generate `.xml` files in a `doc_classes/` directory to be parsed by Godot as [GDExtension built-in documentation](https://docs.godotengine.org/en/4.4/tutorials/scripting/gdextension/gdextension_docs_system.html)
-* Additional GDExtension plugins to demonstrate developing areas of the codebase as separate plugins linked to the main game project (see (core)[project/addons/core] and (gdextension_cpp_example)[project/addons/gdextension_cpp_example]).
-* Support for writing and running doctest unit tests (see (run_unit_tests.py)[tools/scripts/run_unit_tests.py]).
-* Includes the `imgui-godot` addon for helpful runtime debugging by implementing `void draw_debug();` in your nodes (see (custom_sprite.cpp)[project/addons/gdextension_cpp_example/project/src/sprite/custom_sprite.cpp]).
+* Additional GDExtension plugins to demonstrate developing areas of the codebase as separate plugins linked to the main game project - see [core](./project/addons/core) and [gdextension_cpp_example](./project/addons/gdextension_cpp_example).
+* Support for writing and running doctest unit tests - see [run_unit_tests.py](./tools/scripts/run_unit_tests.py).
+* Includes the `imgui-godot` addon for helpful runtime debugging by implementing `void draw_debug();` in your nodes - see [custom_sprite.cpp](./project/addons/gdextension_cpp_example/project/src/sprite/custom_sprite.cpp).
 * Includes the `godot-git-plugin` addon for godot git integration.
 * Implements a `core` addon with some helpful C++ macros to be reused across other plugins and in the main `game` project.
 * Toolbox app to support project development - includes a commit checker and build downloader.
