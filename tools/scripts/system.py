@@ -88,8 +88,10 @@ if not os.path.exists(os.path.join(f"{current_dir}", project_dir_name)):
     os.chdir("..")
     os.chdir("..")
 
+scons_cache_dir_name = ".scons_cache"
 repo_dir_path = os.getcwd().replace("\\", "/")
-project_cache_path = os.path.join(repo_dir_path, ".scons_cache").replace("\\", "/")
+project_cache_path = scons_cache_dir_name
+plugin_cache_path = f"../../../{scons_cache_dir_name}" # Relative from where the SConstruct file is in the plugins folder
 project_dir_path = os.path.join(repo_dir_path, project_dir_name).replace("\\", "/")
 project_src_path = os.path.join(project_dir_path, "src").replace("\\", "/")
 addons_dir_path = os.path.join(project_dir_name, "addons").replace("\\", "/")
@@ -112,7 +114,7 @@ absolute_godot_dir_path = os.path.join(repo_dir_path, engine_godot_dir).replace(
 absolute_godot_bin_dir_path = os.path.join(absolute_godot_dir_path, "bin").replace("\\", "/")
 godot_thirdparty_dir_path = os.path.join(engine_godot_dir, "thirdparty").replace("\\", "/")
 godot_bin_path = os.path.join(engine_godot_dir, "bin").replace("\\", "/")
-godot_cache_path = os.path.join(absolute_godot_dir_path, ".scons_cache").replace("\\", "/")
+godot_cache_path = scons_cache_dir_name
 godot_cpp_dir_path = engine_godot_cpp_dir
 absolute_godot_cpp_extension_dir_path = os.path.join(repo_dir_path, godot_cpp_dir_path, "gdextension").replace("\\", "/")
 godot_cpp_extension_dir_path = os.path.join(godot_cpp_dir_path, "gdextension").replace("\\", "/")
@@ -203,7 +205,6 @@ def parse_arguments():
     global is_ci
     global macos_vulkan_installed
     global using_wsl
-    global godot_engine_cache_path
     
     platform_arg = sys.argv[1]
     configuration_arg = sys.argv[2]
@@ -213,9 +214,6 @@ def parse_arguments():
         is_ci = sys.argv[5]
     if len(sys.argv) >= 7:
         macos_vulkan_installed = sys.argv[6]
-        
-    if is_ci:
-        godot_engine_cache_path = os.path.join(repo_dir_path, ".scons_cache").replace("\\", "/")
         
     # ===============================================
     # Visual Studio 2022 specific stuff
@@ -397,8 +395,13 @@ def get_godot_scons_command():
     elif platform_arg == "android":
         if building_editor_for_non_native_os:
             scons_command += " generate_apk=yes"
-            
-    scons_command += f" cache_path={godot_cache_path}"
+        
+    # Corrected only for CI because the github actions restores the cache to the root of the repo.
+    # Locally it's nice to have the option of cleaning the project cache but leaving the engine cache intact to avoid a full rebuild.
+    cache_path = godot_cache_path
+    if is_ci:
+        cache_path = f"../../{scons_cache_dir_name}"
+    scons_command += f" cache_path={cache_path}"
     scons_command += f" accesskit_sdk_path={access_kit_path}"
     
     return scons_command
@@ -447,8 +450,11 @@ def get_godot_custom_export_template_scons_command():
         scons_command += " generate_apk=yes"
     elif platform_arg == "ios":
         scons_command += " generate_bundle=yes"
-    
-    scons_command += f" cache_path={godot_cache_path}"
+        
+    cache_path = godot_cache_path
+    if is_ci:
+        cache_path = f"../../{scons_cache_dir_name}"
+    scons_command += f" cache_path={cache_path}"
     scons_command += f" accesskit_sdk_path={access_kit_path}"
 
     return scons_command
@@ -537,4 +543,9 @@ def get_project_scons_command():
     
     scons_command += f" cache_path={project_cache_path}"
     
+    return scons_command
+
+def get_plugin_scons_command():
+    scons_command = get_project_scons_command()
+    scons_command = scons_command.replace(f"cache_path={project_cache_path}", f"cache_path={plugin_cache_path}")
     return scons_command

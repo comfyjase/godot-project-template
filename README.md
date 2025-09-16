@@ -31,10 +31,10 @@ This repository serves as a quickstart template for game development with Godot 
 	- <a href="./project/addons" title="project_addons">addons</a> (godot assets + game plugins)
 		- <a href="./project/addons/core" title="core">core</a> (C++ helper macros)
 		- <a href="./project/addons/doctest_runner" title="doctest_runner">doctest_runner</a> (doctest unit test runner node + macros)
-			- <a href="./project/addons/doctest_runner/project/src/doctest_runner/doctest_runner.h" title="doctest_runner.h">doctest_runner.h</a> (manages children doctest nodes and quits once they are all finished)
+			- <a href="./project/addons/doctest_runner/project/src/doctest_runner/doctest_runner.h" title="doctest_runner.h/.cpp">doctest_runner.h/.cpp</a> (manages children doctest nodes and quits once they are all finished)
 			- <a href="./project/addons/doctest_runner/project/src/doctest_runner/doctest_runner_macros.h" title="doctest_runner_macros.h">doctest_runner_macros.h</a> (macros to declare and implement nodes in other GDExtension code)
 		- <a href="./project/addons/gdextension_cpp_example" title="gdextension_cpp_example">gdextension_cpp_example</a>
-			- <a href="./project/addons/gdextension_cpp_example/project/src/sprite/custom_sprite.h" title="custom_sprite.h">custom_sprite.h</a>
+			- <a href="./project/addons/gdextension_cpp_example/project/src/sprite/custom_sprite.h/.cpp" title="custom_sprite.h/.cpp">custom_sprite.h/.cpp</a>
 			- <a href="./project/addons/gdextension_cpp_example/project/src/tests" title="gdextension_cpp_example_doctest_node">gdextension_cpp_example_doctest_node.h/.cpp</a> (doctest node for this plugin to be placed in test.tscn)
 			- <a href="./project/addons/gdextension_cpp_example/project/src/tests/sprite/test_custom_sprite.h" title="test_custom_sprite.h">test_custom_sprite.h</a> (example doctest unit test implementation for custom_sprite.h)
 	- <a href="./project/scenes" title="project_scenes">scenes</a>

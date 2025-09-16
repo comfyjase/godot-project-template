@@ -63,7 +63,7 @@ else:
         print(f"Building plugin {plugin_name}", flush=True)
         print("=====================================", flush=True)
         
-        build_plugin_command = system.get_project_scons_command()
+        build_plugin_command = system.get_plugin_scons_command()
         if i == 0:
             build_plugin_command += " symbols_visibility=visible"
         else:

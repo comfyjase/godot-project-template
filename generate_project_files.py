@@ -44,7 +44,7 @@ for (i, plugin_name) in enumerate(system.project_plugins):
     print(f"Building plugin {plugin_name}", flush=True)
     print("=====================================", flush=True)
     
-    build_plugin_command = generate_command.replace(" vsproj=yes build_library=no", f" cache_path={system.project_cache_path}")
+    build_plugin_command = generate_command.replace(" vsproj=yes build_library=no", f" cache_path={system.plugin_cache_path}")
     if i == 0:
         build_plugin_command += " symbols_visibility=visible"
     else:
