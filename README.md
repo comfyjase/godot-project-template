@@ -14,7 +14,7 @@ This repository serves as a quickstart template for game development with Godot 
 * **Project** - setup using the [gdextension_cpp_example](https://docs.godotengine.org/en/4.4/tutorials/scripting/gdextension/gdextension_cpp_example.html) godot tutorial.
 * **Engine Submodules** - `godot` and `godot-cpp` as submodules (tracking the respective 4.4 branches).
 * **GitHub Bug Report Template** - issues template (`.github/ISSUE_TEMPLATE.yml`) for bug reports.
-* **Automatic Build And Export** - CI scripts to build and export the game for different platforms.
+* **Continuous Integration** - CI scripts to build and export the game for different platforms and configurations.
 * **Generate GDExtension Documentation** - automatically generate `.xml` files in a `doc_classes/` directory to be parsed by Godot as [GDExtension built-in documentation](https://docs.godotengine.org/en/4.4/tutorials/scripting/gdextension/gdextension_docs_system.html)
 * **GDExtension Plugins** - additional GDExtension plugins to demonstrate developing areas of the codebase as separate plugins linked to the main game project - see [core](./project/addons/core) and [gdextension_cpp_example](./project/addons/gdextension_cpp_example).
 * **Core Plugin** - helpful C++ macros to be reused across other plugins and in the main `game` project.
