@@ -436,7 +436,6 @@ $RECYCLE.BIN/
 *.generated.props
 
 # Godot Addons
-!project/addons/imgui-godot/bin/*
 /project/addons/core/.scons_cache
 *.uid
 /project/addons/gdextension_cpp_example/.scons_cache
