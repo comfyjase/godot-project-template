@@ -400,10 +400,7 @@ def get_godot_scons_command():
             
     scons_command += f" cache_path={godot_cache_path}"
     scons_command += f" accesskit_sdk_path={access_kit_path}"
-        
-    if is_ci:
-        scons_command += " verbose=yes"
-        
+    
     return scons_command
 
 def get_godot_custom_export_template_scons_command():
@@ -453,9 +450,6 @@ def get_godot_custom_export_template_scons_command():
     
     scons_command += f" cache_path={godot_cache_path}"
     scons_command += f" accesskit_sdk_path={access_kit_path}"
-
-    if is_ci:
-        scons_command += " verbose=yes"
 
     return scons_command
 
@@ -542,8 +536,5 @@ def get_project_scons_command():
         scons_command += " threads=no"
     
     scons_command += f" cache_path={project_cache_path}"
-    
-    if is_ci:
-        scons_command += " verbose=yes"
     
     return scons_command
