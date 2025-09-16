@@ -85,11 +85,12 @@ if system.platform_arg == "web":
         shutil.copytree(".web_zip", f"web.{system.configuration_arg}.{system.architecture_arg}", dirs_exist_ok=True)
         shutil.make_archive(f"web.{system.configuration_arg}.{system.architecture_arg}", "zip", f"web.{system.configuration_arg}.{system.architecture_arg}")
     else:
-        old_name = f"godot.web.{system.godot_engine_architecture_arg}.{system.architecture_arg}.nothreads.dlink{template_suffix}"
+        old_name = f"godot.web.{system.get_godot_configuration()}.{system.architecture_arg}.nothreads.dlink{template_suffix}"
         if system.precision_arg == "double":
             old_name = old_name.replace(f"{system.architecture_arg}", f"{system.precision_arg}.{system.architecture_arg}")
         new_name = f"web.{suffix}"
-        os.replace(f"{old_name}", f"{new_name}")
+        os.replace(old_name, new_name)
+        print(f"Renaming from {old_name} -> {new_name}", flush=True)
 elif system.platform_arg == "android":
     old_name = f"android_dev{template_suffix}"
     if (system.configuration_arg in ["editor", "editor_game", "template_debug"]):
@@ -101,6 +102,7 @@ elif system.platform_arg == "android":
     if os.path.isfile(old_name):
         print(f"Renaming {old_name} to android.{suffix}", flush=True)
         os.replace(old_name, f"android.{suffix}")
+        print(f"Renaming from {old_name} -> android.{suffix}", flush=True)
     else:
         print(f"{old_name} custom export template file not found, here are the available files: ", flush=True)
         system.print_files()
@@ -120,17 +122,19 @@ elif system.platform_arg == "macos" or system.platform_arg == "ios":
         
     if os.path.isfile(f"{old_name}"):
         os.replace(f"{old_name}", f"{new_name}")
+        print(f"Renaming from {old_name} -> {new_name}", flush=True)
     else:
         system.print_files()
 else:
     godot_platform_name = system.platform_arg
     if system.platform_arg == "linux":
         godot_platform_name = "linuxbsd"
-    godot_files = glob(f"godot.{godot_platform_name}.{system.godot_engine_architecture_arg}.*")
+    godot_files = glob(f"godot.{godot_platform_name}.{system.get_godot_configuration()}.*")
     for file in godot_files:
         old_name = file
-        new_name = file.replace("godot.", "").replace(f"{system.godot_engine_architecture_arg}", f"{system.configuration_arg}")
+        new_name = file.replace("godot.", "").replace(system.get_godot_configuration(), system.configuration_arg)
         os.replace(old_name, new_name)
+        print(f"Renaming from {old_name} -> {new_name}", flush=True)
 
 # ===============================================
 # Update export_presets.cfg with this template
@@ -154,12 +158,12 @@ elif platform.system() == "Linux" or platform.system() == "Darwin":
 if system.platform_arg == "android":
     if not os.path.exists(gradle_source_file_path):
         print("Available files:", flush=True)
-        system.print_files()
+        system.print_files(system.absolute_godot_bin_dir_path)
         sys.exit(f"Error: Gradle source file path: {gradle_source_file_path} doesn't exist? Failed to create {export_template_file_path} for {system.platform_arg} {system.configuration_arg} {system.architecture_arg} {system.precision_arg}")
 else:
     if not os.path.exists(export_template_file_path):
         print("Available files:", flush=True)
-        system.print_files()
+        system.print_files(system.absolute_godot_bin_dir_path)
         sys.exit(f"Error: Export template file path: {export_template_file_path} doesn't exist? Failed to create {export_template_file_path} for {system.platform_arg} {system.configuration_arg} {system.architecture_arg} {system.precision_arg}")
 
 if platform.system() == "Linux" or platform.system() == "Darwin":
@@ -204,7 +208,7 @@ if system.platform_arg == "android":
     print("=====================================", flush=True)
     
     godot_android_library_file = os.path.join(system.absolute_godot_bin_dir_path, "godot-lib.template_debug.dev.aar")
-    if system.godot_engine_architecture_arg == "template_release":
+    if system.get_godot_configuration() == "template_release":
         godot_android_library_file = godot_android_library_file.replace("godot-lib.template_debug.dev.aar", "godot-lib.template_release.aar")
     
     if not os.path.exists(godot_android_library_file):
@@ -212,7 +216,7 @@ if system.platform_arg == "android":
         system.print_files()
     
     android_build_folder = "debug"
-    if system.godot_engine_architecture_arg == "template_release":
+    if system.get_godot_configuration() == "template_release":
         android_build_folder = "release"
     
     game_project_android_library_file_destination_folder = os.path.join(system.project_dir_path, "android", "build", "libs", android_build_folder)

@@ -334,6 +334,14 @@ def add_plugins(plugin_names, env, customs, all_directories_array, project_sourc
         
         env.AppendUnique(LIBS=[lib_filename])
         env.AppendUnique(LIBPATH=[".", f"{addons_dir_path}/{plugin_name}/bin/{env["platform"]}/"])
+
+def get_godot_configuration():
+    godot_engine_configuration_arg = configuration_arg
+    if godot_engine_configuration_arg in ["profile", "production"]:
+        godot_engine_configuration_arg = "template_release"
+    elif godot_engine_configuration_arg == "editor_game":
+        godot_engine_configuration_arg = "template_debug"
+    return godot_engine_configuration_arg
         
 def get_godot_scons_command():
     global building_editor_for_non_native_os
@@ -396,11 +404,7 @@ def get_godot_scons_command():
     return scons_command
 
 def get_godot_custom_export_template_scons_command():
-    godot_configuration_arg = configuration_arg
-    if godot_configuration_arg in ["profile", "production"]:
-        godot_configuration_arg = "template_release"
-    elif godot_configuration_arg == "editor_game":
-        godot_configuration_arg = "template_debug"
+    godot_configuration_arg = get_godot_configuration()
     
     scons_command = ""
     if using_wsl:
