@@ -11,11 +11,11 @@
 using namespace godot;
 
 void CustomSprite::_bind_methods() {
-	GD_BIND_PROPERTY("amplitude", Variant::FLOAT, &CustomSprite::set_amplitude, &CustomSprite::get_amplitude);
-	GD_BIND_PROPERTY("speed", Variant::FLOAT, &CustomSprite::set_speed, &CustomSprite::get_speed);
+	GD_BIND_PROPERTY(CustomSprite, amplitude, Variant::FLOAT);
+	GD_BIND_PROPERTY(CustomSprite, speed, Variant::FLOAT);
 
 #if IMGUI_ENABLED
-	GD_BIND_METHOD("draw_debug", &CustomSprite::draw_debug);
+	GD_BIND_METHOD(CustomSprite, draw_debug);
 #endif
 
 	ADD_SIGNAL(MethodInfo("position_changed", PropertyInfo(Variant::OBJECT, "node"), PropertyInfo(Variant::VECTOR2, "new_pos")));

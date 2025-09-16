@@ -8,7 +8,7 @@ This repository serves as a quickstart template for game development with Godot 
 
 ## Features
 * **Setup Script** - download and install prerequisites.
-* **Generate Project Files Script** - generate a visual studio sln file with separate project files for the godot engine and the game GDExtension project.
+* **Visual Studio Solution File** - generate a visual studio sln file with separate project files for the godot engine and the game GDExtension project.
 * **Configurations** - `editor`, `editor_game`, `development`, `template_debug`, `template_release`, `profile` and `production`.
 * **Project** - setup using the [gdextension_cpp_example](https://docs.godotengine.org/en/4.4/tutorials/scripting/gdextension/gdextension_cpp_example.html) godot tutorial.
 * **Engine Submodules** - `godot` and `godot-cpp` as submodules (tracking the respective 4.4 branches).
@@ -20,6 +20,33 @@ This repository serves as a quickstart template for game development with Godot 
 * **GDExtension Doctest Support** - support for writing and running doctest unit tests from GDExtension code - see [doctest_runner](./project/addons/doctest_runner), [test_custom_sprite.h](./project/addons/gdextension_cpp_example/project/src/tests/sprite) and [run_unit_tests.py](./tools/scripts/run_unit_tests.py).
 * **ImGui** - Uses [imgui-godot](https://github.com/pkdawson/imgui-godot) to provide runtime debug menus if you implement `void draw_debug();` in your node class - see [custom_sprite.cpp](./project/addons/gdextension_cpp_example/project/src/sprite/custom_sprite.cpp).
 * **Tools** - toolbox app to support project development - includes build downloader, commit checker and maintanence apps.
+
+## Project Structure
+<div class="highlight highlight-html"> <pre>
+<a href="./engine" title="engine">engine</a>
+	- <a href="./engine/godot" title="godot">godot</a>
+	- <a href="./engine/godot-cpp" title="godot-cpp">godot-cpp</a>
+<a href="./project" title="project">project</a>
+	- <a href="./project/addons" title="project_addons">addons</a> (godot assets + game plugins)
+		- <a href="./project/addons/core" title="core">core</a> (C++ helper macros)
+		- <a href="./project/addons/doctest_runner" title="doctest_runner">doctest_runner</a> (doctest unit test runner node + macros)
+			- <a href="./project/addons/doctest_runner/project/src/doctest_runner/doctest_runner.h" title="doctest_runner.h">doctest_runner.h</a> (manages children doctest nodes and quits once they are all finished)
+			- <a href="./project/addons/doctest_runner/project/src/doctest_runner/doctest_runner_macros.h" title="doctest_runner_macros.h">doctest_runner_macros.h</a> (macros to declare and implement nodes in other GDExtension code)
+		- <a href="./project/addons/gdextension_cpp_example" title="gdextension_cpp_example">gdextension_cpp_example</a>
+			- <a href="./project/addons/gdextension_cpp_example/project/src/sprite/custom_sprite.h" title="custom_sprite.h">custom_sprite.h</a>
+			- <a href="./project/addons/gdextension_cpp_example/project/src/tests" title="gdextension_cpp_example_doctest_node">gdextension_cpp_example_doctest_node.h/.cpp</a> (doctest node for this plugin to be placed in test.tscn)
+			- <a href="./project/addons/gdextension_cpp_example/project/src/tests/sprite/test_custom_sprite.h" title="test_custom_sprite.h">test_custom_sprite.h</a> (example doctest unit test implementation for custom_sprite.h)
+	- <a href="./project/scenes" title="project_scenes">scenes</a>
+		- <a href="./project/scenes/unit_tests/test.tscn" title="test.tscn">test.tscn</a> (includes doctest_runner node + children doctest nodes)
+		- <a href="./project/scenes/debug.tscn" title="debug.tscn">debug.tscn</a> (includes build information + stats)
+		- <a href="./project/scenes/main.tscn" title="main.tscn">main.tscn</a> (includes debug.tscn and moving custom sprite)
+<a href="./project/src" title="project_src">src</a> (game GDExtension code)
+<a href="./thirdparty" title="thirdparty">thirdparty</a>
+	- <a href="./thirdparty/emsdk" title="emsdk">emsdk</a> (used for web platform)
+	- <a href="./thirdparty/imgui" title="imgui">imgui</a> (used for runtime debug)
+	- <a href="./thirdparty/rcedit" title="rcedit">rcedit</a> (used for windows builds)
+<a href="./generate_project_files.py" title="game.sln">game.sln</a> (can build code in Visual Studio Community after generate_project_files.py finishes)
+</pre> </div>
 
 ## Visual Studio Solution File
 ![Screenshot of two projects in Visual Studio Community solution: game and godot](./.github_assets/images/visual-studio-solution-projects.png)  
@@ -62,7 +89,7 @@ Below are some examples of running different platforms/configurations from the v
 ![Screenshot of an python app named toolbox with a toolbox icon and three buttons: builds, commit checker and maintanence.](.github_assets/images/toolbox.png)
 
 > [!NOTE]  
-> These tools are written using python scripts but have only been tested properly on a Windows OS - with some work they should be able to be cross-platform friendly.  
+> These tools are implemented using python scripts but have only been tested properly on Windows OS - with some work they should be able to be cross-platform friendly.
 
 ### Builds
 ![Gif of a user selecting two different builds in a list and then downloading them to a local binary folder.](.github_assets/images/tools_builds_downloading.gif)
