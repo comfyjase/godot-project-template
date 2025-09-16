@@ -72,7 +72,7 @@ jobs:
       - name: Setup Workflow Variables + Environment
         run: |
           python tools/scripts/write_to_github_actions_environment.py
-          python pip install psutil
+          python -m pip install psutil
     
       # Restore .scons_cache
       - name: Restore .scons_cache
