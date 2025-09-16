@@ -115,13 +115,13 @@ if system.platform_arg == "android" and platform.system() == "Windows":
     
 if not os.path.exists(necessary_file_path):
     print("Available binary files:", flush=True)
-    print_files(os.path.dirname(os.path.abspath(necessary_file_path)))
+    system.print_files(os.path.dirname(os.path.abspath(necessary_file_path)))
     sys.exit(f"Error: {necessary_file_path} file is missing, please build project for {system.platform_arg} template_{export_command_type} {system.architecture_arg} {system.precision_arg}")
 if (system.platform_arg not in ["web", "android", "ios"]) and (system.architecture_arg not in ["x86_32", "arm64", "arm32", "rv64"]):
     if not os.path.exists(imgui_file_path):
         imgui_godot_binary_folder_name = os.path.dirname(os.path.abspath(imgui_file_path))
         print(f"imgui-godot binary files: {imgui_godot_binary_folder_name}: ", flush=True)
-        print_files(imgui_godot_binary_folder_name)
+        system.print_files(imgui_godot_binary_folder_name)
         sys.exit(f"Error: {imgui_file_path} file is missing, please check the addons/imgui-godot/bin folder for relevant binary files and make sure permissions are granted {export_command_type} {system.platform_arg} {system.configuration_arg} {system.architecture_arg} {system.precision_arg}")
     
 if native_platform == "linux" or native_platform == "macos":
@@ -183,12 +183,12 @@ if return_code != 0:
     sys.exit(f"Error: Failed to import project for {system.platform_arg} {system.configuration_arg} {system.architecture_arg} {system.precision_arg} from godot binary {system.get_godot_binary_file_name_for_system()}")
 
 export_credentials_file_path = f"{project_path}/.godot/export_credentials.cfg"
-if system.platform_arg == "android":
-     # Check for generated keystore file
+if system.platform_arg == "android" and system.configuration_arg in ["template_release", "profile", "production"]:
+    # Check for generated keystore file
     release_keystore_file_path = os.path.join(system.repo_dir_path, "release.keystore").replace("\\", "/")
     if not os.path.exists(release_keystore_file_path):
         print("Project directory files:", flush=True)
-        print_files(system.repo_dir_path)
+        system.print_files(system.repo_dir_path)
         sys.exit(f"Error: {release_keystore_file_path} doesn't exist under {system.repo_dir_path}. Is it located somewhere else?")    
     
     # Update export credentials with keystore file information
@@ -205,35 +205,34 @@ if system.platform_arg == "android":
                 break
 
     if os.path.exists(export_credentials_file_path):
-        sys.exit(f"Error: {export_credentials_file_path} already exists, you need to modify it instead of just writing to it.")
-    else:
-        with open(export_credentials_file_path, "w") as export_credentials_write:
-            print(f"Created {export_credentials_file_path}", flush=True)
+        os.remove(export_credentials_file_path)
+    
+    with open(export_credentials_file_path, "w") as export_credentials_write:
+        print(f"Created {export_credentials_file_path}", flush=True)
+        
+        android_keystore_alias = "$ANDROID_KEYSTORE_ALIAS"
+        android_keystore_password = "$ANDROID_KEYSTORE_PASSWORD"
+        if not system.is_ci:
+            android_keystore_alias = os.getenv("ANDROID_KEYSTORE_ALIAS")
+            android_keystore_password = os.getenv("ANDROID_KEYSTORE_PASSWORD")
             
-            android_keystore_alias = "$ANDROID_KEYSTORE_ALIAS"
-            android_keystore_password = "$ANDROID_KEYSTORE_PASSWORD"
-            if platform.system() == "Windows":
-                android_keystore_alias = os.getenv("ANDROID_KEYSTORE_ALIAS")
-                android_keystore_password = os.getenv("ANDROID_KEYSTORE_PASSWORD")
-                print(f"JASE DEBUG - Alias = {android_keystore_alias} Password = {android_keystore_password}", flush=True)
-                
-            export_credentials_write.write(export_godot_preset_tag + "\n")
-            export_credentials_write.write("\n")
-            export_credentials_write.write("script_encryption_key=\"\"\n")
-            export_credentials_write.write("\n")
-            export_credentials_write.write(export_godot_preset_tag_options + "\n")
-            export_credentials_write.write("\n")
-            export_credentials_write.write("keystore/debug=\"\"\n")
-            export_credentials_write.write("keystore/debug_user=\"\"\n")
-            export_credentials_write.write("keystore/debug_password=\"\"\n")
-            export_credentials_write.write(f"keystore/release=\"{release_keystore_file_path}\"\n")
-            export_credentials_write.write(f"keystore/release_user=\"{android_keystore_alias}\"\n")
-            export_credentials_write.write(f"keystore/release_password=\"{android_keystore_password}\"\n")
+        export_credentials_write.write(export_godot_preset_tag + "\n")
+        export_credentials_write.write("\n")
+        export_credentials_write.write("script_encryption_key=\"\"\n")
+        export_credentials_write.write("\n")
+        export_credentials_write.write(export_godot_preset_tag_options + "\n")
+        export_credentials_write.write("\n")
+        export_credentials_write.write("keystore/debug=\"\"\n")
+        export_credentials_write.write("keystore/debug_user=\"\"\n")
+        export_credentials_write.write("keystore/debug_password=\"\"\n")
+        export_credentials_write.write(f"keystore/release=\"{release_keystore_file_path}\"\n")
+        export_credentials_write.write(f"keystore/release_user=\"{android_keystore_alias}\"\n")
+        export_credentials_write.write(f"keystore/release_password=\"{android_keystore_password}\"\n")
 elif system.platform_arg == "windows":
     app_data_file_path = subprocess.check_output("echo %APPDATA%", shell=True).decode('ascii').strip().replace("\\", "/")
-    godot_editor_settings_file_path = f"{app_data_file_path}/Godot/editor_settings-4.5.tres"
+    godot_editor_settings_file_path = f"{app_data_file_path}/Godot/editor_settings-4.4.tres"
     if not os.path.exists(godot_editor_settings_file_path):
-        print_files(f"{app_data_file_path}/Godot")
+        system.print_files(f"{app_data_file_path}/Godot")
         sys.exit(f"Error: Godot editor settings file {godot_editor_settings_file_path} does not exist under {app_data_file_path}/Godot/. Does project need to be imported first or is {app_data_file_path} not expanding correctly?")
     
     rcedit_file_path = f"{system.thirdparty_dir_path}/rcedit/rcedit_x64.exe".replace("\\", "/")
@@ -258,10 +257,10 @@ print(system.get_godot_export_command(export_command_type, build_output_path), f
 return_code = subprocess.call(system.get_godot_export_command(export_command_type, build_output_path), shell=True)
 if not os.path.exists(build_output_path):
     print("Available godot binary files:", flush=True)
-    print_files()
+    system.print_files()
     print(f"Available {system.lib_name} binary files:", flush=True)
-    print_files(os.path.dirname(os.path.abspath(necessary_file_path)))
-    print_files(os.path.join(system.repo_dir_path, "bin", platform_arg))
+    system.print_files(os.path.dirname(os.path.abspath(necessary_file_path)))
+    system.print_files(os.path.join(system.repo_dir_path, "bin", system.platform_arg))
     with open(f"{project_path}/export_presets.cfg", "r") as export_presets_read:
         all_lines=export_presets_read.readlines()
         print("export_presets.cfg:", flush=True)

@@ -62,9 +62,13 @@ else:
         print("=====================================", flush=True)
         print(f"Building plugin {plugin_name}", flush=True)
         print("=====================================", flush=True)
-    
-        print(f"Building {plugin_name}", flush=True)
-        build_plugin_command = (system.get_project_scons_command() + " symbols_visibility=visible")
+        
+        build_plugin_command = system.get_project_scons_command()
+        if i == 0:
+            build_plugin_command += " symbols_visibility=visible"
+        else:
+            build_plugin_command += " build_library=no"
+
         print(f"Command: {build_plugin_command}", flush=True)
         return_code = subprocess.call(build_plugin_command, shell=True)
         if return_code != 0:

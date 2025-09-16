@@ -55,9 +55,10 @@ jobs:
           fi
         continue-on-error: true
     
-      - name: Setup Workflow Variables
+      - name: Setup Workflow Variables + Environment
         run: |
           python tools/scripts/write_to_github_actions_environment.py
+          python pip install psutil
     
       # Restore .scons_cache
       - name: Restore .scons_cache
