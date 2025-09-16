@@ -57,7 +57,7 @@ jobs:
         run: | 
           unzip -o thirdparty/accesskit/accesskit-c-0.16.0/accesskit_c.zip -d thirdparty/accesskit/
           
-       - name: Setup Workflow Variables + Environment
+      - name: Setup Workflow Variables + Environment
         run: |
           python tools/scripts/write_to_github_actions_environment.py
           python pip install psutil

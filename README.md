@@ -7,23 +7,22 @@ This repository serves as a quickstart template for game development with Godot 
 > Godot C++ GDExtension tutorial implemented in the project.
 
 ## Features
-* Setup script to help download and install prerequisites.
-* Script to generate a visual studio sln file with separate project files for the godot engine and the game GDExtension project.
-* Implements these configurations: `editor`, `editor_game`, `development`, `template_debug`, `template_release`, `profile` and `production`.
-* `project` setup using the [gdextension_cpp_example](https://docs.godotengine.org/en/4.4/tutorials/scripting/gdextension/gdextension_cpp_example.html) godot tutorial.
-* `godot` and `godot-cpp` as submodules (tracking the respective 4.4 branches).
-* GitHub issues template (`.github/ISSUE_TEMPLATE.yml`) for bug reports.
-* CI scripts to build and export the game for different platforms.
-* Setup to automatically generate `.xml` files in a `doc_classes/` directory to be parsed by Godot as [GDExtension built-in documentation](https://docs.godotengine.org/en/4.4/tutorials/scripting/gdextension/gdextension_docs_system.html)
-* Additional GDExtension plugins to demonstrate developing areas of the codebase as separate plugins linked to the main game project - see [core](./project/addons/core) and [gdextension_cpp_example](./project/addons/gdextension_cpp_example).
-* Includes the `imgui-godot` addon for helpful runtime debugging by implementing `void draw_debug();` in your nodes - see [custom_sprite.cpp](./project/addons/gdextension_cpp_example/project/src/sprite/custom_sprite.cpp).
-* Includes the `godot-git-plugin` addon for godot git integration.
-* `core` addon with some helpful C++ macros to be reused across other plugins and in the main `game` project.
-* Support for writing and running doctest unit tests - see [doctest_runner](./project/addons/doctest_runner), [test_custom_sprite.h](./project/addons/gdextension_cpp_example/project/src/tests/sprite) and [run_unit_tests.py](./tools/scripts/run_unit_tests.py).
-* Toolbox app to support project development - includes a commit checker and build downloader.
+* **Setup Script** - download and install prerequisites.
+* **Generate Project Files Script** - generate a visual studio sln file with separate project files for the godot engine and the game GDExtension project.
+* **Configurations** - `editor`, `editor_game`, `development`, `template_debug`, `template_release`, `profile` and `production`.
+* **Project** - setup using the [gdextension_cpp_example](https://docs.godotengine.org/en/4.4/tutorials/scripting/gdextension/gdextension_cpp_example.html) godot tutorial.
+* **Engine Submodules** - `godot` and `godot-cpp` as submodules (tracking the respective 4.4 branches).
+* **GitHub Bug Report Template** - issues template (`.github/ISSUE_TEMPLATE.yml`) for bug reports.
+* **Automatic Build And Export** - CI scripts to build and export the game for different platforms.
+* **Generate GDExtension Documentation** - automatically generate `.xml` files in a `doc_classes/` directory to be parsed by Godot as [GDExtension built-in documentation](https://docs.godotengine.org/en/4.4/tutorials/scripting/gdextension/gdextension_docs_system.html)
+* **GDExtension Plugins** - additional GDExtension plugins to demonstrate developing areas of the codebase as separate plugins linked to the main game project - see [core](./project/addons/core) and [gdextension_cpp_example](./project/addons/gdextension_cpp_example).
+* **Core Plugin** - helpful C++ macros to be reused across other plugins and in the main `game` project.
+* **GDExtension Doctest Support** - support for writing and running doctest unit tests from GDExtension code - see [doctest_runner](./project/addons/doctest_runner), [test_custom_sprite.h](./project/addons/gdextension_cpp_example/project/src/tests/sprite) and [run_unit_tests.py](./tools/scripts/run_unit_tests.py).
+* **ImGui** - Uses [imgui-godot](https://github.com/pkdawson/imgui-godot) to provide runtime debug menus if you implement `void draw_debug();` in your node class - see [custom_sprite.cpp](./project/addons/gdextension_cpp_example/project/src/sprite/custom_sprite.cpp).
+* **Tools** - toolbox app to support project development - includes build downloader, commit checker and maintanence apps.
 
 ## Visual Studio Solution File
-![Screenshot of two projects in Visual Studio Community solution: game and godot](./.github_assets/images/visual-studio-solution-projects.png)
+![Screenshot of two projects in Visual Studio Community solution: game and godot](./.github_assets/images/visual-studio-solution-projects.png)  
 This is generated using scons (makes an NMake project) and has been tested with Visual Studio Community 2022.
 
 | Configuration | Description | Debug Symbols |
