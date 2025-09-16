@@ -4,7 +4,6 @@ import fnmatch
 import os
 import pathlib
 import platform
-import psutil
 import shutil
 import subprocess
 import sys
@@ -191,9 +190,16 @@ def add_cpp_defines(env, cpp_defines):
         cpp_defines.append("DEBUG")
     
 def process_exists(process_name):
-    for (i, process) in enumerate(psutil.process_iter(attrs=["name"])):
-        if process_name in process.name():
-            return True
+    if using_wsl:
+        is_godot_active = subprocess.check_output(f"wsl pgrep -f {get_godot_binary_file_name_for_system()}", shell=True).decode('ascii').strip()
+        if (is_godot_active != ""):
+            return true
+    else:
+        import psutil
+    
+        for (i, process) in enumerate(psutil.process_iter(attrs=["name"])):
+            if process_name in process.name():
+                return True
             
     return False
 
