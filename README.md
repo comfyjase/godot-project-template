@@ -9,6 +9,7 @@ This repository serves as a quickstart template for game development with Godot 
 ## Features
 * **Setup Script** - download and install prerequisites.
 * **Visual Studio Solution File** - generate a visual studio sln file with separate project files for the godot engine and the game GDExtension project.
+* **Visual Studio Platforms** - `android` (defaults to arm64 but this can be changed), `linux` (WSL), `web`, `win32`, and `win64`.
 * **Configurations** - `editor`, `editor_game`, `development`, `template_debug`, `template_release`, `profile` and `production`.
 * **Project** - setup using the [gdextension_cpp_example](https://docs.godotengine.org/en/4.4/tutorials/scripting/gdextension/gdextension_cpp_example.html) godot tutorial.
 * **Engine Submodules** - `godot` and `godot-cpp` as submodules (tracking the respective 4.4 branches).
@@ -40,7 +41,7 @@ This repository serves as a quickstart template for game development with Godot 
 		- <a href="./project/scenes/unit_tests/test.tscn" title="test.tscn">test.tscn</a> (includes doctest_runner node + children doctest nodes)
 		- <a href="./project/scenes/debug.tscn" title="debug.tscn">debug.tscn</a> (includes build information + stats)
 		- <a href="./project/scenes/main.tscn" title="main.tscn">main.tscn</a> (includes debug.tscn and moving custom sprite)
-<a href="./project/src" title="project_src">src</a> (game GDExtension code)
+	- <a href="./project/src" title="project_src">src</a> (game GDExtension code)
 <a href="./thirdparty" title="thirdparty">thirdparty</a>
 	- <a href="./thirdparty/emsdk" title="emsdk">emsdk</a> (used for web platform)
 	- <a href="./thirdparty/imgui" title="imgui">imgui</a> (used for runtime debug)
@@ -49,7 +50,9 @@ This repository serves as a quickstart template for game development with Godot 
 </pre> </div>
 
 ## Visual Studio Solution File
-![Screenshot of two projects in Visual Studio Community solution: game and godot](./.github_assets/images/visual-studio-solution-projects.png)  
+![Screenshot of two projects in Visual Studio Community solution: game and godot](./.github_assets/images/visual-studio-solution-projects.png)
+![Screenshot of the solution platforms](./.github_assets/images/visual-studio-solution-platforms.png)
+![Screenshot of the solution configurations](./.github_assets/images/visual-studio-solution-configurations.png)  
 This is generated using scons (makes an NMake project) and has been tested with Visual Studio Community 2022.
 
 | Configuration | Description | Debug Symbols |
