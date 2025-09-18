@@ -20,7 +20,7 @@ This repository serves as a quickstart template for game development with Godot 
 * **Core Plugin** - helpful C++ macros to be reused across other plugins and in the main `game` project.
 * **GDExtension Doctest Support** - support for writing and running doctest unit tests from GDExtension code - see [doctest_runner](./project/addons/doctest_runner), [test_custom_sprite.h](./project/addons/gdextension_cpp_example/project/src/tests/sprite) and [run_unit_tests.py](./tools/scripts/run_unit_tests.py).
 * **ImGui** - Uses [imgui-godot](https://github.com/pkdawson/imgui-godot) to provide runtime debug menus if you implement `void draw_debug();` in your node class - see [custom_sprite.cpp](./project/addons/gdextension_cpp_example/project/src/sprite/custom_sprite.cpp).
-* **Tools** - toolbox app to support project development - includes build downloader, commit checker and maintanence apps.
+* **Tools** - toolbox app to support project development - includes build downloader/exporter, commit checker and maintanence apps.
 
 ## Project Structure
 <div class="highlight highlight-html"> <pre>
@@ -96,7 +96,8 @@ Below are some examples of running different platforms/configurations from the v
 
 ### Builds
 ![Gif of a user selecting two different builds in a list and then downloading them to a local binary folder.](.github_assets/images/tools_builds_downloading.gif)
-Provides a list of the saved game builds from the github actions artifacts and allows users to download them to a specified folder.
+![Gif of a user choosing a windows template_debug build and then exporting the project for that configuration.](.github_assets/images/tools_builds_exporting.gif)
+Provides a list of the saved game builds from the github actions artifacts and allows users to download them to a specified folder. Also provides a way to export builds of the game locally.
 
 ### Commit Checker
 ![Gif of an app with multiple checkboxes for different platforms and configurations, user selects android production and clicks on a run checklist button.](.github_assets/images/tools_commit_checker_running.gif)
