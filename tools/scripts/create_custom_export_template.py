@@ -126,6 +126,9 @@ elif system.platform_arg == "macos" or system.platform_arg == "ios":
     else:
         system.print_files()
 else:
+    if (system.configuration_arg in ["editor", "editor_game", "template_debug"]) and not system.is_ci:
+        suffix = suffix.replace(system.architecture_arg, f"dev.{system.architecture_arg}")
+        
     godot_platform_name = system.platform_arg
     if system.platform_arg == "linux":
         godot_platform_name = "linuxbsd"

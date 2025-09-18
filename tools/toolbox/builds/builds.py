@@ -1,7 +1,7 @@
 import tkinter
 import tkinter.messagebox
 import customtkinter
-from PIL import Image 
+from PIL import Image
 
 import asyncio
 import glob
@@ -14,58 +14,14 @@ import sys
 import threading
 import time
 
-# Change to project directory if we are not already there
-current_directory = os.getcwd()
-if not os.path.exists(os.path.join(f"{current_directory}", "game")):
-    os.chdir("..")
-    os.chdir("..")
-project_directory = os.getcwd()
+script_path_to_append = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
+if script_path_to_append not in sys.path:
+    sys.path.append(script_path_to_append)
+    
+from shared.shared import *
 
 customtkinter.set_appearance_mode("System")  # Modes: "System" (standard), "Dark", "Light"
 customtkinter.set_default_color_theme("blue")  # Themes: "blue" (standard), "green", "dark-blue"
-
-class TargetPlatformSelection(customtkinter.CTkFrame):
-    def __init__(self, master):
-        super().__init__(master)
-        self.target_configurations = [ "template_debug", "template_release", "profile", "production" ]
-        self.target_platforms = [ "linux", "windows", "web", "android" ]
-        
-        self.configuration_labels = [ "Template Debug", "Template Release", "Profile", "Production" ]
-        self.platform_labels = [ "🐧 Linux", "🪟 Windows", "🌐 Web", "🤖 Android" ]
-        
-        self.configuration_titles = []
-        self.platform_titles = []
-        self.checkboxes = []
-
-        for i, target_configuration in enumerate(self.configuration_labels):
-            configuration_title = customtkinter.CTkLabel(master, text=target_configuration, fg_color=("#3B8ED0", "#1F6AA5"), text_color="white", corner_radius=6, width=150)
-            configuration_title.grid(row=0, column=i+2, padx=10, pady=10)
-            self.configuration_titles.append(configuration_title)
-            
-        for i, target_platform in enumerate(self.platform_labels):
-            platform_title = customtkinter.CTkLabel(master, text=target_platform, fg_color=("#3B8ED0", "#1F6AA5"), text_color="white", corner_radius=6, width=150)
-            platform_title.grid(row=i+1, column=1, padx=10, pady=10)
-            self.platform_titles.append(platform_title)
-
-        for i, target_configuration in enumerate(self.target_configurations):
-            for j, target_platform in enumerate(self.target_platforms):
-                string_value = f"{target_platform}+{target_configuration}+{self.platform_labels[j]}+{self.configuration_labels[i]}"
-                check_var = customtkinter.StringVar(value=string_value)
-                checkbox = customtkinter.CTkCheckBox(master, text="",
-                    variable=check_var, onvalue=string_value, offvalue="off", command=self.checkbox_callback)
-                checkbox.grid(row=j+1, column=i+2, padx=(20, 0), pady=(10, 0), sticky="ne")
-                checkbox.deselect()
-                self.checkboxes.append(checkbox)
-
-    def get(self):
-        checkbox_values = []
-        for checkbox in self.checkboxes:
-            if checkbox.get() != "off":
-                checkbox_values.append(checkbox.cget("onvalue"))
-        return checkbox_values
-
-    def checkbox_callback(self):
-        print("Target Platform Selection:", self.get())
 
 class Build():
     def __init__(self):
@@ -115,12 +71,6 @@ class App(customtkinter.CTk):
             self.export_builds_frame.grid(row=0, column=1, sticky="nsew")
         else:
             self.export_builds_frame.grid_forget()
-            
-    def github_builds_button_event(self):
-        self.select_frame_by_name("download")
-    
-    def export_builds_button_event(self):
-        self.select_frame_by_name("export")
         
     def create_sidebar_frame(self):
         # Sidebar With Title
@@ -158,32 +108,19 @@ class App(customtkinter.CTk):
         new_scaling_float = int(new_scaling.replace("%", "")) / 100
         customtkinter.set_widget_scaling(new_scaling_float)
 
-    def github_builds_download_folder_browse_button_event(self):
-        # Done here in case the user has manually updated the entry text
-        if not os.path.exists(self.github_download_folder_path.get()):
-            pathlib.Path(self.github_download_folder_path.get()).mkdir(parents=True, exist_ok=True)
+# =============================================================================
+# DOWNLOAD
+    def github_builds_button_event(self):
+        self.select_frame_by_name("download")
         
-        folder = customtkinter.filedialog.askdirectory(initialdir=self.github_download_folder_path)
-        if folder:
-            self.github_download_folder_path.set(folder.replace("\\", "/"))
-
     def create_github_builds_frame(self):
         self.github_builds_frame = customtkinter.CTkFrame(self, corner_radius=0)
         self.github_builds_frame.grid(row=0, column=1, sticky="nsew")
         self.github_builds_frame.grid_columnconfigure((2, 3), weight=1)
         self.github_builds_frame.configure(fg_color="transparent")
         
-        self.github_download_folder_path = customtkinter.StringVar()
-        self.github_download_folder_path.set(os.path.join(project_directory, "bin", "github_builds").replace("\\", "/"))
-        if not os.path.exists(self.github_download_folder_path.get()):
-            pathlib.Path(self.github_download_folder_path.get()).mkdir(parents=True, exist_ok=True)
-        
-        self.github_download_folder_label = customtkinter.CTkLabel(self.github_builds_frame, text="Download Folder:")
-        self.github_download_folder_label.grid(row=0, column=1, padx=(20, 0), pady=20, sticky="w")
-        self.github_download_folder_entry = customtkinter.CTkEntry(self.github_builds_frame, textvariable=self.github_download_folder_path)
-        self.github_download_folder_entry.grid(row=0, column=2, columnspan=2, pady=20, sticky="ew")        
-        self.github_download_folder_browse_button = customtkinter.CTkButton(self.github_builds_frame, text="Browse...", command=self.github_builds_download_folder_browse_button_event)
-        self.github_download_folder_browse_button.grid(row=0, column=4, padx=20, pady=20)
+        self.github_download_folder = FolderSelection(self.github_builds_frame)
+        self.github_download_folder.set_folder_path(os.path.join(repo_directory, "bin", "github_builds"))
         
         self.github_builds_list_frame = customtkinter.CTkScrollableFrame(self.github_builds_frame, height=250, corner_radius=0)
         self.github_builds_list_frame._scrollbar.configure(height=0)
@@ -205,40 +142,16 @@ class App(customtkinter.CTk):
         self.completed_github_downloads_title_label.cget("font").configure(size=20)
         self.completed_github_downloads_title_label.cget("font").configure(weight="bold")
         
-        self.images_folder_path = os.path.join(project_directory, "tools", "toolbox", "assets")
-        
-        loading_light_image_file_path = os.path.join(self.images_folder_path, "loading_cog_light.png")
-        loading_dark_image_file_path = os.path.join(self.images_folder_path, "loading_cog_dark.png")
-        green_tick_file_path = os.path.join(self.images_folder_path, "green_tick.png")
-        
-        self.loading_light_image_object = Image.open(loading_light_image_file_path)
-        self.loading_dark_image_object = Image.open(loading_dark_image_file_path)
-        self.green_tick_image_object = Image.open(green_tick_file_path)
-        
-        self.image_size = (20, 20)
-        self.loading_image = customtkinter.CTkImage(light_image=self.loading_light_image_object, dark_image=self.loading_dark_image_object, size=self.image_size)
-        self.green_tick_image = customtkinter.CTkImage(self.green_tick_image_object, size=self.image_size)
-        
-        self.github_download_status_label = customtkinter.CTkLabel(self.github_downloads_progress_frame, text="", image=self.loading_image)
+        self.github_download_status_label = customtkinter.CTkLabel(self.github_downloads_progress_frame, text="", image=loading_image)
         self.github_download_status_label.grid(row=2, column=2, padx=(10, 20), pady=(20, 0))
         self.github_download_status_label.grid_forget()
         
-        self.should_animate_loading_icon = False
-        self.animation_interval = (1 / 120)
+        self.loading_image = LoadingImage()
         
         self.github_builds = []
         self.github_builds_checkboxes = []
         self.create_github_builds_list()
-        
-    def create_export_frame(self):
-        # Perform checks frame
-        self.export_builds_frame = customtkinter.CTkFrame(self, corner_radius=0)
-        self.export_builds_frame.grid(row=0, column=1, sticky="nsew")
-        self.export_builds_frame.configure(fg_color="transparent")
-
-        # Target platform/configuration selection        
-        self.target_platform_selection = TargetPlatformSelection(self.export_builds_frame)
-        
+    
     def get_github_builds(self):
         github_builds = []
         github_builds_str = subprocess.check_output("gh api /repos/{owner}/{repo}/actions/artifacts --jq \".artifacts[] | [.name, .workflow_run.id, .size_in_bytes]\"", shell=True).decode().strip()
@@ -287,7 +200,7 @@ class App(customtkinter.CTk):
                 build.workflow_id = build_str_arr[1]
                 build.size = (int(build_str_arr[2]) / 1024 / 1024) # covert to MB
                 build.name_label = customtkinter.CTkLabel(self.github_downloads_progress_frame, text=build.name)
-                build.download_finished_label = customtkinter.CTkLabel(self.github_downloads_progress_frame, text="", image=self.green_tick_image)
+                build.download_finished_label = customtkinter.CTkLabel(self.github_downloads_progress_frame, text="", image=passed_image)
                 self.github_builds.append(build)
             
                 check_var = customtkinter.StringVar(value=build.workflow_id)
@@ -304,33 +217,7 @@ class App(customtkinter.CTk):
         for i, checkbox in enumerate(self.github_builds_checkboxes):
             checkbox.deselect()
         
-        self.github_download_folder_browse_button.configure(state="normal")
-
-    def start_rotating_loading_image(self):
-        self.should_animate_loading_icon = True
-        threading.Thread(
-            target=lambda loop: loop.run_until_complete(self.async_rotate_loading_image()),
-            args=(asyncio.new_event_loop(),)
-        ).start()
-        
-    def stop_rotating_loading_image(self):
-        self.should_animate_loading_icon = False
-        
-    async def async_rotate_loading_image(self):
-        degrees_per_tick = 2
-        degrees = 0
-        
-        while (self.should_animate_loading_icon):
-            degrees += degrees_per_tick
-            if degrees >= 360:
-                degrees %= 360
-            
-            rotated_light_image_object = self.loading_light_image_object.rotate(degrees)
-            rotated_dark_image_object = self.loading_dark_image_object.rotate(degrees)
-            rotated_image = customtkinter.CTkImage(light_image = rotated_light_image_object, dark_image = rotated_dark_image_object, size=self.image_size)
-            self.github_download_status_label.configure(image = rotated_image)
-            
-            await asyncio.sleep(self.animation_interval)
+        self.github_download_folder.folder_browse_button.configure(state="normal")
 
     def start_github_build_download(self):
         for i, build in enumerate(self.github_builds):
@@ -345,7 +232,7 @@ class App(customtkinter.CTk):
         ).start()
 
     async def async_github_builds_download(self):
-        self.github_download_folder_browse_button.configure(state="disabled")
+        self.github_download_folder.folder_browse_button.configure(state="disabled")
         self.github_download_builds_button.configure(state="disabled")
         
         selected_builds = self.get_selected_github_builds()
@@ -356,7 +243,7 @@ class App(customtkinter.CTk):
         self.github_downloads_progress_frame.grid(row=3, column=1, columnspan=3, padx=(20, 0), pady=(10, 0), sticky="new")
 
         for i, build in enumerate(selected_builds):
-            build_download_path = f"{self.github_download_folder_path.get()}/{build.name}"
+            build_download_path = f"{self.github_download_folder.folder_path.get()}/{build.name}"
             if os.path.exists(build_download_path):
                 shutil.rmtree(build_download_path)
             
@@ -364,7 +251,7 @@ class App(customtkinter.CTk):
             build.name_label.grid(row=i+2, column=1, padx=20, pady=(10, 0), sticky="w")
             
             self.github_download_status_label.grid(row=i+2, column=2, padx=20, pady=(10, 0), sticky="w")
-            self.start_rotating_loading_image()
+            self.loading_image.start_rotating_loading_image(self.github_download_status_label)
             
             command = f"gh run download {build.workflow_id} -n {build.name} -D {build_download_path}"
             return_code = subprocess.call(command, shell=True)
@@ -372,11 +259,45 @@ class App(customtkinter.CTk):
                 sys.exit(f"Failed to run {command}")
             
             # Stop rotating icon and place a green tick alongside this build name.
-            self.stop_rotating_loading_image()
-            build.download_finished_label.configure(image=self.green_tick_image)
+            self.loading_image.stop_rotating_loading_image()
+            build.download_finished_label.configure(image=passed_image)
             build.download_finished_label.grid(row=i+2, column=2, padx=20, pady=(10, 0), sticky="w")
 
+        print("Finished")
         self.refresh_github_builds_list()
+
+# =============================================================================
+# EXPORT
+    def export_builds_button_event(self):
+        self.select_frame_by_name("export")
+        
+    def create_export_frame(self):
+        # Perform checks frame
+        self.export_builds_frame = customtkinter.CTkFrame(self, corner_radius=0)
+        self.export_builds_frame.grid(row=0, column=1, sticky="nsew")
+        self.export_builds_frame.configure(fg_color="transparent")
+
+        self.export_folder = FolderSelection(self.export_builds_frame)
+        self.export_folder.set_folder_path(os.path.join(repo_directory, "bin", "local_builds"))
+
+        # Target platform/configuration selection
+        self.target_platform_selection = TargetPlatformSelection(self.export_builds_frame,
+                "Exporting Builds", "Export", self.get_export_command,
+                starting_row=1)
+        
+    def get_export_command(self, target_platform, target_configuration):
+        compile_platform = target_platform
+        compile_target = target_configuration
+        compile_architecture = "x86_64"
+        if compile_platform == "web":
+            compile_architecture = "wasm32"
+        elif compile_platform == "android":
+            compile_architecture = "arm64"
+        compile_precision = "single"
+        
+        return f"python tools/scripts/create_build.py {compile_platform} {compile_target} {compile_architecture} {compile_precision}"
+
+# =============================================================================
 
 if __name__ == "__main__":
     app = App()

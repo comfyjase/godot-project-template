@@ -13,78 +13,14 @@ import sys
 import threading
 import time
 
-# Change to project directory if we are not already there
-current_directory = os.getcwd()
-if not os.path.exists(os.path.join(f"{current_directory}", "game")):
-    os.chdir("..")
-    os.chdir("..")
-project_directory = os.getcwd()
-print(project_directory)
+script_path_to_append = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
+if script_path_to_append not in sys.path:
+    sys.path.append(script_path_to_append)
+    
+from shared.shared import *
 
 customtkinter.set_appearance_mode("System")  # Modes: "System" (standard), "Dark", "Light"
-customtkinter.set_default_color_theme("blue")  # Themes: "blue" (standard), "green", "dark-blue"
-
-class ErrorMessagesWindow(customtkinter.CTkToplevel):
-    def __init__(self, error_messages):
-        super().__init__()
-        
-        self.title("Error Messages")
-        self.geometry("800x400")
-
-        self.textbox = customtkinter.CTkTextbox(self, width=780)
-        self.textbox.pack(padx=20, pady=20)
-        for i, error_message in enumerate(error_messages):
-            self.textbox.insert("0.0", f"{error_message}")
-        self.textbox.configure(state="disabled")
-        
-class TargetPlatformSelection(customtkinter.CTkFrame):
-    def __init__(self, master):
-        super().__init__(master)
-        self.target_configurations = [ "template_debug", "template_release", "profile", "production" ]
-        self.target_platforms = [ "linux", "windows", "web", "android" ]
-        
-        self.configuration_labels = [ "Template Debug", "Template Release", "Profile", "Production" ]
-        self.platform_labels = [ "🐧 Linux", "🪟 Windows", "🌐 Web", "🤖 Android" ]
-        
-        self.configuration_titles = []
-        self.platform_titles = []
-        self.checkboxes = []
-
-        for i, target_configuration in enumerate(self.configuration_labels):
-            configuration_title = customtkinter.CTkLabel(master, text=target_configuration, fg_color=("#3B8ED0", "#1F6AA5"), text_color="white", corner_radius=6, width=150)
-            configuration_title.grid(row=0, column=i+2, padx=10, pady=10)
-            self.configuration_titles.append(configuration_title)
-            
-        for i, target_platform in enumerate(self.platform_labels):
-            platform_title = customtkinter.CTkLabel(master, text=target_platform, fg_color=("#3B8ED0", "#1F6AA5"), text_color="white", corner_radius=6, width=150)
-            platform_title.grid(row=i+1, column=1, padx=10, pady=10)
-            self.platform_titles.append(platform_title)
-
-        for i, target_configuration in enumerate(self.target_configurations):
-            for j, target_platform in enumerate(self.target_platforms):
-                string_value = f"{target_platform}+{target_configuration}+{self.platform_labels[j]}+{self.configuration_labels[i]}"
-                check_var = customtkinter.StringVar(value=string_value)
-                checkbox = customtkinter.CTkCheckBox(master, text="",
-                    variable=check_var, onvalue=string_value, offvalue="off", command=self.checkbox_callback)
-                checkbox.grid(row=j+1, column=i+2, padx=(20, 0), pady=(10, 0), sticky="ne")
-                checkbox.deselect()
-                
-                # Selecting default targets for convenience
-                # Defaulting to platform that compiles using clang so it's the most "pedantic"/"thorough" compiler for catching issues.
-                if target_configuration == "production" and target_platform == "android":
-                    checkbox.select()
-                    
-                self.checkboxes.append(checkbox)
-
-    def get(self):
-        checkbox_values = []
-        for checkbox in self.checkboxes:
-            if checkbox.get() != "off":
-                checkbox_values.append(checkbox.cget("onvalue"))
-        return checkbox_values
-
-    def checkbox_callback(self):
-        print("Target Platform Selection:", self.get())
+customtkinter.set_default_color_theme("blue")  # Themes: "blue" (standard), "green", "dark-blue"        
 
 class App(customtkinter.CTk):
     def __init__(self):
@@ -113,12 +49,7 @@ class App(customtkinter.CTk):
         # Set first frame as visible
         self.select_frame_by_name("perform_checks")
         
-        self.error_messages_window = None
-        self.std_output_error_messages = []
         self.error_messages = []
-        self.number_of_commands = 0
-        self.should_animate_loading_icon = False
-        self.animation_interval = (1 / 120)
 
     def select_frame_by_name(self, name):
         # set button color for selected button
@@ -176,74 +107,36 @@ class App(customtkinter.CTk):
         self.perform_checks_frame = customtkinter.CTkFrame(self, corner_radius=0)
         self.perform_checks_frame.grid(row=0, column=1, sticky="nsew")
         self.perform_checks_frame.configure(fg_color="transparent")
-
+        
+        unit_test_command = f"python tools/scripts/run_unit_tests.py <p> editor x86_64 single"
+        unit_test_platform = ""
+        if platform.system() == "Windows" or platform.system() == "Linux":
+            unit_test_platform = platform.system().lower()
+        elif platform.system == "Darwin":
+            unit_test_platform = "macos"
+        unit_test_command = unit_test_command.replace("<p>", unit_test_platform)
+        
+        perform_checks_custom_commands = [Command("🧪 Unit Tests", unit_test_command)]
+        
         # Target platform/configuration selection        
-        self.target_platform_selection = TargetPlatformSelection(self.perform_checks_frame)
-        
-        # Run checklist button
-        self.run_checks_button = customtkinter.CTkButton(self.perform_checks_frame, text="Run Checklist", height=50, command=self.run_checks)
-        self.run_checks_button.grid(row=5, column=1, columnspan=5, padx=(10, 20), pady=(20, 0), sticky="nswe")
-        
-        # Run checklist frame
-        self.run_checks_frame = customtkinter.CTkScrollableFrame(self.perform_checks_frame, corner_radius=0)
-        self.run_checks_frame.grid(row=6, column=1, columnspan=5, sticky="nsew")
-        self.run_checks_frame.configure(fg_color="transparent")
-        self.run_checks_frame.grid_forget()
-
-        # Checklist title
-        self.checks_title_label = customtkinter.CTkLabel(self.run_checks_frame, text="Checklist")
-        self.checks_title_label.grid(row=0, column=1, padx=20, pady=(20, 0), sticky="w")
-        self.checks_title_label.cget("font").configure(size=20)
-        self.checks_title_label.cget("font").configure(weight="bold")
-        
-        self.checklist_stages = []
-        self.checklist_rows = []
-        self.checklist_commands = []
-        self.checklist_platforms = []
-        self.checklist_status_labels = []
-
-        # Checklist error messages button
-        self.show_error_messages_button = customtkinter.CTkButton(self.run_checks_frame, text="See Errors", command=self.display_error_messages_window)
-        self.show_error_messages_button.grid(row=1, column=1, padx=20, pady=(10, 0), sticky="w")
-        self.show_error_messages_button.grid_forget()
-        
-        # Log output text
-        self.log_output_label = customtkinter.CTkLabel(self.run_checks_frame, text="Log: ", width=200, height=20, corner_radius=0)
-        self.log_output_label.grid(row=0, column=3, padx=20, pady=(10, 0), sticky="w")
-        self.log_output_label.cget("font").configure(size=16)
-        self.log_output_label.grid_forget()
-        
-        # Images
-        self.images_folder_path = os.path.join(project_directory, "tools", "toolbox", "commit_checker", "assets", "images")
-        loading_light_image_file_path = os.path.join(self.images_folder_path, "loading_cog_light.png")
-        loading_dark_image_file_path = os.path.join(self.images_folder_path, "loading_cog_dark.png")
-        passed_image_file_path = os.path.join(self.images_folder_path, "green_tick.png")
-        failed_image_file_path = os.path.join(self.images_folder_path, "red_cross.png")
-        
-        self.loading_light_image_object = Image.open(loading_light_image_file_path)
-        self.loading_dark_image_object = Image.open(loading_dark_image_file_path)
-        self.passed_image_object = Image.open(passed_image_file_path)
-        self.failed_image_object = Image.open(failed_image_file_path)
-        
-        self.image_size = (20, 20)
-        self.loading_image = customtkinter.CTkImage(light_image = self.loading_light_image_object, dark_image = self.loading_dark_image_object, size=self.image_size)
-        self.passed_image = customtkinter.CTkImage(self.passed_image_object, size=self.image_size)
-        self.failed_image = customtkinter.CTkImage(self.failed_image_object, size=self.image_size)
+        self.target_platform_selection = TargetPlatformSelection(self.perform_checks_frame, 
+                "Checklist", "Run Checklist", self.get_compile_command,
+                auto_selected_platforms = ["android"], auto_selected_configurations = ["production"],
+                custom_commands = perform_checks_custom_commands)
 
     def create_commit_message_frame(self):
         # Images
-        git_icon_added_image_file_path = os.path.join(self.images_folder_path, "git_icon_added.png")
-        git_icon_deleted_image_file_path = os.path.join(self.images_folder_path, "git_icon_deleted.png")
-        git_icon_modified_image_file_path = os.path.join(self.images_folder_path, "git_icon_modified.png")
+        git_icon_added_image_file_path = os.path.join(images_folder_path, "git_icon_added.png")
+        git_icon_deleted_image_file_path = os.path.join(images_folder_path, "git_icon_deleted.png")
+        git_icon_modified_image_file_path = os.path.join(images_folder_path, "git_icon_modified.png")
         
         git_icon_added_image_object = Image.open(git_icon_added_image_file_path)
         git_icon_deleted_image_object = Image.open(git_icon_deleted_image_file_path)
         git_icon_modified_image_object = Image.open(git_icon_modified_image_file_path)
         
-        self.image_size = (20, 20)
-        self.git_icon_added_image = customtkinter.CTkImage(git_icon_added_image_object, size=self.image_size)
-        self.git_icon_deleted_image = customtkinter.CTkImage(git_icon_deleted_image_object, size=self.image_size)
-        self.git_icon_modified_image = customtkinter.CTkImage(git_icon_modified_image_object, size=self.image_size)
+        self.git_icon_added_image = customtkinter.CTkImage(git_icon_added_image_object, size=image_size)
+        self.git_icon_deleted_image = customtkinter.CTkImage(git_icon_deleted_image_object, size=image_size)
+        self.git_icon_modified_image = customtkinter.CTkImage(git_icon_modified_image_object, size=image_size)
         
         # Commit Frame
         self.commit_message_frame = customtkinter.CTkFrame(self, corner_radius=0)
@@ -472,200 +365,7 @@ class App(customtkinter.CTk):
             return
         
         self.on_post_commit()
-        
-    def start_rotating_loading_image(self, loading_image_label):
-        thread = threading.Thread(target=asyncio.run, args=(self.async_rotate_loading_image(loading_image_label),))
-        thread.start()
-        
-    async def async_rotate_loading_image(self, loading_image_label):
-        degrees_per_tick = 2
-        degrees = 0
-        
-        while (self.should_animate_loading_icon):
-            degrees += degrees_per_tick
-            if degrees >= 360:
-                degrees %= 360
-            
-            rotated_light_image_object = self.loading_light_image_object.rotate(degrees)
-            rotated_dark_image_object = self.loading_dark_image_object.rotate(degrees)
-            rotated_image = customtkinter.CTkImage(light_image = rotated_light_image_object, dark_image = rotated_dark_image_object, size=self.image_size)
-            loading_image_label.configure(image = rotated_image)
-            
-            await asyncio.sleep(self.animation_interval)
     
-    async def start_writing_log_output(self, proc, row_number):
-        self.log_output_label.grid(row=row_number, column=3, padx=20, pady=(10, 0), sticky="w")
-        
-        while True:
-            buf = await proc.stdout.readline()
-            if not buf:
-                break
-            output = buf.decode().rstrip()
-            if ("error" in output):
-                self.std_output_error_messages.append(output + "\n")
-            self.log_output_label.configure(text=f"Log Output: {output}")
-        
-    def start_checklist_subprocesses(self):
-        thread = threading.Thread(target=asyncio.run, args=(self.async_run_checklist_subprocesses(self.checklist_commands),))
-        thread.start()
-        
-    async def async_run_checklist_subprocesses(self, commands):        
-        self.show_error_messages_button.grid_forget()
-        self.log_output_label.grid_forget()
-        
-        self.number_of_commands = len(commands)
-        print(f"{self.number_of_commands} checklist commands to run")
-        
-        while (self.number_of_commands != 0):
-            for i, command in enumerate(commands):        
-                print("Start animating loading icon")
-                self.checklist_status_labels[i].configure(text = "")
-                self.checklist_status_labels[i].configure(image = self.loading_image)
-                self.should_animate_loading_icon = True
-                self.start_rotating_loading_image(self.checklist_status_labels[i])
-                
-                if "linux" in command or "android" in command:
-                    dir = pathlib.Path(project_directory + "/src/")
-                    so_files = dir.rglob("*.os")  # recursively
-                    for so_file in so_files:
-                        print(f"Removing {so_file}", flush=True)
-                        os.remove(so_file)
-                
-                print(f"Running command: {command}")
-                proc = await asyncio.create_subprocess_shell(
-                    command,
-                    stdout=asyncio.subprocess.PIPE,
-                    stderr=asyncio.subprocess.PIPE)
-        
-                await self.start_writing_log_output(proc, self.checklist_rows[i])
-                
-                stdout, stderr = await proc.communicate()
-                
-                self.should_animate_loading_icon = False
-                print("Stop animating loading icon")
-                
-                # Give at least 2 frames worth of time for the loading icon to stop correctly
-                await asyncio.sleep(self.animation_interval * 2)
-                
-                print(f"[{command!r} exited with {proc.returncode}]")
-                
-                self.log_output_label.configure(text = "")
-                self.log_output_label.grid_forget()
-                
-                std_output = stdout.decode()
-                if stdout:
-                    print(f"[stdout]\n{std_output}")
-                
-                if proc.returncode == 0:
-                    self.checklist_status_labels[i].configure(text = "")
-                    self.checklist_status_labels[i].configure(image = self.passed_image)
-                else:
-                    self.checklist_status_labels[i].configure(text = "")
-                    self.checklist_status_labels[i].configure(image = self.failed_image)
-                    
-                    if stderr:
-                        error_output = stderr.decode()
-                        error_message = f"{self.checklist_stages[i].cget("text")}\n{error_output}\n"
-                        print(f"[stdout]\n{self.std_output_error_messages}")
-                        print(f"[stderr]\n{error_message}")
-                        self.error_messages.extend(self.std_output_error_messages)
-                        self.error_messages.append(error_message)
-                
-                print(f"Finished running command: {command}")
-                self.number_of_commands -= 1
-                
-                if self.number_of_commands == 0:
-                    print("Checklist finished!")
-                    
-                    # Display error message button if any errors have occurred.
-                    if len(self.error_messages) > 0:
-                        self.show_error_messages_button.grid(row=self.checklist_rows[i]+1, column=1, padx=20, pady=(10, 0), sticky="w")
-                
-                    self.run_checks_button.configure(state="normal")
-                else:
-                    print(f"{self.number_of_commands} checklist command(s) left to run")
-
-    def display_error_messages_window(self):
-        if self.error_messages_window is None or not self.error_messages_window.winfo_exists():
-            self.error_messages_window = ErrorMessagesWindow(self.error_messages)
-        else:
-            self.error_messages_window.focus()
-
-    def run_checks(self):
-        font_size = 16
-        
-        self.run_checks_button.configure(state="disabled")
-        self.run_checks_frame.grid(row=6, column=1, columnspan=5, sticky="new")
-        
-        for i, stage in enumerate(self.checklist_stages):
-            stage.grid_forget()
-            
-            self.checklist_status_labels[i].configure(image=None)
-            self.checklist_status_labels[i].grid_forget()
-        
-        self.checklist_stages.clear()
-        self.checklist_rows.clear()
-        self.checklist_commands.clear()
-        self.checklist_platforms.clear()
-        self.checklist_status_labels.clear()
-        
-        checked_targets = self.target_platform_selection.get()
-        for i, checked_target in enumerate(checked_targets):
-            target_information = checked_target.split("+")
-            
-            self.checklist_rows.append(i+2)
-            
-            target_platform = target_information[0]
-            target_configuration = target_information[1]
-            target_platform_pretty_label = target_information[2]
-            target_configuration_pretty_label = target_information[3]
-            target_stage = f"{target_platform_pretty_label} / {target_configuration_pretty_label}"
-            
-            self.checklist_platforms.append(target_platform)
-            
-            running_check_platform_description = customtkinter.CTkLabel(self.run_checks_frame, text=f"{target_stage}", height=20)
-            running_check_platform_description.grid(row=i+2, column=1, padx=20, pady=(10, 0), sticky="w")
-            running_check_platform_description.cget("font").configure(size=font_size)
-            self.checklist_stages.append(running_check_platform_description)
-            
-            if i == 0:
-                running_check_result_description = customtkinter.CTkLabel(self.run_checks_frame, text="", image = self.loading_image, width=20, height=20)
-            else:
-                running_check_result_description = customtkinter.CTkLabel(self.run_checks_frame, text=f"Waiting...", width=20, height=20)
-            
-            running_check_result_description.grid(row=i+2, column=2, padx=20, pady=(10, 0), sticky="w")
-            running_check_result_description.cget("font").configure(size=font_size)
-            self.checklist_status_labels.append(running_check_result_description)
-            
-            compile_command = self.get_compile_command(target_platform, target_configuration)
-            self.checklist_commands.append(compile_command)
-            
-        unit_test_row = len(checked_targets)+2
-        self.checklist_rows.append(unit_test_row)
-        running_check_unit_test_description = customtkinter.CTkLabel(self.run_checks_frame, text=f"🧪 Unit Tests", height=20)
-        running_check_unit_test_description.grid(row=unit_test_row, column=1, padx=20, pady=(10, 0), sticky="w")
-        running_check_unit_test_description.cget("font").configure(size=font_size)
-        self.checklist_stages.append(running_check_unit_test_description)
-
-        self.running_check_unit_test_result_description = customtkinter.CTkLabel(self.run_checks_frame, text=f"Waiting...", height=20)
-        self.running_check_unit_test_result_description.grid(row=unit_test_row, column=2, padx=20, pady=(10, 0), sticky="w")
-        self.running_check_unit_test_result_description.cget("font").configure(size=font_size)
-        
-        unit_test_command = f"python tools/scripts/run_unit_tests.py <p> editor x86_64 single"
-        unit_test_platform = ""
-        if platform.system() == "Windows" or platform.system() == "Linux":
-            unit_test_platform = platform.system().lower()
-        elif platform.system == "Darwin":
-            unit_test_platform = "macos"
-        unit_test_command = unit_test_command.replace("<p>", unit_test_platform)
-        self.checklist_platforms.append(unit_test_platform)
-        self.checklist_commands.append(unit_test_command)
-        self.checklist_status_labels.append(self.running_check_unit_test_result_description)
-        
-        self.error_messages.clear()
-        self.std_output_error_messages.clear()
-        self.start_checklist_subprocesses()
-        
     def get_compile_command(self, target_platform, target_configuration):
         compile_platform = target_platform
         compile_target = target_configuration
@@ -680,13 +380,13 @@ class App(customtkinter.CTk):
         
     def on_post_commit(self):
         commit_passed_image_size = (30, 30)
-        commit_passed_image = customtkinter.CTkImage(self.passed_image_object, size=commit_passed_image_size)
+        commit_passed_image = customtkinter.CTkImage(passed_image_object, size=commit_passed_image_size)
         commit_status_label = customtkinter.CTkLabel(self.commit_message_frame, text="", image=commit_passed_image)
         commit_status_label.grid(row=4, column=1, padx=20, pady=(10, 0), sticky="e")
         
         thread = threading.Thread(target=asyncio.run, args=(self.async_wait_and_close_down(),))
         thread.start()
-        
+    
     async def async_wait_and_close_down(self):
         await asyncio.sleep(3)
         print("CommitChecker finished and closing now")
