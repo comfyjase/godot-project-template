@@ -283,7 +283,7 @@ class App(customtkinter.CTk):
         # Target platform/configuration selection
         self.target_platform_selection = TargetPlatformSelection(self.export_builds_frame,
                 "Exporting Builds", "Export", self.get_export_command,
-                starting_row=1)
+                starting_row=1, on_command_finished_function=self.on_export_finished)
         
     def get_export_command(self, target_platform, target_configuration):
         compile_platform = target_platform
@@ -296,6 +296,17 @@ class App(customtkinter.CTk):
         compile_precision = "single"
         
         return f"python tools/scripts/create_build.py {compile_platform} {compile_target} {compile_architecture} {compile_precision}"
+
+    def on_export_finished(self, target_platform, target_configuration):
+        with open(build_information_file_path, "r") as build_information_file_read:
+            build_name = build_information_file_read.read()
+            destination_folder = os.path.join(self.export_folder.folder_path.get(), target_platform, build_name).replace("\\", "/").lower()
+            pathlib.Path(destination_folder).mkdir(parents=True, exist_ok=True)
+            
+            platform_bin_folder = os.path.join(repo_bin_path, target_platform).replace("\\", "/")
+            print(f"Copying build files from {platform_bin_folder} -> {destination_folder}")
+            shutil.copytree(platform_bin_folder, destination_folder, dirs_exist_ok=True)
+            print("Done")
 
 # =============================================================================
 

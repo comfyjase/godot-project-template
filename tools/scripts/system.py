@@ -89,6 +89,7 @@ if not os.path.exists(os.path.join(f"{current_dir}", project_dir_name)):
 
 scons_cache_dir_name = ".scons_cache"
 repo_dir_path = os.getcwd().replace("\\", "/")
+repo_bin_path = os.path.join(repo_dir_path, "bin").replace("\\", "/")
 project_cache_path = scons_cache_dir_name
 plugin_cache_path = f"../../../{scons_cache_dir_name}" # Relative from where the SConstruct file is in the plugins folder
 project_dir_path = os.path.join(repo_dir_path, project_dir_name).replace("\\", "/")
@@ -145,6 +146,11 @@ def get_all_files_recursive(root_directory, filetype='*.*'):
                 files_matching_type.append(str(search_path_with_ending_slash + file))
                 
     return files_matching_type
+
+def clean_up_bin_folder(platform_name):
+    platform_bin_folder = os.path.join(repo_bin_path, platform_name).replace("\\", "/")
+    if os.path.isdir(platform_bin_folder):
+        shutil.rmtree(platform_bin_folder)
 
 def add_imgui(env, all_directories, all_source_files, project_source_files, all_include_files, cpp_defines):
     should_include_imgui = (env["arch"] not in ["x86_32", "arm32", "arm64"]) and (env["platform"] not in ["web", "android", "ios"])

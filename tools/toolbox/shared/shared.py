@@ -20,14 +20,17 @@ if script_path_to_append not in sys.path:
     sys.path.append(script_path_to_append)
 
 project_dir_name = "project"
-project_src_dir = os.path.join(project_dir_name, "src").replace("\\", "/")
 
 # Change to project directory if we are not already there
 current_directory = os.getcwd()
 if not os.path.exists(os.path.join(current_directory, project_dir_name)):
     os.chdir(os.path.join("..", ".."))
 repo_directory = os.getcwd()
-print(repo_directory)
+repo_bin_path = os.path.join(repo_directory, "bin").replace("\\", "/")
+
+project_dir_path = os.path.join(repo_directory, project_dir_name).replace("\\", "/")
+project_src_dir = os.path.join(project_dir_name, "src").replace("\\", "/")
+build_information_file_path = os.path.join(project_dir_path, "bin", "build.info").replace("\\", "/")
 
 supported_platforms = [ "linux", "windows", "web", "android" ]  # For command line
 platform_labels = [ "🐧 Linux", "🪟 Windows", "🌐 Web", "🤖 Android" ] # For UI display
@@ -133,7 +136,7 @@ class Command():
         self.command = command
 
 class TargetPlatformSelection(customtkinter.CTkFrame):
-    def __init__(self, master, command_title_text, command_button_text, command_function_to_run_for_platform_and_configuration, starting_row=0, starting_column=1, auto_selected_platforms = [], auto_selected_configurations = [], custom_commands = []):
+    def __init__(self, master, command_title_text, command_button_text, command_function_to_run_for_platform_and_configuration, starting_row=0, starting_column=1, auto_selected_platforms = [], auto_selected_configurations = [], custom_commands = [], on_command_finished_function = None):
         super().__init__(master)
         
         self.starting_row = starting_row
@@ -143,6 +146,7 @@ class TargetPlatformSelection(customtkinter.CTkFrame):
         self.error_messages_window = None
         self.error_messages = []
         self.custom_commands = custom_commands
+        self.on_command_finished_function = on_command_finished_function
         self.command_font_size = 16
          
         for i, target_configuration in enumerate(configuration_labels):
@@ -190,6 +194,7 @@ class TargetPlatformSelection(customtkinter.CTkFrame):
         self.command_rows = []
         self.commands = []
         self.command_platforms = []
+        self.command_configurations= []
         self.command_status_labels = []
 
         # command error messages button
@@ -236,6 +241,7 @@ class TargetPlatformSelection(customtkinter.CTkFrame):
         self.command_rows.clear()
         self.commands.clear()
         self.command_platforms.clear()
+        self.command_configurations.clear()
         self.command_status_labels.clear()
         
         checked_targets = self.get()
@@ -251,6 +257,7 @@ class TargetPlatformSelection(customtkinter.CTkFrame):
             target_stage = f"{target_platform_pretty_label} / {target_configuration_pretty_label}"
             
             self.command_platforms.append(target_platform)
+            self.command_configurations.append(target_configuration)
             
             running_command_platform_description = customtkinter.CTkLabel(self.commands_frame, text=f"{target_stage}", height=20)
             running_command_platform_description.grid(row=i+2, column=1, padx=20, pady=(10, 0), sticky="w")
@@ -354,6 +361,9 @@ class TargetPlatformSelection(customtkinter.CTkFrame):
                         self.error_messages.append(std_output)
                         self.error_messages.append(error_message)
                 
+                if self.on_command_finished_function is not None:
+                    self.on_command_finished_function(self.command_platforms[i], self.command_configurations[i])
+                    
                 print(f"Finished running command: {command}")
                 self.number_of_commands -= 1
                 
