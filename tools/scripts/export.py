@@ -8,6 +8,7 @@ import re
 import shutil
 import subprocess
 import sys
+from pathlib import Path
 
 script_path_to_append = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..")
 if script_path_to_append not in sys.path:
@@ -142,6 +143,13 @@ elif native_platform == "linux" or native_platform == "macos":
 
 def update_gdextension_file(gdextension_file_path):
     all_lines = []
+    
+    gdextension_name = Path(gdextension_file_path).stem
+    copy_gdextension_file_path = gdextension_file_path.replace(".gdextension", "_gdextension.copy").replace("\\", "/")
+    shutil.copy(gdextension_file_path, copy_gdextension_file_path)
+
+    gdextension_binary_file_path = necessary_file_path.replace(system.lib_name, gdextension_name)
+
     with open(f"{gdextension_file_path}", "r") as gdextension_file_read:
         all_lines = gdextension_file_read.readlines()
         
@@ -153,7 +161,7 @@ def update_gdextension_file(gdextension_file_path):
                 
             if found_libraries_section:
                 if system.platform_arg in line:
-                    new_line = re.sub('\"(.+?)\"', f"\"res://bin/{system.platform_arg}/{os.path.basename(necessary_file_path)}\"", line, flags=re.DOTALL)
+                    new_line = re.sub('\"(.+?)\"', f"\"res://bin/{system.platform_arg}/{os.path.basename(gdextension_binary_file_path)}\"", line, flags=re.DOTALL)
                     all_lines[index] = new_line
                 
     with open(f"{gdextension_file_path}", "w") as gdextension_file_write:
@@ -169,9 +177,11 @@ def revert_copy_file(copy_path, original_path):
         os.rename(copy_path, original_path)
 
 game_gdextension_file_path = os.path.join(system.project_dir_path, "bin", f"{system.lib_name}.gdextension").replace("\\", "/")
-copy_game_gdextension_file_path = os.path.join(system.project_dir_path, "bin", f"{system.lib_name}_gdextension.copy").replace("\\", "/")
-shutil.copy(game_gdextension_file_path, copy_game_gdextension_file_path)
 update_gdextension_file(game_gdextension_file_path)
+
+for (i, plugin_name) in enumerate(system.project_plugins):
+    plugin_gdextension_file_path = os.path.join(system.project_dir_path, "addons", plugin_name, f"{plugin_name}.gdextension").replace("\\", "/")
+    update_gdextension_file(plugin_gdextension_file_path)
 
 # Import the project first, to guarantee .godot folder is valid
 print("=====================================", flush=True)
@@ -293,11 +303,18 @@ if system.platform_arg == "web":
     shutil.copy(serve_source_file_path, serve_destination_file_path)
     shutil.copy(run_web_build_script_source_file_path, run_web_build_script_destination_file_path)
 
-export_presets_file_path = os.path.join(system.project_dir_path, "export_presets.cfg").replace("\\", "/")
-copy_export_presets_file_path = os.path.join(system.project_dir_path, "export_presets_cfg.copy").replace("\\", "/")
+# Only want to revert the files locally to not flag changes for local exports users make
+# CI would need to retain the information updated in these files in case it needs to run unit tests
+if not system.is_ci:
+    export_presets_file_path = os.path.join(system.project_dir_path, "export_presets.cfg").replace("\\", "/")
+    copy_export_presets_file_path = os.path.join(system.project_dir_path, "export_presets_cfg.copy").replace("\\", "/")
 
-revert_copy_file(copy_game_gdextension_file_path, game_gdextension_file_path)
-revert_copy_file(copy_export_presets_file_path, export_presets_file_path)
-revert_file(export_credentials_file_path)
+    revert_copy_file(game_gdextension_file_path.replace(".gdextension", "_gdextension.copy").replace("\\", "/"), game_gdextension_file_path)
+    revert_copy_file(copy_export_presets_file_path, export_presets_file_path)
+    revert_file(export_credentials_file_path)
+    
+    for (i, plugin_name) in enumerate(system.project_plugins):
+        plugin_gdextension_file_path = os.path.join(system.project_dir_path, "addons", plugin_name, f"{plugin_name}.gdextension").replace("\\", "/")
+        revert_copy_file(plugin_gdextension_file_path.replace(".gdextension", "_gdextension.copy"), plugin_gdextension_file_path)
 
 print("Done")
