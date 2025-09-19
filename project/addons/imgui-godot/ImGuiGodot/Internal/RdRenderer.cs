@@ -58,9 +58,44 @@ internal class RdRenderer : IRenderer
 
         // set up everything to match the official Vulkan backend as closely as possible
 
-        using var shaderFile = ResourceLoader.Load<RDShaderFile>(
-            "res://addons/imgui-godot/data/ImGuiShader.glsl");
-        _shader = RD.ShaderCreateFromSpirV(shaderFile.GetSpirV());
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // HACK FIX BEGIN: Disabling loading the ImGuiShader.glsl because headless builds can import shaders when exporting
+        // OLD LINE: using var shaderFile = ResourceLoader.Load<RDShaderFile>( "res://addons/imgui-godot/data/ImGuiShader.glsl");
+        // OLD LINE: _shader = RD.ShaderCreateFromSpirV(shaderFile.GetSpirV());
+        // ALSO:   addons/imgui-godot/data/ImGuiShader.glsl has been deleted
+        // NEW LINES: Instead of the glsl file, this manually creates the shader using the exact programs from the asset
+        var shaderSource = new RDShaderSource
+        {
+            Language = RenderingDevice.ShaderLanguage.Glsl,
+            SourceVertex = @"#version 450 core
+                            layout(location = 0) in vec2 aPos;
+                            layout(location = 1) in vec2 aUV;
+                            layout(location = 2) in vec4 aColor;
+                            layout(push_constant) uniform uPushConstant { vec2 uScale; vec2 uTranslate; } pc;
+
+                            out gl_PerVertex { vec4 gl_Position; };
+                            layout(location = 0) out struct { vec4 Color; vec2 UV; } Out;
+
+                            void main()
+                            {
+                                Out.Color = aColor;
+                                Out.UV = aUV;
+                                gl_Position = vec4(aPos * pc.uScale + pc.uTranslate, 0, 1);
+                            }",
+            SourceFragment = @"#version 450 core
+                            layout(location = 0) out vec4 fColor;
+                            layout(set=0, binding=0) uniform sampler2D sTexture;
+                            layout(location = 0) in struct { vec4 Color; vec2 UV; } In;
+
+                            void main()
+                            {
+                                fColor = In.Color * texture(sTexture, In.UV.st);
+                            }",
+        };
+        _shader = RD.ShaderCreateFromSpirV(RD.ShaderCompileSpirVFromSource(shaderSource));
+        // HACK FIX END
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
         if (!_shader.IsValid)
             throw new RdRendererException("failed to create shader");
 

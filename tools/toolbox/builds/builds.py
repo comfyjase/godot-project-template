@@ -304,6 +304,10 @@ class App(customtkinter.CTk):
             pathlib.Path(destination_folder).mkdir(parents=True, exist_ok=True)
             
             platform_bin_folder = os.path.join(repo_bin_path, target_platform).replace("\\", "/")
+            if not os.path.isdir(platform_bin_folder):
+                print(f"Error: {platform_bin_folder} doesn't exist, has build.py failed?")
+                return
+                
             print(f"Copying build files from {platform_bin_folder} -> {destination_folder}")
             shutil.copytree(platform_bin_folder, destination_folder, dirs_exist_ok=True)
             print("Done")
