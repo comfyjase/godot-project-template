@@ -85,7 +85,7 @@ jobs:
       
       # Save scons cache
       - name: Save .scons_cache
-        uses: ./godot-cpp/.github/actions/godot-cache-save
+        uses: ./engine/godot-cpp/.github/actions/godot-cache-save
         with:
           scons-cache: ${{ github.workspace }}/.scons_cache/
           cache-name: ${{ matrix.target.platform }}_${{ matrix.target.arch }}_${{ matrix.float-precision }}_${{ matrix.target-type }}
