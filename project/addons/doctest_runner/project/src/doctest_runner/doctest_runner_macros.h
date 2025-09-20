@@ -2,8 +2,8 @@
 
 #define DOCTEST_RUNNER_NODE_DECLARE(p_class) /****************************************************************************************/ \
     namespace godot {                                                                                                                   \
-    class GDExtensionCPPExampleDoctestNode : public Node {                                                                              \
-        GDCLASS(GDExtensionCPPExampleDoctestNode, Node);                                                                                \
+    class p_class : public Node {                                                                                                       \
+        GDCLASS(p_class, Node);                                                                                                         \
                                                                                                                                         \
     protected:                                                                                                                          \
         static void _bind_methods();                                                                                                    \

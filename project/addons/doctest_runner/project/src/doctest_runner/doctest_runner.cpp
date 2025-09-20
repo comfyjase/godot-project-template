@@ -20,7 +20,7 @@ void DoctestRunner::_ready() {
 	Node::_ready();
 
 	const TypedArray<Node> &children = get_children();
-	print_line(vformat("[DoctestRunner] - %s tests to run", String::num_int64(get_child_count())));
+	print_line(vformat("[DoctestRunner] - %s test runners to use", String::num_int64(get_child_count())));
 
 	for (int i = 0; i < children.size(); ++i) {
 		GD_LOCAL_PTR(child, Object::cast_to<Node>(children[i]));
