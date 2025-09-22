@@ -114,8 +114,7 @@ def add_imgui(env, all_directories, all_source_files, cpp_defines):
 
 def add_doctest(env, all_directories, cpp_defines):
     all_directories.append(os.path.join(godot_thirdparty_dir_path, "doctest"))
-    if env["target"] in ["editor", "editor_game", "development", "template_debug"]:
-        cpp_defines.append("DOCTEST_CONFIG_NO_EXCEPTIONS_BUT_WITH_ALL_ASSERTS")
+    cpp_defines.append("DOCTEST_CONFIG_NO_EXCEPTIONS_BUT_WITH_ALL_ASSERTS")
     
 def add_cpp_defines(env, cpp_defines):
     if env["target"] in ["editor", "editor_game", "development", "template_debug"]:

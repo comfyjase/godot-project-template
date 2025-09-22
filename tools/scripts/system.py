@@ -162,16 +162,16 @@ def add_imgui(env, all_directories, all_source_files, project_source_files, all_
         all_include_files.extend(get_all_files_recursive(addons_imgui_godot_include_dir_path, "*.h"))
         cpp_defines.extend([ 'IMGUI_USER_CONFIG="\\"imconfig-godot.h\\""', "IMGUI_ENABLED" ])
 
-def add_doctest(all_directories, all_include_files):
+def add_doctest(all_directories, all_include_files, cpp_defines):
     all_directories.append(os.path.join(godot_thirdparty_dir_path, "doctest"))
     all_include_files.append(os.path.join(godot_thirdparty_dir_path, "doctest", "doctest.h"))
+    cpp_defines.append("DOCTEST_CONFIG_NO_EXCEPTIONS_BUT_WITH_ALL_ASSERTS")
 
 def add_cpp_defines(env, cpp_defines):
     if env["target"] in ["editor", "editor_game", "development", "template_debug"]:
         cpp_defines.append("TOOLS_ENABLED")
         cpp_defines.append("DEBUG_ENABLED")
         cpp_defines.append("TESTS_ENABLED")
-        cpp_defines.append("DOCTEST_CONFIG_NO_EXCEPTIONS_BUT_WITH_ALL_ASSERTS")
     
     if env["platform"] == "windows":
         cpp_defines.append("PLATFORM_WINDOWS")

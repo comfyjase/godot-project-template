@@ -72,7 +72,7 @@ sources = []
 cpp_defines = []
 
 add_imgui(env, all_directories, sources, cpp_defines)
-add_doctest(all_directories)
+add_doctest(all_directories, cpp_defines)
 
 all_directories.extend(get_all_directories_recursive(project_src_dir))
 sources.extend(get_all_files_recursive(project_src_dir, "*.cpp"))
