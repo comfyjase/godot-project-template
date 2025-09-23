@@ -38,7 +38,7 @@ if not os.path.exists(f"{system.engine_godot_dir}/godot.vcxproj"):
 
 # Build plugins
 for (i, plugin_name) in enumerate(system.project_plugins):
-    os.chdir(os.path.join(system.addons_dir_path, plugin_name))
+    os.chdir(os.path.join(system.plugins_dir_path, plugin_name))
     
     print("=====================================", flush=True)
     print(f"Building plugin {plugin_name}", flush=True)

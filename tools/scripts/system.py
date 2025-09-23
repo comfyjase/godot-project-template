@@ -94,6 +94,8 @@ project_cache_path = scons_cache_dir_name
 plugin_cache_path = f"../../../{scons_cache_dir_name}" # Relative from where the SConstruct file is in the plugins folder
 project_dir_path = os.path.join(repo_dir_path, project_dir_name).replace("\\", "/")
 project_src_path = os.path.join(project_dir_path, "src").replace("\\", "/")
+absolute_plugins_dir_path = os.path.join(project_dir_path, "plugins").replace("\\", "/")
+plugins_dir_path = os.path.join(project_dir_name, "plugins").replace("\\", "/")
 addons_dir_path = os.path.join(project_dir_name, "addons").replace("\\", "/")
 addons_imgui_godot_dir_path = os.path.join(addons_dir_path, "imgui-godot").replace("\\", "/")
 addons_imgui_godot_include_dir_path = os.path.join(addons_imgui_godot_dir_path, "include").replace("\\", "/")
@@ -317,7 +319,7 @@ def add_plugins(plugin_names, env, customs, all_directories_array, project_sourc
     
     # Include all plugin files so they can be seen in the IDE.
     for (i, plugin_name) in enumerate(plugin_names):
-        plugin_src_dir_path = os.path.join(addons_dir_path, plugin_name, project_dir_name, "src")
+        plugin_src_dir_path = os.path.join(plugins_dir_path, plugin_name, project_dir_name, "src")
         all_directories_array.extend(get_all_directories_recursive(plugin_src_dir_path))
         all_source_files_array.extend(get_all_files_recursive(plugin_src_dir_path, "*.cpp"))
         if not dynamically_link_plugins:
@@ -343,7 +345,7 @@ def add_plugins(plugin_names, env, customs, all_directories_array, project_sourc
         lib_filename = lib_filename.rsplit('.', 1)[0]
         
         env.AppendUnique(LIBS=[lib_filename])
-        env.AppendUnique(LIBPATH=[".", f"{addons_dir_path}/{plugin_name}/bin/{env["platform"]}/"])
+        env.AppendUnique(LIBPATH=[".", f"{plugins_dir_path}/{plugin_name}/bin/{env["platform"]}/"])
 
 def get_godot_configuration():
     godot_engine_configuration_arg = configuration_arg

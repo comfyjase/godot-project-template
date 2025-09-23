@@ -180,7 +180,7 @@ game_gdextension_file_path = os.path.join(system.project_dir_path, "bin", f"{sys
 update_gdextension_file(game_gdextension_file_path)
 
 for (i, plugin_name) in enumerate(system.project_plugins):
-    plugin_gdextension_file_path = os.path.join(system.project_dir_path, "addons", plugin_name, f"{plugin_name}.gdextension").replace("\\", "/")
+    plugin_gdextension_file_path = os.path.join(system.absolute_plugins_dir_path, plugin_name, f"{plugin_name}.gdextension").replace("\\", "/")
     update_gdextension_file(plugin_gdextension_file_path)
 
 # Import the project first, to guarantee .godot folder is valid
@@ -314,7 +314,7 @@ if not system.is_ci:
     revert_file(export_credentials_file_path)
     
     for (i, plugin_name) in enumerate(system.project_plugins):
-        plugin_gdextension_file_path = os.path.join(system.project_dir_path, "addons", plugin_name, f"{plugin_name}.gdextension").replace("\\", "/")
+        plugin_gdextension_file_path = os.path.join(system.absolute_plugins_dir_path, plugin_name, f"{plugin_name}.gdextension").replace("\\", "/")
         revert_copy_file(plugin_gdextension_file_path.replace(".gdextension", "_gdextension.copy"), plugin_gdextension_file_path)
 
 print("Done")

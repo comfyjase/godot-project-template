@@ -1,9 +1,10 @@
 #pragma once
 
 #include <godot_cpp/classes/sprite2d.hpp>
+#include <godot_cpp/variant/string.hpp>
 
 namespace godot {
-	
+
 class GDE_EXPORT CustomSprite : public Sprite2D {
 	GDCLASS(CustomSprite, Sprite2D)
 
@@ -22,6 +23,8 @@ public:
 
 	void set_speed(const float p_speed);
 	float get_speed() const;
+
+	void test_hot_reload_works(const String p_message);
 
 	void draw_debug();
 

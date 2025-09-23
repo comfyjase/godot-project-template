@@ -15,14 +15,15 @@ if script_path_to_append not in sys.path:
 from SCons.Script import *
 
 # Default values
-lib_name = "gdextension_cpp_example"
+lib_name = "doctest_runner"
 project_dir_name = "project"
 absolute_repo_dir = os.path.join(script_path_to_append, "..", "..", "..")
 project_src_dir = os.path.join("project", "src").replace("\\", "/")
 root_dir = os.path.join("..", "..", "..").replace("\\", "/")
 root_godot_dir = os.path.join(root_dir, "engine", "godot").replace("\\", "/")
 root_godot_cpp_dir = os.path.join(root_dir, "engine", "godot-cpp").replace("\\", "/")
-addons_dir_path = ".."
+plugins_dir_path = ".."
+addons_dir_path = os.path.join("..", "..", "addons").replace("\\", "/")
 addons_imgui_godot_dir_path = os.path.join(addons_dir_path, "imgui-godot").replace("\\", "/")
 addons_imgui_godot_include_dir_path = os.path.join(addons_imgui_godot_dir_path, "include").replace("\\", "/")
 thirdparty_dir_path = os.path.join(root_dir, "thirdparty").replace("\\", "/")
@@ -82,7 +83,7 @@ architecture_aliases = {
     "ppc64le": "ppc64",
 }
 
-plugins = ["core", "doctest_runner"]
+plugins = ["core"]
 
 def get_all_directories_recursive(root_directory):
     directories = []
@@ -147,7 +148,7 @@ def add_cpp_defines(env, cpp_defines):
 def add_plugins(plugin_names, env, customs, all_directories_array):
     # Include all plugin files.
     for (i, plugin_name) in enumerate(plugin_names):
-        plugin_src_dir = os.path.join(addons_dir_path, plugin_name, project_dir_name, "src")
+        plugin_src_dir = os.path.join(plugins_dir_path, plugin_name, project_dir_name, "src")
         all_directories_array.extend(get_all_directories_recursive(plugin_src_dir))
 
     dynamically_link_plugins = (env["platform"] != "web")
@@ -169,4 +170,4 @@ def add_plugins(plugin_names, env, customs, all_directories_array):
         lib_filename = lib_filename.rsplit('.', 1)[0]
         
         env.AppendUnique(LIBS=[lib_filename])
-        env.AppendUnique(LIBPATH=[".", f"{addons_dir_path}/{plugin_name}/bin/{env["platform"]}/"])
+        env.AppendUnique(LIBPATH=[".", f"{plugins_dir_path}/{plugin_name}/bin/{env["platform"]}/"])

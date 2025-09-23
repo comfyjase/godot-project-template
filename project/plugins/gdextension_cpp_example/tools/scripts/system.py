@@ -15,16 +15,21 @@ if script_path_to_append not in sys.path:
 from SCons.Script import *
 
 # Default values
-lib_name = "core"
+lib_name = "gdextension_cpp_example"
 project_dir_name = "project"
+absolute_repo_dir = os.path.join(script_path_to_append, "..", "..", "..")
 project_src_dir = os.path.join("project", "src").replace("\\", "/")
 root_dir = os.path.join("..", "..", "..").replace("\\", "/")
+root_godot_dir = os.path.join(root_dir, "engine", "godot").replace("\\", "/")
 root_godot_cpp_dir = os.path.join(root_dir, "engine", "godot-cpp").replace("\\", "/")
-addons_dir_path = ".."
+plugins_dir_path = ".."
+addons_dir_path = os.path.join("..", "..", "addons").replace("\\", "/")
 addons_imgui_godot_dir_path = os.path.join(addons_dir_path, "imgui-godot").replace("\\", "/")
 addons_imgui_godot_include_dir_path = os.path.join(addons_imgui_godot_dir_path, "include").replace("\\", "/")
 thirdparty_dir_path = os.path.join(root_dir, "thirdparty").replace("\\", "/")
 thirdparty_imgui_dir_path = os.path.join(thirdparty_dir_path, "imgui").replace("\\", "/")
+
+godot_thirdparty_dir_path = os.path.join(root_godot_dir, "thirdparty").replace("\\", "/")
 
 platforms = ["linux", "macos", "windows", "android", "ios", "web"]
 
@@ -78,6 +83,8 @@ architecture_aliases = {
     "ppc64le": "ppc64",
 }
 
+plugins = ["core", "doctest_runner"]
+
 def get_all_directories_recursive(root_directory):
     directories = []
     
@@ -106,11 +113,15 @@ def add_imgui(env, all_directories, all_source_files, cpp_defines):
         all_source_files.extend(Glob(f"{thirdparty_imgui_dir_path}/*.cpp", strings=True))
         cpp_defines.extend([ 'IMGUI_USER_CONFIG="\\"imconfig-godot.h\\""', "IMGUI_ENABLED" ])
 
+def add_doctest(all_directories, cpp_defines):
+    all_directories.append(os.path.join(godot_thirdparty_dir_path, "doctest"))
+    cpp_defines.append("DOCTEST_CONFIG_NO_EXCEPTIONS_BUT_WITH_ALL_ASSERTS")
+    
 def add_cpp_defines(env, cpp_defines):
     if env["target"] in ["editor", "editor_game", "development", "template_debug"]:
         cpp_defines.append("TOOLS_ENABLED")
         cpp_defines.append("DEBUG_ENABLED")
-        cpp_defines.append("TESTS_ENABLED")
+        cpp_defines.append("TESTS_ENABLED")    
     
     if env["platform"] == "windows":
         cpp_defines.append("PLATFORM_WINDOWS")
@@ -133,3 +144,30 @@ def add_cpp_defines(env, cpp_defines):
         cpp_defines.append("RELEASE")
     else:
         cpp_defines.append("DEBUG")
+
+def add_plugins(plugin_names, env, customs, all_directories_array):
+    # Include all plugin files.
+    for (i, plugin_name) in enumerate(plugin_names):
+        plugin_src_dir = os.path.join(plugins_dir_path, plugin_name, project_dir_name, "src")
+        all_directories_array.extend(get_all_directories_recursive(plugin_src_dir))
+
+    dynamically_link_plugins = (env["platform"] != "web")
+    if not dynamically_link_plugins:
+        return
+        
+    # Link all the plugins
+    suffix = env['suffix'].replace(".dev", "").replace(".universal", "")
+    library_suffix = env.subst('$SHLIBSUFFIX')
+    if platform.system() == "Linux" and env["platform"] == "macos":
+        library_suffix = ".dylib"
+    
+    # Link all plugins.
+    for (i, plugin_name) in enumerate(plugin_names):
+        lib_filename = "{}{}{}{}".format(env.subst('$SHLIBPREFIX'), plugin_name, suffix, library_suffix)
+        if platform.system() == "Windows" and (env["platform"] in ["web", "android"]):
+            lib_filename = "lib" + lib_filename
+        
+        lib_filename = lib_filename.rsplit('.', 1)[0]
+        
+        env.AppendUnique(LIBS=[lib_filename])
+        env.AppendUnique(LIBPATH=[".", f"{plugins_dir_path}/{plugin_name}/bin/{env["platform"]}/"])

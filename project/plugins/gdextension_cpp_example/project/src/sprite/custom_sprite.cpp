@@ -14,6 +14,8 @@ void CustomSprite::_bind_methods() {
 	GD_BIND_PROPERTY(CustomSprite, amplitude, Variant::FLOAT);
 	GD_BIND_PROPERTY(CustomSprite, speed, Variant::FLOAT);
 
+	//GD_BIND_METHOD(CustomSprite, test_hot_reload_works, "p_message");
+
 #if IMGUI_ENABLED
 	GD_BIND_METHOD(CustomSprite, draw_debug);
 #endif
@@ -70,6 +72,10 @@ void CustomSprite::set_speed(const float p_speed) {
 
 float CustomSprite::get_speed() const {
 	return speed;
+}
+
+void CustomSprite::test_hot_reload_works(const String p_message) {
+	print_line(p_message);
 }
 
 void CustomSprite::draw_debug() {

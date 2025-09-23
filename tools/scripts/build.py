@@ -52,30 +52,26 @@ if system.configuration_arg != "development":
 
 # ===============================================
 # Build Plugins
-skip_building_plugins = (system.configuration_arg == "development") and system.process_exists(system.get_godot_binary_file_name_for_system())
-if skip_building_plugins:
-    print(f"Can't hot reload plugins with the godot editor running.\nIf you want to compile changes for plugins and see them in editor, please close the editor first, recompile and then open the editor again.", flush=True)
-else:
-    for (i, plugin_name) in enumerate(system.project_plugins):
-        os.chdir(os.path.join(system.addons_dir_path, plugin_name))
-        
-        print("=====================================", flush=True)
-        print(f"Building plugin {plugin_name}", flush=True)
-        print("=====================================", flush=True)
-        
-        build_plugin_command = system.get_plugin_scons_command()
-        if i == 0:
-            build_plugin_command += " symbols_visibility=visible"
-        else:
-            build_plugin_command += " build_library=no"
-
-        print(f"Command: {build_plugin_command}", flush=True)
-        return_code = subprocess.call(build_plugin_command, shell=True)
-        if return_code != 0:
-            sys.exit(f"Error: Failed to build plugin {plugin_name} for {platform.system()}")
-        
-        os.chdir(os.path.join("..", "..", ".."))
+for (i, plugin_name) in enumerate(system.project_plugins):
+    os.chdir(os.path.join(system.plugins_dir_path, plugin_name))
     
+    print("=====================================", flush=True)
+    print(f"Building plugin {plugin_name}", flush=True)
+    print("=====================================", flush=True)
+    
+    build_plugin_command = system.get_plugin_scons_command()
+    if i == 0:
+        build_plugin_command += " symbols_visibility=visible"
+    else:
+        build_plugin_command += " build_library=no"
+
+    print(f"Command: {build_plugin_command}", flush=True)
+    return_code = subprocess.call(build_plugin_command, shell=True)
+    if return_code != 0:
+        sys.exit(f"Error: Failed to build plugin {plugin_name} for {platform.system()}")
+    
+    os.chdir(os.path.join("..", "..", ".."))
+
 # ===============================================
 # Build Game
 print("=====================================", flush=True)
