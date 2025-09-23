@@ -55,7 +55,7 @@ void CustomSprite::_bind_methods() {
 After:
 ```
 void CustomSprite::_bind_methods() {
-	GD_BIND_PROPERTY("amplitude", Variant::FLOAT, &CustomSprite::get_amplitude, &CustomSprite::set_amplitude);
+	GD_BIND_PROPERTY(CustomSprite, amplitude, Variant::FLOAT);
 }
 ```
 

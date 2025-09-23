@@ -58,9 +58,6 @@
         return;                                                                                                                                                                                                                                                              \
     }
 
-#undef MAKE_TYPED_ARRAY_INFO
-#undef MAKE_TYPED_ARRAY
-
 #define MAKE_TYPED_ARRAY_INFO(m_type, m_variant_type) /********************************************************************************************************************************************************************************************************************/ \
     template <>                                                                                                                                                                                                                                                              \
     struct GetTypeInfo<TypedArray<m_type>> {                                                                                                                                                                                                                                 \
