@@ -205,7 +205,7 @@ if system.platform_arg == "android" and system.configuration_arg in ["template_r
     export_godot_preset_tag = ""
     export_godot_preset_tag_options = ""
     all_lines = []
-    with open(f"{project_path}/export_presets.cfg", "r") as export_presets_read:
+    with open(system.project_export_presets_path, "r") as export_presets_read:
         all_lines=export_presets_read.readlines()
         
         for index, line in enumerate(all_lines):
@@ -265,13 +265,18 @@ print("Exporting Game", flush=True)
 print("=====================================", flush=True)
 print(system.get_godot_export_command(export_command_type, build_output_path), flush=True)
 return_code = subprocess.call(system.get_godot_export_command(export_command_type, build_output_path), shell=True)
+
+# Reset back to local win path so python checks against the correct file path
+if system.using_wsl:
+    build_output_path = f"{os.path.join(system.repo_dir_path, "bin", system.platform_arg, build_file_name_and_type)}".replace("\\", "/")
+    
 if not os.path.exists(build_output_path):
     print("Available godot binary files:", flush=True)
     system.print_files()
     print(f"Available {system.lib_name} binary files:", flush=True)
     system.print_files(os.path.dirname(os.path.abspath(necessary_file_path)))
     system.print_files(os.path.join(system.repo_dir_path, "bin", system.platform_arg))
-    with open(f"{project_path}/export_presets.cfg", "r") as export_presets_read:
+    with open(system.project_export_presets_path, "r") as export_presets_read:
         all_lines=export_presets_read.readlines()
         print("export_presets.cfg:", flush=True)
         for index, line in enumerate(all_lines):
@@ -306,11 +311,11 @@ if system.platform_arg == "web":
 # Only want to revert the files locally to not flag changes for local exports users make
 # CI would need to retain the information updated in these files in case it needs to run unit tests
 if not system.is_ci:
-    export_presets_file_path = os.path.join(system.project_dir_path, "export_presets.cfg").replace("\\", "/")
+    copy_game_gdextension_file_path = game_gdextension_file_path.replace(".gdextension", "_gdextension.copy").replace("\\", "/")
     copy_export_presets_file_path = os.path.join(system.project_dir_path, "export_presets_cfg.copy").replace("\\", "/")
 
-    revert_copy_file(game_gdextension_file_path.replace(".gdextension", "_gdextension.copy").replace("\\", "/"), game_gdextension_file_path)
-    revert_copy_file(copy_export_presets_file_path, export_presets_file_path)
+    revert_copy_file(copy_game_gdextension_file_path, game_gdextension_file_path)
+    revert_copy_file(copy_export_presets_file_path, system.project_export_presets_path)
     revert_file(export_credentials_file_path)
     
     for (i, plugin_name) in enumerate(system.project_plugins):

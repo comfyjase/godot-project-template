@@ -94,6 +94,7 @@ project_cache_path = scons_cache_dir_name
 plugin_cache_path = f"../../../{scons_cache_dir_name}" # Relative from where the SConstruct file is in the plugins folder
 project_dir_path = os.path.join(repo_dir_path, project_dir_name).replace("\\", "/")
 project_src_path = os.path.join(project_dir_path, "src").replace("\\", "/")
+project_export_presets_path = os.path.join(project_dir_path, "export_presets.cfg").replace("\\", "/")
 absolute_plugins_dir_path = os.path.join(project_dir_path, "plugins").replace("\\", "/")
 plugins_dir_path = os.path.join(project_dir_name, "plugins").replace("\\", "/")
 addons_dir_path = os.path.join(project_dir_name, "addons").replace("\\", "/")
@@ -409,14 +410,20 @@ def get_godot_scons_command():
     elif platform_arg == "android":
         if building_editor_for_non_native_os:
             scons_command += " generate_apk=yes"
-        
+    elif using_wsl:
+        scons_command += " lto=none"
+    
     # Corrected only for CI because the github actions restores the cache to the root of the repo.
     # Locally it's nice to have the option of cleaning the project cache but leaving the engine cache intact to avoid a full rebuild.
     cache_path = godot_cache_path
     if is_ci:
         cache_path = f"../../{scons_cache_dir_name}"
     scons_command += f" cache_path={cache_path}"
-    scons_command += f" accesskit_sdk_path={access_kit_path}"
+    
+    accesskit_dir = access_kit_path
+    if using_wsl:
+        accesskit_dir = "/mnt/" + accesskit_dir.replace(":", "").lower()
+    scons_command += f" accesskit_sdk_path={accesskit_dir}"
     
     return scons_command
 
@@ -464,12 +471,18 @@ def get_godot_custom_export_template_scons_command():
         scons_command += " generate_apk=yes"
     elif platform_arg == "ios":
         scons_command += " generate_bundle=yes"
-        
+    elif using_wsl:
+        scons_command += " lto=none"
+    
     cache_path = godot_cache_path
     if is_ci:
         cache_path = f"../../{scons_cache_dir_name}"
     scons_command += f" cache_path={cache_path}"
-    scons_command += f" accesskit_sdk_path={access_kit_path}"
+
+    accesskit_dir = access_kit_path
+    if using_wsl:
+        accesskit_dir = "/mnt/" + accesskit_dir.replace(":", "").lower()
+    scons_command += f" accesskit_sdk_path={accesskit_dir}"
 
     return scons_command
 
@@ -504,23 +517,27 @@ def get_godot_binary_file_name_for_system():
 def get_godot_import_command():
     import_command = ""
     
+    project_path = project_dir_path
     if using_wsl:
         import_command += "wsl ./"
+        project_path = "/mnt/" + project_path.replace(":", "").lower()
     elif platform.system() == "Linux" or platform.system() == "Darwin":
         import_command += "./"
-    import_command += f"{get_godot_binary_file_name_for_system()} --path \"{project_dir_path}\" --headless --import"
+    import_command += f"{get_godot_binary_file_name_for_system()} --path \"{project_path}\" --headless --import --verbose"
     
     return import_command
 
 def get_godot_export_command(export_type, output_path):
     export_command = ""
     
+    project_path = project_dir_path
     if using_wsl:
         export_command += "wsl ./"
+        project_path = "/mnt/" + project_path.replace(":", "").lower()
     elif platform.system() == "Linux" or platform.system() == "Darwin":
         export_command += "./"
     
-    export_command += f"{get_godot_binary_file_name_for_system()} --path \"{project_dir_path}\" --headless --export-{export_type} \"{platform_arg} {configuration_arg} {architecture_arg} {precision_arg}\" \"{output_path}\" --verbose"
+    export_command += f"{get_godot_binary_file_name_for_system()} --path \"{project_path}\" --headless --export-{export_type} \"{platform_arg} {configuration_arg} {architecture_arg} {precision_arg}\" \"{output_path}\" --verbose"
     if platform_arg == "android":
         export_command += " --install-android-build-template"
         

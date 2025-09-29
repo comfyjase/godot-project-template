@@ -15,6 +15,16 @@ import tools.scripts.system as system
 system.parse_arguments()
 
 # ===============================================
+# Clean Up Old Unix Files
+if system.platform_arg == "linux" or system.platform_arg == "android":
+    # Removing any temporary files so that we don't get false failures.
+    # I think this happens because the commit checker compiles files with production flags.
+    # Then this checks for any local .os files and editor_game isn't compatible with production - so it fails.
+    system.clean_up_files(system.engine_godot_dir, ".os")
+    system.clean_up_files(system.absolute_plugins_dir_path, ".os")
+    system.clean_up_files(system.project_src_path, ".os")
+
+# ===============================================
 # Build Godot
 if system.configuration_arg != "development":
     print("=====================================", flush=True)

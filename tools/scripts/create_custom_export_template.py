@@ -18,14 +18,11 @@ import tools.scripts.system as system
 system.parse_arguments()
 
 # ===============================================
-# Clean Up Old Gradle Build Files
-if system.platform_arg == "android":
-    
-    # Removing any temporary files so that we don't get false failures.
-    # I think this happens because the commit checker compiles files with production flags.
-    # Then this checks for any local .os files and editor_game isn't compatible with production - so it fails.
+# Clean Up Old Unix Files
+if system.platform_arg == "linux" or system.platform_arg == "android":
     system.clean_up_files(system.engine_godot_dir, ".os")
-    
+
+if system.platform_arg == "android":    
     android_build_folder = os.path.join(system.project_dir_path, "android", "build")
     if os.path.exists(android_build_folder):
         print("=====================================", flush=True)
@@ -153,9 +150,7 @@ gradle_source_file_path = os.path.normpath(gradle_source_file_path).replace("\\"
 
 export_template_file_path = os.path.join(system.absolute_godot_bin_dir_path, f"{godot_platform_name}.{suffix}")
 export_template_file_path = os.path.normpath(export_template_file_path).replace("\\", "/")
-if system.using_wsl:
-    export_template_file_path = "/mnt/" + export_template_file_path.replace(":", "").lower()
-elif platform.system() == "Linux" or platform.system() == "Darwin":
+if platform.system() == "Linux" or platform.system() == "Darwin":
     export_template_file_path = export_template_file_path.lower()
     
 if system.platform_arg == "android":
@@ -168,6 +163,9 @@ else:
         print("Available files:", flush=True)
         system.print_files(system.absolute_godot_bin_dir_path)
         sys.exit(f"Error: Export template file path: {export_template_file_path} doesn't exist? Failed to create {export_template_file_path} for {system.platform_arg} {system.configuration_arg} {system.architecture_arg} {system.precision_arg}")
+
+if system.using_wsl:
+    export_template_file_path = "/mnt/" + export_template_file_path.replace(":", "").lower()
 
 if platform.system() == "Linux" or platform.system() == "Darwin":
     print(f"Called chmod a+rwx {export_template_file_path}", flush=True)
