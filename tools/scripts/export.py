@@ -183,14 +183,15 @@ for (i, plugin_name) in enumerate(system.project_plugins):
     plugin_gdextension_file_path = os.path.join(system.absolute_plugins_dir_path, plugin_name, f"{plugin_name}.gdextension").replace("\\", "/")
     update_gdextension_file(plugin_gdextension_file_path)
 
-# Import the project first, to guarantee .godot folder is valid
-print("=====================================", flush=True)
-print("Importing Game", flush=True)
-print("=====================================", flush=True)
-print(system.get_godot_import_command(), flush=True)
-return_code = subprocess.call(system.get_godot_import_command(), shell=True)
-if return_code != 0:
-    sys.exit(f"Error: Failed to import project for {system.platform_arg} {system.configuration_arg} {system.architecture_arg} {system.precision_arg} from godot binary {system.get_godot_binary_file_name_for_system()}")
+if system.platform_arg in ["android", "windows"]:
+    # Import the project first, to guarantee .godot folder is valid so export credentials can be updated
+    print("=====================================", flush=True)
+    print("Importing Game", flush=True)
+    print("=====================================", flush=True)
+    print(system.get_godot_import_command(), flush=True)
+    return_code = subprocess.call(system.get_godot_import_command(), shell=True)
+    if return_code != 0:
+        sys.exit(f"Error: Failed to import project for {system.platform_arg} {system.configuration_arg} {system.architecture_arg} {system.precision_arg} from godot binary {system.get_godot_binary_file_name_for_system()}")
 
 export_credentials_file_path = f"{project_path}/.godot/export_credentials.cfg"
 if system.platform_arg == "android" and system.configuration_arg in ["template_release", "profile", "production"]:
