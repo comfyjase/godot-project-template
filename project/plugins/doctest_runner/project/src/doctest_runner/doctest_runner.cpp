@@ -1,5 +1,6 @@
 #include "doctest_runner.h"
 
+#include <godot_cpp/classes/object.hpp>
 #include <godot_cpp/classes/scene_tree.hpp>
 #include <godot_cpp/variant/typed_array.hpp>
 
