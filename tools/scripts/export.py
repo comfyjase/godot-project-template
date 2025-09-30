@@ -314,9 +314,16 @@ if system.platform_arg == "web":
     shutil.copy(serve_source_file_path, serve_destination_file_path)
     shutil.copy(run_web_build_script_source_file_path, run_web_build_script_destination_file_path)
 
-# Only want to revert the files locally to not flag changes for local exports users make
-# CI would need to retain the information updated in these files in case it needs to run unit tests
-if not system.is_ci:
+if system.is_ci:
+    for (i, plugin_name) in enumerate(system.project_plugins):
+        plugin_dir = os.path.join(system.absolute_plugins_dir_path, plugin_name).replace("\\", "/")
+        addons_dir = os.path.join(system.absolute_addons_dir_path, plugin_name).replace("\\", "/")
+        
+        # Move back to plugins folder
+        shutil.move(addons_dir, plugin_dir)
+else:
+    # Only want to revert the files locally to not flag changes for local exports users make
+    # CI would need to retain the information updated in these files in case it needs to run unit tests
     copy_game_gdextension_file_path = game_gdextension_file_path.replace(".gdextension", "_gdextension.copy").replace("\\", "/")
     copy_export_presets_file_path = os.path.join(system.project_dir_path, "export_presets_cfg.copy").replace("\\", "/")
 
