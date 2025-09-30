@@ -266,11 +266,11 @@ print("=====================================", flush=True)
 print(system.get_godot_export_command(export_command_type, build_output_path), flush=True)
 return_code = subprocess.call(system.get_godot_export_command(export_command_type, build_output_path), shell=True)
 
-# Reset back to local win path so python checks against the correct file path
+export_succeeded = os.path.exists(build_output_path)
 if system.using_wsl:
-    build_output_path = f"{os.path.join(system.repo_dir_path, "bin", system.platform_arg, build_file_name_and_type)}".replace("\\", "/")
+    export_succeeded = os.path.exists(build_output_path.replace("/mnt/c/", "c:/")) # Note os path exists will only works for windows file paths even if using wsl
     
-if not os.path.exists(build_output_path):
+if not export_succeeded:
     print("Available godot binary files:", flush=True)
     system.print_files()
     print(f"Available {system.lib_name} binary files:", flush=True)
@@ -287,7 +287,7 @@ if not os.path.exists(build_output_path):
             elif ("custom_template/release" in line and "custom_template/release=\"\"" not in line):
                 print(line, flush=True)
 
-    sys.exit(f"Error: Failed to export {system.lib_name} for {system.platform_arg} {system.configuration_arg} {system.architecture_arg} {system.precision_arg} from godot binary {system.get_godot_binary_file_name_for_system()}")
+    sys.exit(f"Error: Failed to export {system.lib_name} to build output path {build_output_path} for {system.platform_arg} {system.configuration_arg} {system.architecture_arg} {system.precision_arg} from godot binary {system.get_godot_binary_file_name_for_system()}")
 
 # (Web Only) - Copy serve.py to bin folder for ease of use.
 if system.platform_arg == "web":
