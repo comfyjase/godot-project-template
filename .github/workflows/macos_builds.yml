@@ -10,11 +10,11 @@ jobs:
       matrix:
         target:
           [
-            { platform: macos, arch: x86_64, os: macos-latest, upload-artifact: false }
+            { platform: macos, arch: x86_64, os: macos-latest, upload-artifact: true }
           ]
         #target-type: [template_debug, template_release, profile, production]
         #float-precision: [single, double]
-        target-type: [production]
+        target-type: [template_debug, production]
         float-precision: [single]
 
     runs-on: ${{ matrix.target.os }}
