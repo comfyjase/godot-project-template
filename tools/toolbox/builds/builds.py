@@ -154,7 +154,7 @@ class App(customtkinter.CTk):
     
     def get_github_builds(self):
         github_builds = []
-        github_builds_str = subprocess.check_output("gh api /repos/{owner}/{repo}/actions/artifacts --jq \".artifacts[] | [.name, .workflow_run.id, .size_in_bytes]\"", shell=True).decode().strip()
+        github_builds_str = subprocess.check_output("gh api /repos/{owner}/{repo}/actions/artifacts --jq \".artifacts[] | [.name, .workflow_run.id, .size_in_bytes, .expired]\"", shell=True).decode().strip()
         
         if ("no artifacts" in github_builds_str) or (github_builds_str != ""):
             github_builds = github_builds_str.split("\n")
@@ -195,6 +195,10 @@ class App(customtkinter.CTk):
             build_str_arr = build.strip().replace("[", "").replace("]", "").replace("\"", "").split(",")
             
             if not self.is_build_information_cached(build_str_arr[0], build_str_arr[1]):
+                build_expired = (build_str_arr[3] == "true")
+                if build_expired:
+                    continue
+
                 build = Build()
                 build.name = build_str_arr[0]
                 build.workflow_id = build_str_arr[1]
