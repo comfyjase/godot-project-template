@@ -10,7 +10,7 @@ jobs:
       matrix:
         target:
           [
-            { platform: web, arch: wasm32, os: windows-latest, upload-artifact: false }
+            { platform: web, arch: wasm32, os: windows-latest, upload-artifact: true }
           ]
         #target-type: [template_debug, template_release, profile, production]
         #float-precision: [single, double]
