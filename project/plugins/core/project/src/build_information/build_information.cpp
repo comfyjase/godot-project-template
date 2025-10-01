@@ -7,6 +7,7 @@
 #include <godot_cpp/classes/input.hpp>
 #include <godot_cpp/classes/label.hpp>
 #include <godot_cpp/classes/os.hpp>
+#include <godot_cpp/classes/project_settings.hpp>
 #include <godot_cpp/classes/rendering_server.hpp>
 #include <godot_cpp/classes/rich_text_label.hpp>
 #include <godot_cpp/classes/scene_tree.hpp>
@@ -50,13 +51,14 @@ BuildInformation::~BuildInformation() {}
 
 void BuildInformation::_ready() {
 	GD_PTR(input, Input::get_singleton());
-	GD_PTR(viewport, get_viewport());
 	GD_PTR(rendering_server, RenderingServer::get_singleton());
+	GD_PTR(viewport, get_viewport());
 	GD_PTR(build_name_label, memnew(Label));
 	GD_PTR(fps_label, memnew(RichTextLabel));
 	GD_PTR(frame_time_label, memnew(RichTextLabel));
 	GD_PTR(cpu_frame_time_label, memnew(RichTextLabel));
 	GD_PTR(gpu_frame_time_label, memnew(RichTextLabel));
+	GD_LOCAL_PTR(project_settings, ProjectSettings::get_singleton());
 
 	viewport_rid = viewport->get_viewport_rid();
 	rendering_server->viewport_set_measure_render_time(viewport_rid, true);
@@ -80,7 +82,12 @@ void BuildInformation::_ready() {
 
 	// Build Name
 	const String &build_information_file_path = "res://bin/build.info";
-	const String &build_name = FileAccess::open(build_information_file_path, FileAccess::READ)->get_as_text();
+	const String &build_information_file_as_text = FileAccess::open(build_information_file_path, FileAccess::READ)->get_as_text();
+
+	const String &version_number = String(project_settings->get_setting("application/config/version"));
+	const int64_t first_underscore_index = build_information_file_as_text.find("_");
+	const String &build_name = build_information_file_as_text.insert(first_underscore_index, String("_v") + version_number);
+
 	build_name_label->set_name("BuildNameLabel");
 	build_name_label->set_horizontal_alignment(HorizontalAlignment::HORIZONTAL_ALIGNMENT_RIGHT);
 	build_name_label->set_text(build_name);
