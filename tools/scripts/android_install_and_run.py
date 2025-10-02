@@ -11,8 +11,6 @@ if script_path_to_append not in sys.path:
 
 import tools.scripts.system as system
 
-#system.parse_arguments()
-
 project_directory = os.getcwd()
 
 platform_arg = "android"
@@ -41,10 +39,9 @@ if return_code != 0:
 if configuration_arg == "editor":
     return_code = subprocess.call(f"adb.exe shell monkey -p org.godotengine.editor.v4.dev 1", shell=True)
 elif configuration_arg == "editor_game":
-    return_code = subprocess.call(f"adb.exe shell monkey -p com.example.game.editor_game 1", shell=True)
+    return_code = subprocess.call(f"adb.exe shell monkey -p com.godotprojecttemplate.{system.lib_name}.editor_game 1", shell=True)
 else:
-    # TODO: What is the package name for the game library???
-    return_code = subprocess.call(f"adb.exe shell monkey -p com.example.game 1", shell=True)
+    return_code = subprocess.call(f"adb.exe shell monkey -p com.godotprojecttemplate.{system.lib_name} 1", shell=True)
 
 if return_code != 0:
     sys.exit(f"Error: adb.exe shell monkey -p {platform_arg} {configuration_arg} {architecture_arg} {precision_arg} failed")
