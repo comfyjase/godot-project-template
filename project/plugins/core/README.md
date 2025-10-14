@@ -3,7 +3,7 @@
 ## ImGui
 Includes `imgui-godot` to allow users to implement `draw_debug` functions in their nodes to draw to the debug menu at runtime. Useful for debugging.
 
-Example:
+Example:  
 .h
 ```
 class CustomSprite : public Sprite2D {
@@ -43,16 +43,39 @@ These macros have been created to help reduce repeated code and provide automati
 ### Editor Macros
 Simplify binding properties for the editor.
 
-Before:
+Before:  
+.h
+```
+public:
+	void set_amplitude(const float p_amplitude);
+	float get_amplitude() const;
+
+private:
+	float amplitude;
+```
+.cpp
 ```
 void CustomSprite::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_amplitude"), &CustomSprite::get_amplitude);
 	ClassDB::bind_method(D_METHOD("set_amplitude", "p_amplitude"), &CustomSprite::set_amplitude);
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "amplitude"), "set_amplitude", "get_amplitude");
 }
+
+void CustomSprite::set_amplitude(const float p_amplitude) {
+	amplitude = p_amplitude;
+}
+
+float CustomSprite::get_amplitude() const {
+	return amplitude;
+}
 ```
 
-After:
+After:  
+.h
+```
+GD_PROPERTY(float, amplitude);
+```
+.cpp
 ```
 void CustomSprite::_bind_methods() {
 	GD_BIND_PROPERTY(CustomSprite, amplitude, Variant::FLOAT);
@@ -62,26 +85,26 @@ void CustomSprite::_bind_methods() {
 ### Pointer Macros
 Simplify pointer assignments with error checks and optional error messages if the pointer is null.
 
-Before:
+Before:  
 ```
 Control *ui = get_node<Control>("CanvasLayer/UI");
 ERR_FAIL_NULL(ui);
 ```
 
-After:
+After:  
 ```
 GD_LOCAL_PTR(ui, get_node<Control>("CanvasLayer/UI"));
 ```
 
 With a fail message.
 
-Before:
+Before:  
 ```
 Control *ui = get_node<Control>("CanvasLayer/UI");
 ERR_FAIL_NULL_MSG(ui, "Failed to find CanvasLayer/UI node.");
 ```
 
-After:
+After:  
 ```
 GD_LOCAL_PTR_MSG(ui, get_node<Control>("CanvasLayer/UI"), "Failed to find CanvasLayer/UI node.");
 ```
@@ -89,7 +112,7 @@ GD_LOCAL_PTR_MSG(ui, get_node<Control>("CanvasLayer/UI"), "Failed to find Canvas
 ### Signal Macros
 Checks signals aren't connected before trying to connect and provides any connect error messages if it fails.
 
-Before:
+Before:  
 ```
 if (!options_button->is_connected("pressed", callable_mp(this, &Game::show_options))) {
 	const Error error = options_button->connect("pressed", callable_mp(this, &Game::show_options);
@@ -97,7 +120,7 @@ if (!options_button->is_connected("pressed", callable_mp(this, &Game::show_optio
 }
 ```
 
-After:
+After:  
 ```
 GD_CONNECT_SIGNAL(options_button, "pressed", &Game::show_options);
 ```

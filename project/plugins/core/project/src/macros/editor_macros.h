@@ -11,6 +11,14 @@
 #include <godot_cpp/variant/typed_array.hpp>
 #include <godot_cpp/variant/variant.hpp>
 
+#define GD_PROPERTY(p_type, p_variable) /**********************************************************************************************************************************************************************************************************************************/ \
+private:                                                                                                                                                                                                                                                                     \
+    p_type p_variable;                                                                                                                                                                                                                                                       \
+                                                                                                                                                                                                                                                                             \
+public:                                                                                                                                                                                                                                                                      \
+    void set_##p_variable(const p_type p_##p_variable) { p_variable = p_##p_variable; }                                                                                                                                                                                      \
+    p_type get_##p_variable() const { return p_variable; }
+
 #define GD_BIND_METHOD(p_class, p_method_name, ...) /**********************************************************************************************************************************************************************************************************************/ \
     ClassDB::bind_method(D_METHOD(#p_method_name, ##__VA_ARGS__), &p_class::p_method_name);
 

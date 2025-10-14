@@ -6,15 +6,11 @@
 #include <imgui-godot.h>
 #endif
 
-#include "macros.h"
-
 using namespace godot;
 
 void CustomSprite::_bind_methods() {
 	GD_BIND_PROPERTY(CustomSprite, amplitude, Variant::FLOAT);
 	GD_BIND_PROPERTY(CustomSprite, speed, Variant::FLOAT);
-
-	//GD_BIND_METHOD(CustomSprite, test_hot_reload_works, "p_message");
 
 #if IMGUI_ENABLED
 	GD_BIND_METHOD(CustomSprite, draw_debug);
@@ -56,26 +52,6 @@ void CustomSprite::_process(double delta) {
 			time_emit = 0.0;
 		}
 	}
-}
-
-void CustomSprite::set_amplitude(const float p_amplitude) {
-	amplitude = p_amplitude;
-}
-
-float CustomSprite::get_amplitude() const {
-	return amplitude;
-}
-
-void CustomSprite::set_speed(const float p_speed) {
-	speed = p_speed;
-}
-
-float CustomSprite::get_speed() const {
-	return speed;
-}
-
-void CustomSprite::test_hot_reload_works(const String p_message) {
-	print_line(p_message);
 }
 
 void CustomSprite::draw_debug() {

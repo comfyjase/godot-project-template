@@ -3,6 +3,8 @@
 #include <godot_cpp/classes/sprite2d.hpp>
 #include <godot_cpp/variant/string.hpp>
 
+#include "macros.h"
+
 namespace godot {
 
 class GDE_EXPORT CustomSprite : public Sprite2D {
@@ -18,14 +20,6 @@ public:
 	void _ready() override;
 	void _process(double delta) override;
 
-	void set_amplitude(const float p_amplitude);
-	float get_amplitude() const;
-
-	void set_speed(const float p_speed);
-	float get_speed() const;
-
-	void test_hot_reload_works(const String p_message);
-
 	void draw_debug();
 
 protected:
@@ -36,7 +30,8 @@ private:
 
 	float time_passed;
 	float time_emit;
-	float amplitude;
-	float speed;
+
+	GD_PROPERTY(float, amplitude);
+	GD_PROPERTY(float, speed);
 };
 } // namespace godot
