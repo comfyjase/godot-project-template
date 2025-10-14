@@ -602,11 +602,14 @@ CMakeUserPresets.json
 # File types
 *.uid
 *.import
+*.exp
+*.translation
 release.keystore
 
 # Folders
 project/android/*
 thirdparty/accesskit/*
+*/.scons_cache/*
 
 # Allow
 !project/bin/*.gdextension
