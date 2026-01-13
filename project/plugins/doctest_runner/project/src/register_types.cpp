@@ -6,6 +6,7 @@
 #include <godot_cpp/godot.hpp>
 
 #include "doctest_runner.h"
+#include "function_library.h"
 
 using namespace godot;
 
@@ -17,6 +18,8 @@ void initialize_doctest_runner_gdextension_types(ModuleInitializationLevel p_lev
 #if TESTS_ENABLED
 	GDREGISTER_RUNTIME_CLASS(DoctestRunner);
 #endif
+
+	development_cleanup_temp_project_plugin_files();
 }
 
 void uninitialize_doctest_runner_gdextension_types(ModuleInitializationLevel p_level) {

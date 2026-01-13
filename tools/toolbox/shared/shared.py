@@ -15,6 +15,8 @@ import tkinter.messagebox
 import customtkinter
 from PIL import Image
 
+extended_limit = 1024 * 128 # 128 KiB
+
 script_path_to_append = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
 if script_path_to_append not in sys.path:
     sys.path.append(script_path_to_append)
@@ -325,6 +327,7 @@ class TargetPlatformSelection(customtkinter.CTkFrame):
                 print(f"Running command: {command}")
                 proc = await asyncio.create_subprocess_shell(
                     command,
+                    limit = extended_limit,
                     stdout=asyncio.subprocess.PIPE,
                     stderr=asyncio.subprocess.PIPE)
         

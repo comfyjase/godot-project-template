@@ -9,6 +9,8 @@
 #include <imgui-godot.h>
 #endif
 
+#include "function_library.h"
+
 using namespace godot;
 
 void initialize_game_gdextension_types(ModuleInitializationLevel p_level) {
@@ -19,6 +21,8 @@ void initialize_game_gdextension_types(ModuleInitializationLevel p_level) {
 #if IMGUI_ENABLED
 	ImGui::Godot::SyncImGuiPtrs();
 #endif
+
+	development_cleanup_temp_project_plugin_files();
 }
 
 void uninitialize_game_gdextension_types(ModuleInitializationLevel p_level) {

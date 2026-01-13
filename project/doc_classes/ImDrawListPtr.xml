@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="ImDrawListPtr" inherits="RefCounted" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+	</brief_description>
+	<description>
+	</description>
+	<tutorials>
+	</tutorials>
+	<members>
+		<member name="Flags" type="int" setter="_SetFlags" getter="_GetFlags" enum="ImGui.DrawListFlags" is_bitfield="true" default="0">
+		</member>
+		<member name="_FringeScale" type="float" setter="_Set_FringeScale" getter="_Get_FringeScale" default="0.0">
+		</member>
+	</members>
+</class>

@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="ImGuiStylePtr" inherits="RefCounted" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+	</brief_description>
+	<description>
+	</description>
+	<tutorials>
+	</tutorials>
+	<members>
+		<member name="Alpha" type="float" setter="_SetAlpha" getter="_GetAlpha" default="0.0">
+		</member>
+		<member name="AntiAliasedFill" type="bool" setter="_SetAntiAliasedFill" getter="_GetAntiAliasedFill" default="false">
+		</member>
+		<member name="AntiAliasedLines" type="bool" setter="_SetAntiAliasedLines" getter="_GetAntiAliasedLines" default="false">
+		</member>
+		<member name="AntiAliasedLinesUseTex" type="bool" setter="_SetAntiAliasedLinesUseTex" getter="_GetAntiAliasedLinesUseTex" default="false">
+		</member>
+		<member name="ButtonTextAlign" type="Vector2" setter="_SetButtonTextAlign" getter="_GetButtonTextAlign" default="Vector2(0, 0)">
+		</member>
+		<member name="CellPadding" type="Vector2" setter="_SetCellPadding" getter="_GetCellPadding" default="Vector2(0, 0)">
+		</member>
+		<member name="ChildBorderSize" type="float" setter="_SetChildBorderSize" getter="_GetChildBorderSize" default="0.0">
+		</member>
+		<member name="ChildRounding" type="float" setter="_SetChildRounding" getter="_GetChildRounding" default="0.0">
+		</member>
+		<member name="CircleTessellationMaxError" type="float" setter="_SetCircleTessellationMaxError" getter="_GetCircleTessellationMaxError" default="0.0">
+		</member>
+		<member name="ColorButtonPosition" type="int" setter="_SetColorButtonPosition" getter="_GetColorButtonPosition" enum="ImGui.Dir" default="0">
+		</member>
+		<member name="Colors" type="PackedColorArray" setter="_SetColors" getter="_GetColors" default="PackedColorArray()">
+		</member>
+		<member name="ColumnsMinSpacing" type="float" setter="_SetColumnsMinSpacing" getter="_GetColumnsMinSpacing" default="0.0">
+		</member>
+		<member name="CurveTessellationTol" type="float" setter="_SetCurveTessellationTol" getter="_GetCurveTessellationTol" default="0.0">
+		</member>
+		<member name="DisabledAlpha" type="float" setter="_SetDisabledAlpha" getter="_GetDisabledAlpha" default="0.0">
+		</member>
+		<member name="DisplaySafeAreaPadding" type="Vector2" setter="_SetDisplaySafeAreaPadding" getter="_GetDisplaySafeAreaPadding" default="Vector2(0, 0)">
+		</member>
+		<member name="DisplayWindowPadding" type="Vector2" setter="_SetDisplayWindowPadding" getter="_GetDisplayWindowPadding" default="Vector2(0, 0)">
+		</member>
+		<member name="DockingSeparatorSize" type="float" setter="_SetDockingSeparatorSize" getter="_GetDockingSeparatorSize" default="0.0">
+		</member>
+		<member name="FrameBorderSize" type="float" setter="_SetFrameBorderSize" getter="_GetFrameBorderSize" default="0.0">
+		</member>
+		<member name="FramePadding" type="Vector2" setter="_SetFramePadding" getter="_GetFramePadding" default="Vector2(0, 0)">
+		</member>
+		<member name="FrameRounding" type="float" setter="_SetFrameRounding" getter="_GetFrameRounding" default="0.0">
+		</member>
+		<member name="GrabMinSize" type="float" setter="_SetGrabMinSize" getter="_GetGrabMinSize" default="0.0">
+		</member>
+		<member name="GrabRounding" type="float" setter="_SetGrabRounding" getter="_GetGrabRounding" default="0.0">
+		</member>
+		<member name="HoverDelayNormal" type="float" setter="_SetHoverDelayNormal" getter="_GetHoverDelayNormal" default="0.0">
+		</member>
+		<member name="HoverDelayShort" type="float" setter="_SetHoverDelayShort" getter="_GetHoverDelayShort" default="0.0">
+		</member>
+		<member name="HoverFlagsForTooltipMouse" type="int" setter="_SetHoverFlagsForTooltipMouse" getter="_GetHoverFlagsForTooltipMouse" enum="ImGui.HoveredFlags" is_bitfield="true" default="0">
+		</member>
+		<member name="HoverFlagsForTooltipNav" type="int" setter="_SetHoverFlagsForTooltipNav" getter="_GetHoverFlagsForTooltipNav" enum="ImGui.HoveredFlags" is_bitfield="true" default="0">
+		</member>
+		<member name="HoverStationaryDelay" type="float" setter="_SetHoverStationaryDelay" getter="_GetHoverStationaryDelay" default="0.0">
+		</member>
+		<member name="IndentSpacing" type="float" setter="_SetIndentSpacing" getter="_GetIndentSpacing" default="0.0">
+		</member>
+		<member name="ItemInnerSpacing" type="Vector2" setter="_SetItemInnerSpacing" getter="_GetItemInnerSpacing" default="Vector2(0, 0)">
+		</member>
+		<member name="ItemSpacing" type="Vector2" setter="_SetItemSpacing" getter="_GetItemSpacing" default="Vector2(0, 0)">
+		</member>
+		<member name="LogSliderDeadzone" type="float" setter="_SetLogSliderDeadzone" getter="_GetLogSliderDeadzone" default="0.0">
+		</member>
+		<member name="MouseCursorScale" type="float" setter="_SetMouseCursorScale" getter="_GetMouseCursorScale" default="0.0">
+		</member>
+		<member name="PopupBorderSize" type="float" setter="_SetPopupBorderSize" getter="_GetPopupBorderSize" default="0.0">
+		</member>
+		<member name="PopupRounding" type="float" setter="_SetPopupRounding" getter="_GetPopupRounding" default="0.0">
+		</member>
+		<member name="ScrollbarRounding" type="float" setter="_SetScrollbarRounding" getter="_GetScrollbarRounding" default="0.0">
+		</member>
+		<member name="ScrollbarSize" type="float" setter="_SetScrollbarSize" getter="_GetScrollbarSize" default="0.0">
+		</member>
+		<member name="SelectableTextAlign" type="Vector2" setter="_SetSelectableTextAlign" getter="_GetSelectableTextAlign" default="Vector2(0, 0)">
+		</member>
+		<member name="SeparatorTextAlign" type="Vector2" setter="_SetSeparatorTextAlign" getter="_GetSeparatorTextAlign" default="Vector2(0, 0)">
+		</member>
+		<member name="SeparatorTextBorderSize" type="float" setter="_SetSeparatorTextBorderSize" getter="_GetSeparatorTextBorderSize" default="0.0">
+		</member>
+		<member name="SeparatorTextPadding" type="Vector2" setter="_SetSeparatorTextPadding" getter="_GetSeparatorTextPadding" default="Vector2(0, 0)">
+		</member>
+		<member name="TabBarBorderSize" type="float" setter="_SetTabBarBorderSize" getter="_GetTabBarBorderSize" default="0.0">
+		</member>
+		<member name="TabBarOverlineSize" type="float" setter="_SetTabBarOverlineSize" getter="_GetTabBarOverlineSize" default="0.0">
+		</member>
+		<member name="TabBorderSize" type="float" setter="_SetTabBorderSize" getter="_GetTabBorderSize" default="0.0">
+		</member>
+		<member name="TabMinWidthForCloseButton" type="float" setter="_SetTabMinWidthForCloseButton" getter="_GetTabMinWidthForCloseButton" default="0.0">
+		</member>
+		<member name="TabRounding" type="float" setter="_SetTabRounding" getter="_GetTabRounding" default="0.0">
+		</member>
+		<member name="TableAngledHeadersAngle" type="float" setter="_SetTableAngledHeadersAngle" getter="_GetTableAngledHeadersAngle" default="0.0">
+		</member>
+		<member name="TableAngledHeadersTextAlign" type="Vector2" setter="_SetTableAngledHeadersTextAlign" getter="_GetTableAngledHeadersTextAlign" default="Vector2(0, 0)">
+		</member>
+		<member name="TouchExtraPadding" type="Vector2" setter="_SetTouchExtraPadding" getter="_GetTouchExtraPadding" default="Vector2(0, 0)">
+		</member>
+		<member name="WindowBorderSize" type="float" setter="_SetWindowBorderSize" getter="_GetWindowBorderSize" default="0.0">
+		</member>
+		<member name="WindowMenuButtonPosition" type="int" setter="_SetWindowMenuButtonPosition" getter="_GetWindowMenuButtonPosition" enum="ImGui.Dir" default="0">
+		</member>
+		<member name="WindowMinSize" type="Vector2" setter="_SetWindowMinSize" getter="_GetWindowMinSize" default="Vector2(0, 0)">
+		</member>
+		<member name="WindowPadding" type="Vector2" setter="_SetWindowPadding" getter="_GetWindowPadding" default="Vector2(0, 0)">
+		</member>
+		<member name="WindowRounding" type="float" setter="_SetWindowRounding" getter="_GetWindowRounding" default="0.0">
+		</member>
+		<member name="WindowTitleAlign" type="Vector2" setter="_SetWindowTitleAlign" getter="_GetWindowTitleAlign" default="Vector2(0, 0)">
+		</member>
+	</members>
+</class>

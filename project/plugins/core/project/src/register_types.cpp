@@ -10,6 +10,7 @@
 #endif
 
 #include "build_information.h"
+#include "function_library.h"
 #include "macros.h"
 
 using namespace godot;
@@ -23,13 +24,18 @@ void initialize_core_gdextension_types(ModuleInitializationLevel p_level) {
 	ImGui::Godot::SyncImGuiPtrs();
 #endif
 
+	GD_REGISTER_SINGLETON(FunctionLibrary);
 	GDREGISTER_RUNTIME_CLASS(BuildInformation);
+	
+	development_cleanup_temp_project_plugin_files();
 }
 
 void uninitialize_core_gdextension_types(ModuleInitializationLevel p_level) {
 	if (p_level != MODULE_INITIALIZATION_LEVEL_SCENE) {
 		return;
 	}
+	
+	GD_UNREGISTER_SINGLETON(FunctionLibrary);
 }
 
 extern "C" {

@@ -8,6 +8,7 @@
 #include <godot_cpp/core/property_info.hpp>
 #include <godot_cpp/core/type_info.hpp>
 #include <godot_cpp/variant/string.hpp>
+#include <godot_cpp/variant/string_name.hpp>
 #include <godot_cpp/variant/typed_array.hpp>
 #include <godot_cpp/variant/variant.hpp>
 
@@ -16,7 +17,18 @@ private:                                                                        
     p_type p_variable;                                                                                                                                                                                                                                                       \
                                                                                                                                                                                                                                                                              \
 public:                                                                                                                                                                                                                                                                      \
-    void set_##p_variable(const p_type p_##p_variable) { p_variable = p_##p_variable; }                                                                                                                                                                                      \
+    void set_##p_variable(p_type p_##p_variable) { p_variable = p_##p_variable; }                                                                                                                                                                                            \
+    p_type get_##p_variable() const { return p_variable; }
+
+#define GD_PROPERTY_WITH_NOTIFY(p_type, p_variable) /**********************************************************************************************************************************************************************************************************************/ \
+private:                                                                                                                                                                                                                                                                     \
+    p_type p_variable;                                                                                                                                                                                                                                                       \
+                                                                                                                                                                                                                                                                             \
+public:                                                                                                                                                                                                                                                                      \
+    void set_##p_variable(p_type p_##p_variable) {                                                                                                                                                                                                                           \
+        p_variable = p_##p_variable;                                                                                                                                                                                                                                         \
+        notify_property_list_changed();                                                                                                                                                                                                                                      \
+    }                                                                                                                                                                                                                                                                        \
     p_type get_##p_variable() const { return p_variable; }
 
 #define GD_BIND_METHOD(p_class, p_method_name, ...) /**********************************************************************************************************************************************************************************************************************/ \
@@ -27,6 +39,13 @@ public:                                                                         
         ClassDB::bind_method(D_METHOD("get_" #p_name), &p_class::get_##p_name);                                                                                                                                                                                              \
         ClassDB::bind_method(D_METHOD("set_" #p_name, "p_" #p_name), &p_class::set_##p_name);                                                                                                                                                                                \
         ADD_PROPERTY(PropertyInfo(p_type, #p_name), "set_" #p_name, "get_" #p_name);                                                                                                                                                                                         \
+    }
+
+#define GD_BIND_PROPERTY_HINT(p_class, p_name, p_type, p_hint_type, p_hint_string) /***************************************************************************************************************************************************************************************/ \
+    {                                                                                                                                                                                                                                                                        \
+        ClassDB::bind_method(D_METHOD("get_" #p_name), &p_class::get_##p_name);                                                                                                                                                                                              \
+        ClassDB::bind_method(D_METHOD("set_" #p_name, "p_" #p_name), &p_class::set_##p_name);                                                                                                                                                                                \
+        ADD_PROPERTY(PropertyInfo(p_type, #p_name, p_hint_type, p_hint_string), "set_" #p_name, "get_" #p_name);                                                                                                                                                             \
     }
 
 #define GD_BIND_ENUM_PROPERTY(p_class, p_name, enum_values) /**************************************************************************************************************************************************************************************************************/ \
@@ -110,3 +129,22 @@ public:                                                                         
             set_typed(m_variant_type, StringName(), Variant());                                                                                                                                                                                                              \
         }                                                                                                                                                                                                                                                                    \
     };
+
+#define GD_REGISTER_SINGLETON(p_class) /***********************************************************************************************************************************************************************************************************************************/ \
+    {                                                                                                                                                                                                                                                                        \
+        GD_LOCAL_PTR(engine, Engine::get_singleton());                                                                                                                                                                                                                       \
+        if (!engine->has_singleton(#p_class)) {                                                                                                                                                                                                                              \
+            GDREGISTER_RUNTIME_CLASS(p_class);                                                                                                                                                                                                                               \
+            p_class::create_singleton();                                                                                                                                                                                                                                     \
+            engine->register_singleton(StringName(#p_class), p_class::get_singleton());                                                                                                                                                                                      \
+        }                                                                                                                                                                                                                                                                    \
+    }
+
+#define GD_UNREGISTER_SINGLETON(p_class) /*********************************************************************************************************************************************************************************************************************************/ \
+    {                                                                                                                                                                                                                                                                        \
+        GD_LOCAL_PTR(engine, Engine::get_singleton());                                                                                                                                                                                                                       \
+        if (engine->has_singleton(#p_class)) {                                                                                                                                                                                                                               \
+            engine->unregister_singleton(#p_class);                                                                                                                                                                                                                          \
+            p_class::free_singleton();                                                                                                                                                                                                                                       \
+        }                                                                                                                                                                                                                                                                    \
+    }

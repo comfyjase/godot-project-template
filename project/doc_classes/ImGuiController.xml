@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="ImGuiController" inherits="Node" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+	</brief_description>
+	<description>
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="OnLayerExiting">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="on_frame_pre_draw">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="window_input_callback">
+			<return type="void" />
+			<param index="0" name="_unnamed_arg0" type="InputEvent" />
+			<description>
+			</description>
+		</method>
+	</methods>
+	<signals>
+		<signal name="imgui_layout">
+			<description>
+			</description>
+		</signal>
+	</signals>
+</class>

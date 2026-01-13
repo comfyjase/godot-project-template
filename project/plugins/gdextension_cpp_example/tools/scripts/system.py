@@ -85,21 +85,28 @@ architecture_aliases = {
 
 plugins = ["core", "doctest_runner"]
 
-def get_all_directories_recursive(root_directory):
+def get_all_directories_recursive(env, root_directory):
     directories = []
     
     for (search_path,directory_names,files) in os.walk(root_directory, topdown=True):
         search_path_with_ending_slash = os.path.join(search_path, '').replace('\\', '/')
+        
+        if ("src/tests/" in search_path_with_ending_slash and not is_unit_testing_allowed(env)):
+            continue
+        
         directories.append(search_path_with_ending_slash)
     
     return directories
     
-def get_all_files_recursive(root_directory, filetype='*.*'):
+def get_all_files_recursive(env, root_directory, filetype='*.*'):
     files_matching_type = []
 
     for (search_path,directory_names,files) in os.walk(root_directory, topdown=True):
         search_path_with_ending_slash = os.path.join(search_path, '').replace('\\', '/')
         
+        if ("src/tests/" in search_path_with_ending_slash and not is_unit_testing_allowed(env)):
+            continue
+            
         for (file) in files:
             if fnmatch.fnmatch(file, '*' + filetype):
                 files_matching_type.append(str(search_path_with_ending_slash + file))
@@ -117,11 +124,18 @@ def add_doctest(all_directories, cpp_defines):
     all_directories.append(os.path.join(godot_thirdparty_dir_path, "doctest"))
     cpp_defines.append("DOCTEST_CONFIG_NO_EXCEPTIONS_BUT_WITH_ALL_ASSERTS")
     
+def is_debug_target(env):
+    return env["target"] in ["editor", "editor_game", "development", "template_debug"]
+
+def is_unit_testing_allowed(env):
+    return is_debug_target(env) and (env["platform"] in ["windows", "linux", "macos"])
+
 def add_cpp_defines(env, cpp_defines):
-    if env["target"] in ["editor", "editor_game", "development", "template_debug"]:
+    if is_debug_target(env):
         cpp_defines.append("TOOLS_ENABLED")
         cpp_defines.append("DEBUG_ENABLED")
-        cpp_defines.append("TESTS_ENABLED")    
+        if is_unit_testing_allowed(env):
+            cpp_defines.append("TESTS_ENABLED")    
     
     if env["platform"] == "windows":
         cpp_defines.append("PLATFORM_WINDOWS")
@@ -143,13 +157,15 @@ def add_cpp_defines(env, cpp_defines):
     elif env["target"] == "template_release":
         cpp_defines.append("RELEASE")
     else:
+        if env["target"] == "development":
+            cpp_defines.append("DEVELOPMENT")
         cpp_defines.append("DEBUG")
 
 def add_plugins(plugin_names, env, customs, all_directories_array):
     # Include all plugin files.
     for (i, plugin_name) in enumerate(plugin_names):
         plugin_src_dir = os.path.join(plugins_dir_path, plugin_name, project_dir_name, "src")
-        all_directories_array.extend(get_all_directories_recursive(plugin_src_dir))
+        all_directories_array.extend(get_all_directories_recursive(env, plugin_src_dir))
 
     dynamically_link_plugins = (env["platform"] != "web")
     if not dynamically_link_plugins:

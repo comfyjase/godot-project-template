@@ -6,6 +6,7 @@
 #include <godot_cpp/classes/global_constants.hpp>
 #include <godot_cpp/classes/input.hpp>
 #include <godot_cpp/classes/label.hpp>
+#include <godot_cpp/classes/object.hpp>
 #include <godot_cpp/classes/os.hpp>
 #include <godot_cpp/classes/project_settings.hpp>
 #include <godot_cpp/classes/rendering_server.hpp>
@@ -14,6 +15,7 @@
 #include <godot_cpp/classes/viewport.hpp>
 #include <godot_cpp/core/class_db.hpp>
 #include <godot_cpp/core/print_string.hpp>
+#include <godot_cpp/variant/variant.hpp>
 
 #if IMGUI_ENABLED
 #include <imgui-godot.h>
@@ -23,13 +25,17 @@
 
 using namespace godot;
 
-void BuildInformation::_bind_methods() {}
+void BuildInformation::_bind_methods() {
+	GD_BIND_METHOD(BuildInformation, register_debug_system, "p_debug_system");
+	GD_BIND_METHOD(BuildInformation, unregister_debug_system, "p_debug_system");
+}
 
 BuildInformation::BuildInformation() :
 		always_show_build_information(true),
 		cpu_times(),
 		gpu_times(),
 		current_frame_history_index(0),
+		debug_systems(),
 		input(nullptr),
 		rendering_server(nullptr),
 		viewport(nullptr),
@@ -106,9 +112,11 @@ void BuildInformation::_ready() {
 	init_build_information_rich_text_label(gpu_frame_time_label, "GPUFrameTimeLabel", debug_ui_minimum_size);
 }
 
-void BuildInformation::_input(const Ref<InputEvent> &p_event) {
+void BuildInformation::_unhandled_input(const Ref<InputEvent> &p_event) {
 #if IMGUI_ENABLED
 	ERR_FAIL_NULL(input);
+
+	GD_LOCAL_PTR(viewport, get_viewport());
 
 	const bool imgui_toggle_debug_joypad_input = (input->is_joy_button_pressed(0, JoyButton::JOY_BUTTON_LEFT_STICK) && input->is_joy_button_pressed(0, JoyButton::JOY_BUTTON_RIGHT_STICK));
 	const bool imgui_toggle_focus_joypad_input = (input->is_joy_button_pressed(0, JoyButton::JOY_BUTTON_LEFT_STICK) && input->is_joy_button_pressed(0, JoyButton::JOY_BUTTON_DPAD_DOWN));
@@ -125,6 +133,9 @@ void BuildInformation::_input(const Ref<InputEvent> &p_event) {
 			focus = false;
 			on_disable_focus();
 		}
+
+		viewport->set_input_as_handled();
+		return;
 	}
 
 	if (input->is_action_just_pressed("imgui_toggle_focus")) {
@@ -135,6 +146,9 @@ void BuildInformation::_input(const Ref<InputEvent> &p_event) {
 		} else {
 			on_disable_focus();
 		}
+
+		viewport->set_input_as_handled();
+		return;
 	}
 
 	// Joypad input
@@ -150,6 +164,8 @@ void BuildInformation::_input(const Ref<InputEvent> &p_event) {
 				focus = false;
 				on_disable_focus();
 			}
+			viewport->set_input_as_handled();
+			return;
 		}
 	} else {
 		joypad_show_imgui_debug_button_just_pressed = false;
@@ -165,6 +181,8 @@ void BuildInformation::_input(const Ref<InputEvent> &p_event) {
 			} else {
 				on_disable_focus();
 			}
+
+			viewport->set_input_as_handled();
 		}
 	} else {
 		joypad_focus_imgui_debug_button_just_pressed = false;
@@ -186,6 +204,30 @@ void BuildInformation::_process(double delta) {
 	draw_build_information(delta);
 
 #if IMGUI_ENABLED
+	auto interpolate_func = [&](float x, float minInput, float maxInput, float minOutput, float maxOutput) -> float {
+		// clamp values outside the range
+		if (x <= minInput)
+			x = minInput;
+		if (x >= maxInput)
+			x = maxInput;
+
+		// normalize x
+		float t = (x - minInput) / (maxInput - minInput);
+
+		// interpolate
+		return minOutput + (maxOutput - minOutput) * t;
+	};
+
+	const int MIN_WIDTH_SUPPORTED = 1080; // FHD width
+	const int MAX_WIDTH_SUPPORTED = 3840; // 4K width
+	const float MIN_SCALE = 1.0;
+	const float MAX_SCALE = 1.5;
+
+	const Vector2i &screen_size = DisplayServer::get_singleton()->screen_get_size();
+	float global_font_ui_scale = interpolate_func(screen_size.x, MIN_WIDTH_SUPPORTED, MAX_WIDTH_SUPPORTED, MIN_SCALE, MAX_SCALE);
+	ImGuiIO &io = ImGui::GetIO();
+	io.FontGlobalScale = global_font_ui_scale;
+
 	GD_LOCAL_PTR(scene_tree, get_tree());
 	GD_LOCAL_PTR(root_node, scene_tree->get_current_scene());
 
@@ -215,13 +257,42 @@ void BuildInformation::_process(double delta) {
 	ImGui::End();
 
 	if (selected_node != nullptr && root_node != selected_node && selected_node->has_method("draw_debug")) {
-		ImGui::Begin("Debug Menu");
+		ImGui::Begin("Selected Node Debug Menu");
 		{
 			draw_debug_menu(selected_node);
 		}
 		ImGui::End();
 	}
+
+	ImGui::Begin("Debug Systems");
+	{
+		ImGui::BeginTabBar("##debug_systems_tabs");
+		{
+			for (int i = 0; i < debug_systems.size(); ++i) {
+				Variant debug_system = debug_systems[i];
+				if (debug_system.has_method("draw_debug")) {
+					debug_system.call("draw_debug");
+				}
+			}
+			ImGui::EndTabBar();
+		}
+	}
+	ImGui::End();
 #endif
+}
+
+void BuildInformation::register_debug_system(Object *p_debug_system) {
+	ERR_FAIL_NULL(p_debug_system);
+	debug_systems.append(p_debug_system);
+}
+
+void BuildInformation::unregister_debug_system(Object *p_debug_system) {
+	ERR_FAIL_NULL(p_debug_system);
+	debug_systems.erase(p_debug_system);
+}
+
+bool BuildInformation::is_showing() const {
+	return show && focus;
 }
 
 void BuildInformation::init_build_information_rich_text_label(RichTextLabel *rich_text_label, String label_name, const Vector2 &size) {
@@ -312,7 +383,7 @@ void BuildInformation::draw_node_hierarchy(Node *node) {
 		any_hierarchy_item_selected = true;
 	}
 
-	const String &node_name = node->get_name().c_unescape();
+	const String &node_name = node->get_name() + String("##") + String::num_uint64(node->get_instance_id());
 
 	auto draw_node_and_children_func = [&]() {
 		if (ImGui::TreeNodeEx(node_name.utf8().get_data(), flag)) {

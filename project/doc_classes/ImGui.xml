@@ -1,0 +1,4624 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="ImGui" inherits="Object" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+	</brief_description>
+	<description>
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="AlignTextToFramePadding" qualifiers="static">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="ArrowButton" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="str_id" type="StringName" />
+			<param index="1" name="dir" type="int" enum="ImGui.Dir" />
+			<description>
+			</description>
+		</method>
+		<method name="Begin" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="name" type="StringName" />
+			<param index="1" name="p_open" type="Array" default="[]" />
+			<param index="2" name="flags" type="int" enum="ImGui.WindowFlags" is_bitfield="true" default="0" />
+			<description>
+			</description>
+		</method>
+		<method name="BeginChild" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="str_id" type="StringName" />
+			<param index="1" name="size" type="Vector2" default="Vector2(0, 0)" />
+			<param index="2" name="child_flags" type="int" enum="ImGui.ChildFlags" is_bitfield="true" default="0" />
+			<param index="3" name="window_flags" type="int" enum="ImGui.WindowFlags" is_bitfield="true" default="0" />
+			<description>
+			</description>
+		</method>
+		<method name="BeginChildID" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="id" type="int" />
+			<param index="1" name="size" type="Vector2" default="Vector2(0, 0)" />
+			<param index="2" name="child_flags" type="int" enum="ImGui.ChildFlags" is_bitfield="true" default="0" />
+			<param index="3" name="window_flags" type="int" enum="ImGui.WindowFlags" is_bitfield="true" default="0" />
+			<description>
+			</description>
+		</method>
+		<method name="BeginCombo" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="preview_value" type="String" />
+			<param index="2" name="flags" type="int" enum="ImGui.ComboFlags" is_bitfield="true" default="0" />
+			<description>
+			</description>
+		</method>
+		<method name="BeginDisabled" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="disabled" type="bool" default="true" />
+			<description>
+			</description>
+		</method>
+		<method name="BeginDragDropSource" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="flags" type="int" enum="ImGui.DragDropFlags" is_bitfield="true" default="0" />
+			<description>
+			</description>
+		</method>
+		<method name="BeginDragDropTarget" qualifiers="static">
+			<return type="bool" />
+			<description>
+			</description>
+		</method>
+		<method name="BeginGroup" qualifiers="static">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="BeginItemTooltip" qualifiers="static">
+			<return type="bool" />
+			<description>
+			</description>
+		</method>
+		<method name="BeginListBox" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="size" type="Vector2" default="Vector2(0, 0)" />
+			<description>
+			</description>
+		</method>
+		<method name="BeginMainMenuBar" qualifiers="static">
+			<return type="bool" />
+			<description>
+			</description>
+		</method>
+		<method name="BeginMenu" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<description>
+			</description>
+		</method>
+		<method name="BeginMenuBar" qualifiers="static">
+			<return type="bool" />
+			<description>
+			</description>
+		</method>
+		<method name="BeginMenuEx" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="enabled" type="bool" default="true" />
+			<description>
+			</description>
+		</method>
+		<method name="BeginMultiSelect" qualifiers="static">
+			<return type="ImGuiMultiSelectIOPtr" />
+			<param index="0" name="flags" type="int" enum="ImGui.MultiSelectFlags" is_bitfield="true" />
+			<description>
+			</description>
+		</method>
+		<method name="BeginMultiSelectEx" qualifiers="static">
+			<return type="ImGuiMultiSelectIOPtr" />
+			<param index="0" name="flags" type="int" enum="ImGui.MultiSelectFlags" is_bitfield="true" />
+			<param index="1" name="selection_size" type="int" default="-1" />
+			<param index="2" name="items_count" type="int" default="-1" />
+			<description>
+			</description>
+		</method>
+		<method name="BeginPopup" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="str_id" type="StringName" />
+			<param index="1" name="flags" type="int" enum="ImGui.WindowFlags" is_bitfield="true" default="0" />
+			<description>
+			</description>
+		</method>
+		<method name="BeginPopupContextItem" qualifiers="static">
+			<return type="bool" />
+			<description>
+			</description>
+		</method>
+		<method name="BeginPopupContextItemEx" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="str_id" type="StringName" default="&amp;&quot;&quot;" />
+			<param index="1" name="popup_flags" type="int" enum="ImGui.PopupFlags" is_bitfield="true" default="1" />
+			<description>
+			</description>
+		</method>
+		<method name="BeginPopupContextVoid" qualifiers="static">
+			<return type="bool" />
+			<description>
+			</description>
+		</method>
+		<method name="BeginPopupContextVoidEx" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="str_id" type="StringName" default="&amp;&quot;&quot;" />
+			<param index="1" name="popup_flags" type="int" enum="ImGui.PopupFlags" is_bitfield="true" default="1" />
+			<description>
+			</description>
+		</method>
+		<method name="BeginPopupContextWindow" qualifiers="static">
+			<return type="bool" />
+			<description>
+			</description>
+		</method>
+		<method name="BeginPopupContextWindowEx" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="str_id" type="StringName" default="&amp;&quot;&quot;" />
+			<param index="1" name="popup_flags" type="int" enum="ImGui.PopupFlags" is_bitfield="true" default="1" />
+			<description>
+			</description>
+		</method>
+		<method name="BeginPopupModal" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="name" type="StringName" />
+			<param index="1" name="p_open" type="Array" default="[]" />
+			<param index="2" name="flags" type="int" enum="ImGui.WindowFlags" is_bitfield="true" default="0" />
+			<description>
+			</description>
+		</method>
+		<method name="BeginTabBar" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="str_id" type="StringName" />
+			<param index="1" name="flags" type="int" enum="ImGui.TabBarFlags" is_bitfield="true" default="0" />
+			<description>
+			</description>
+		</method>
+		<method name="BeginTabItem" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="p_open" type="Array" default="[]" />
+			<param index="2" name="flags" type="int" enum="ImGui.TabItemFlags" is_bitfield="true" default="0" />
+			<description>
+			</description>
+		</method>
+		<method name="BeginTable" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="str_id" type="StringName" />
+			<param index="1" name="columns" type="int" />
+			<param index="2" name="flags" type="int" enum="ImGui.TableFlags" is_bitfield="true" default="0" />
+			<description>
+			</description>
+		</method>
+		<method name="BeginTableEx" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="str_id" type="StringName" />
+			<param index="1" name="columns" type="int" />
+			<param index="2" name="flags" type="int" enum="ImGui.TableFlags" is_bitfield="true" default="0" />
+			<param index="3" name="outer_size" type="Vector2" default="Vector2(0, 0)" />
+			<param index="4" name="inner_width" type="float" default="0.0" />
+			<description>
+			</description>
+		</method>
+		<method name="BeginTooltip" qualifiers="static">
+			<return type="bool" />
+			<description>
+			</description>
+		</method>
+		<method name="Bullet" qualifiers="static">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="BulletText" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="fmt" type="String" />
+			<description>
+			</description>
+		</method>
+		<method name="Button" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<description>
+			</description>
+		</method>
+		<method name="ButtonEx" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="size" type="Vector2" default="Vector2(0, 0)" />
+			<description>
+			</description>
+		</method>
+		<method name="CalcItemWidth" qualifiers="static">
+			<return type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="CalcTextSize" qualifiers="static">
+			<return type="Vector2" />
+			<param index="0" name="text" type="String" />
+			<description>
+			</description>
+		</method>
+		<method name="CalcTextSizeEx" qualifiers="static">
+			<return type="Vector2" />
+			<param index="0" name="text" type="String" />
+			<param index="1" name="text_end" type="String" default="&quot;&quot;" />
+			<param index="2" name="hide_text_after_double_hash" type="bool" default="false" />
+			<param index="3" name="wrap_width" type="float" default="-1.0" />
+			<description>
+			</description>
+		</method>
+		<method name="Checkbox" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="v" type="Array" />
+			<description>
+			</description>
+		</method>
+		<method name="CheckboxFlagsIntPtr" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="flags" type="Array" />
+			<param index="2" name="flags_value" type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="CloseCurrentPopup" qualifiers="static">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="CollapsingHeader" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="flags" type="int" enum="ImGui.TreeNodeFlags" is_bitfield="true" default="0" />
+			<description>
+			</description>
+		</method>
+		<method name="CollapsingHeaderBoolPtr" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="p_visible" type="Array" />
+			<param index="2" name="flags" type="int" enum="ImGui.TreeNodeFlags" is_bitfield="true" default="0" />
+			<description>
+			</description>
+		</method>
+		<method name="ColorButton" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="desc_id" type="StringName" />
+			<param index="1" name="col" type="Color" />
+			<param index="2" name="flags" type="int" enum="ImGui.ColorEditFlags" is_bitfield="true" default="0" />
+			<description>
+			</description>
+		</method>
+		<method name="ColorButtonEx" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="desc_id" type="StringName" />
+			<param index="1" name="col" type="Color" />
+			<param index="2" name="flags" type="int" enum="ImGui.ColorEditFlags" is_bitfield="true" default="0" />
+			<param index="3" name="size" type="Vector2" default="Vector2(0, 0)" />
+			<description>
+			</description>
+		</method>
+		<method name="ColorEdit3" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="col" type="Array" />
+			<param index="2" name="flags" type="int" enum="ImGui.ColorEditFlags" is_bitfield="true" default="0" />
+			<description>
+			</description>
+		</method>
+		<method name="ColorEdit4" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="col" type="Array" />
+			<param index="2" name="flags" type="int" enum="ImGui.ColorEditFlags" is_bitfield="true" default="0" />
+			<description>
+			</description>
+		</method>
+		<method name="ColorPicker3" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="col" type="Array" />
+			<param index="2" name="flags" type="int" enum="ImGui.ColorEditFlags" is_bitfield="true" default="0" />
+			<description>
+			</description>
+		</method>
+		<method name="ColorPicker4" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="col" type="Array" />
+			<param index="2" name="flags" type="int" enum="ImGui.ColorEditFlags" is_bitfield="true" default="0" />
+			<param index="3" name="ref_col" type="Array" default="[]" />
+			<description>
+			</description>
+		</method>
+		<method name="Columns" qualifiers="static">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="ColumnsEx" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="count" type="int" default="1" />
+			<param index="1" name="id" type="StringName" default="&amp;&quot;&quot;" />
+			<param index="2" name="borders" type="bool" default="true" />
+			<description>
+			</description>
+		</method>
+		<method name="Combo" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="current_item" type="Array" />
+			<param index="2" name="items_separated_by_zeros" type="Array" />
+			<description>
+			</description>
+		</method>
+		<method name="ComboChar" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="current_item" type="Array" />
+			<param index="2" name="items" type="Array" />
+			<param index="3" name="items_count" type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="ComboCharEx" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="current_item" type="Array" />
+			<param index="2" name="items" type="Array" />
+			<param index="3" name="items_count" type="int" />
+			<param index="4" name="popup_max_height_in_items" type="int" default="-1" />
+			<description>
+			</description>
+		</method>
+		<method name="ComboEx" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="current_item" type="Array" />
+			<param index="2" name="items_separated_by_zeros" type="Array" />
+			<param index="3" name="popup_max_height_in_items" type="int" default="-1" />
+			<description>
+			</description>
+		</method>
+		<method name="DebugCheckVersionAndDataLayout" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="version_str" type="String" />
+			<param index="1" name="sz_io" type="int" />
+			<param index="2" name="sz_style" type="int" />
+			<param index="3" name="sz_vec2" type="int" />
+			<param index="4" name="sz_vec4" type="int" />
+			<param index="5" name="sz_drawvert" type="int" />
+			<param index="6" name="sz_drawidx" type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="DebugFlashStyleColor" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="idx" type="int" enum="ImGui.Col" />
+			<description>
+			</description>
+		</method>
+		<method name="DebugLog" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="fmt" type="String" />
+			<description>
+			</description>
+		</method>
+		<method name="DebugStartItemPicker" qualifiers="static">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="DebugTextEncoding" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="text" type="String" />
+			<description>
+			</description>
+		</method>
+		<method name="DockSpace" qualifiers="static">
+			<return type="int" />
+			<param index="0" name="dockspace_id" type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="DockSpaceEx" qualifiers="static">
+			<return type="int" />
+			<param index="0" name="dockspace_id" type="int" />
+			<param index="1" name="size" type="Vector2" default="Vector2(0, 0)" />
+			<param index="2" name="flags" type="int" enum="ImGui.DockNodeFlags" is_bitfield="true" default="0" />
+			<param index="3" name="window_class" type="ImGuiWindowClassPtr" default="null" />
+			<description>
+			</description>
+		</method>
+		<method name="DockSpaceOverViewport" qualifiers="static">
+			<return type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="DragFloat" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="v" type="Array" />
+			<description>
+			</description>
+		</method>
+		<method name="DragFloat2" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="v" type="Array" />
+			<description>
+			</description>
+		</method>
+		<method name="DragFloat2Ex" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="v" type="Array" />
+			<param index="2" name="v_speed" type="float" default="1.0" />
+			<param index="3" name="v_min" type="float" default="0.0" />
+			<param index="4" name="v_max" type="float" default="0.0" />
+			<param index="5" name="format" type="String" default="&quot;%.3f&quot;" />
+			<param index="6" name="flags" type="int" enum="ImGui.SliderFlags" is_bitfield="true" default="0" />
+			<description>
+			</description>
+		</method>
+		<method name="DragFloat3" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="v" type="Array" />
+			<description>
+			</description>
+		</method>
+		<method name="DragFloat3Ex" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="v" type="Array" />
+			<param index="2" name="v_speed" type="float" default="1.0" />
+			<param index="3" name="v_min" type="float" default="0.0" />
+			<param index="4" name="v_max" type="float" default="0.0" />
+			<param index="5" name="format" type="String" default="&quot;%.3f&quot;" />
+			<param index="6" name="flags" type="int" enum="ImGui.SliderFlags" is_bitfield="true" default="0" />
+			<description>
+			</description>
+		</method>
+		<method name="DragFloat4" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="v" type="Array" />
+			<description>
+			</description>
+		</method>
+		<method name="DragFloat4Ex" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="v" type="Array" />
+			<param index="2" name="v_speed" type="float" default="1.0" />
+			<param index="3" name="v_min" type="float" default="0.0" />
+			<param index="4" name="v_max" type="float" default="0.0" />
+			<param index="5" name="format" type="String" default="&quot;%.3f&quot;" />
+			<param index="6" name="flags" type="int" enum="ImGui.SliderFlags" is_bitfield="true" default="0" />
+			<description>
+			</description>
+		</method>
+		<method name="DragFloatEx" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="v" type="Array" />
+			<param index="2" name="v_speed" type="float" default="1.0" />
+			<param index="3" name="v_min" type="float" default="0.0" />
+			<param index="4" name="v_max" type="float" default="0.0" />
+			<param index="5" name="format" type="String" default="&quot;%.3f&quot;" />
+			<param index="6" name="flags" type="int" enum="ImGui.SliderFlags" is_bitfield="true" default="0" />
+			<description>
+			</description>
+		</method>
+		<method name="DragFloatRange2" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="v_current_min" type="Array" />
+			<param index="2" name="v_current_max" type="Array" />
+			<description>
+			</description>
+		</method>
+		<method name="DragFloatRange2Ex" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="v_current_min" type="Array" />
+			<param index="2" name="v_current_max" type="Array" />
+			<param index="3" name="v_speed" type="float" default="1.0" />
+			<param index="4" name="v_min" type="float" default="0.0" />
+			<param index="5" name="v_max" type="float" default="0.0" />
+			<param index="6" name="format" type="String" default="&quot;%.3f&quot;" />
+			<param index="7" name="format_max" type="String" default="&quot;&quot;" />
+			<param index="8" name="flags" type="int" enum="ImGui.SliderFlags" is_bitfield="true" default="0" />
+			<description>
+			</description>
+		</method>
+		<method name="DragInt" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="v" type="Array" />
+			<description>
+			</description>
+		</method>
+		<method name="DragInt2" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="v" type="Array" />
+			<description>
+			</description>
+		</method>
+		<method name="DragInt2Ex" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="v" type="Array" />
+			<param index="2" name="v_speed" type="float" default="1.0" />
+			<param index="3" name="v_min" type="int" default="0" />
+			<param index="4" name="v_max" type="int" default="0" />
+			<param index="5" name="format" type="String" default="&quot;%d&quot;" />
+			<param index="6" name="flags" type="int" enum="ImGui.SliderFlags" is_bitfield="true" default="0" />
+			<description>
+			</description>
+		</method>
+		<method name="DragInt3" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="v" type="Array" />
+			<description>
+			</description>
+		</method>
+		<method name="DragInt3Ex" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="v" type="Array" />
+			<param index="2" name="v_speed" type="float" default="1.0" />
+			<param index="3" name="v_min" type="int" default="0" />
+			<param index="4" name="v_max" type="int" default="0" />
+			<param index="5" name="format" type="String" default="&quot;%d&quot;" />
+			<param index="6" name="flags" type="int" enum="ImGui.SliderFlags" is_bitfield="true" default="0" />
+			<description>
+			</description>
+		</method>
+		<method name="DragInt4" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="v" type="Array" />
+			<description>
+			</description>
+		</method>
+		<method name="DragInt4Ex" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="v" type="Array" />
+			<param index="2" name="v_speed" type="float" default="1.0" />
+			<param index="3" name="v_min" type="int" default="0" />
+			<param index="4" name="v_max" type="int" default="0" />
+			<param index="5" name="format" type="String" default="&quot;%d&quot;" />
+			<param index="6" name="flags" type="int" enum="ImGui.SliderFlags" is_bitfield="true" default="0" />
+			<description>
+			</description>
+		</method>
+		<method name="DragIntEx" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="v" type="Array" />
+			<param index="2" name="v_speed" type="float" default="1.0" />
+			<param index="3" name="v_min" type="int" default="0" />
+			<param index="4" name="v_max" type="int" default="0" />
+			<param index="5" name="format" type="String" default="&quot;%d&quot;" />
+			<param index="6" name="flags" type="int" enum="ImGui.SliderFlags" is_bitfield="true" default="0" />
+			<description>
+			</description>
+		</method>
+		<method name="DragIntRange2" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="v_current_min" type="Array" />
+			<param index="2" name="v_current_max" type="Array" />
+			<description>
+			</description>
+		</method>
+		<method name="DragIntRange2Ex" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="v_current_min" type="Array" />
+			<param index="2" name="v_current_max" type="Array" />
+			<param index="3" name="v_speed" type="float" default="1.0" />
+			<param index="4" name="v_min" type="int" default="0" />
+			<param index="5" name="v_max" type="int" default="0" />
+			<param index="6" name="format" type="String" default="&quot;%d&quot;" />
+			<param index="7" name="format_max" type="String" default="&quot;&quot;" />
+			<param index="8" name="flags" type="int" enum="ImGui.SliderFlags" is_bitfield="true" default="0" />
+			<description>
+			</description>
+		</method>
+		<method name="Dummy" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="size" type="Vector2" />
+			<description>
+			</description>
+		</method>
+		<method name="End" qualifiers="static">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="EndChild" qualifiers="static">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="EndCombo" qualifiers="static">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="EndDisabled" qualifiers="static">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="EndDragDropSource" qualifiers="static">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="EndDragDropTarget" qualifiers="static">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="EndGroup" qualifiers="static">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="EndListBox" qualifiers="static">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="EndMainMenuBar" qualifiers="static">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="EndMenu" qualifiers="static">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="EndMenuBar" qualifiers="static">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="EndMultiSelect" qualifiers="static">
+			<return type="ImGuiMultiSelectIOPtr" />
+			<description>
+			</description>
+		</method>
+		<method name="EndPopup" qualifiers="static">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="EndTabBar" qualifiers="static">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="EndTabItem" qualifiers="static">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="EndTable" qualifiers="static">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="EndTooltip" qualifiers="static">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="GetBackgroundDrawList" qualifiers="static">
+			<return type="ImDrawListPtr" />
+			<description>
+			</description>
+		</method>
+		<method name="GetClipboardText" qualifiers="static">
+			<return type="String" />
+			<description>
+			</description>
+		</method>
+		<method name="GetColumnIndex" qualifiers="static">
+			<return type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="GetColumnOffset" qualifiers="static">
+			<return type="float" />
+			<param index="0" name="column_index" type="int" default="-1" />
+			<description>
+			</description>
+		</method>
+		<method name="GetColumnWidth" qualifiers="static">
+			<return type="float" />
+			<param index="0" name="column_index" type="int" default="-1" />
+			<description>
+			</description>
+		</method>
+		<method name="GetColumnsCount" qualifiers="static">
+			<return type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="GetContentRegionAvail" qualifiers="static">
+			<return type="Vector2" />
+			<description>
+			</description>
+		</method>
+		<method name="GetCursorPos" qualifiers="static">
+			<return type="Vector2" />
+			<description>
+			</description>
+		</method>
+		<method name="GetCursorPosX" qualifiers="static">
+			<return type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="GetCursorPosY" qualifiers="static">
+			<return type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="GetCursorScreenPos" qualifiers="static">
+			<return type="Vector2" />
+			<description>
+			</description>
+		</method>
+		<method name="GetCursorStartPos" qualifiers="static">
+			<return type="Vector2" />
+			<description>
+			</description>
+		</method>
+		<method name="GetFont" qualifiers="static">
+			<return type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="GetFontSize" qualifiers="static">
+			<return type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="GetFontTexUvWhitePixel" qualifiers="static">
+			<return type="Vector2" />
+			<description>
+			</description>
+		</method>
+		<method name="GetForegroundDrawList" qualifiers="static">
+			<return type="ImDrawListPtr" />
+			<description>
+			</description>
+		</method>
+		<method name="GetFrameCount" qualifiers="static">
+			<return type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="GetFrameHeight" qualifiers="static">
+			<return type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="GetFrameHeightWithSpacing" qualifiers="static">
+			<return type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="GetID" qualifiers="static">
+			<return type="int" />
+			<param index="0" name="str_id" type="StringName" />
+			<description>
+			</description>
+		</method>
+		<method name="GetIDInt" qualifiers="static">
+			<return type="int" />
+			<param index="0" name="int_id" type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="GetIO" qualifiers="static">
+			<return type="ImGuiIOPtr" />
+			<description>
+			</description>
+		</method>
+		<method name="GetItemID" qualifiers="static">
+			<return type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="GetItemRectMax" qualifiers="static">
+			<return type="Vector2" />
+			<description>
+			</description>
+		</method>
+		<method name="GetItemRectMin" qualifiers="static">
+			<return type="Vector2" />
+			<description>
+			</description>
+		</method>
+		<method name="GetItemRectSize" qualifiers="static">
+			<return type="Vector2" />
+			<description>
+			</description>
+		</method>
+		<method name="GetKeyName" qualifiers="static">
+			<return type="String" />
+			<param index="0" name="key" type="int" enum="ImGui.Key" />
+			<description>
+			</description>
+		</method>
+		<method name="GetKeyPressedAmount" qualifiers="static">
+			<return type="int" />
+			<param index="0" name="key" type="int" enum="ImGui.Key" />
+			<param index="1" name="repeat_delay" type="float" />
+			<param index="2" name="rate" type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="GetMouseClickedCount" qualifiers="static">
+			<return type="int" />
+			<param index="0" name="button" type="int" enum="ImGui.MouseButton" />
+			<description>
+			</description>
+		</method>
+		<method name="GetMouseCursor" qualifiers="static">
+			<return type="int" enum="ImGui.MouseCursor" />
+			<description>
+			</description>
+		</method>
+		<method name="GetMouseDragDelta" qualifiers="static">
+			<return type="Vector2" />
+			<param index="0" name="button" type="int" enum="ImGui.MouseButton" default="0" />
+			<param index="1" name="lock_threshold" type="float" default="-1.0" />
+			<description>
+			</description>
+		</method>
+		<method name="GetMousePos" qualifiers="static">
+			<return type="Vector2" />
+			<description>
+			</description>
+		</method>
+		<method name="GetMousePosOnOpeningCurrentPopup" qualifiers="static">
+			<return type="Vector2" />
+			<description>
+			</description>
+		</method>
+		<method name="GetScrollMaxX" qualifiers="static">
+			<return type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="GetScrollMaxY" qualifiers="static">
+			<return type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="GetScrollX" qualifiers="static">
+			<return type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="GetScrollY" qualifiers="static">
+			<return type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="GetStyle" qualifiers="static">
+			<return type="ImGuiStylePtr" />
+			<description>
+			</description>
+		</method>
+		<method name="GetStyleColorName" qualifiers="static">
+			<return type="String" />
+			<param index="0" name="idx" type="int" enum="ImGui.Col" />
+			<description>
+			</description>
+		</method>
+		<method name="GetTextLineHeight" qualifiers="static">
+			<return type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="GetTextLineHeightWithSpacing" qualifiers="static">
+			<return type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="GetTime" qualifiers="static">
+			<return type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="GetTreeNodeToLabelSpacing" qualifiers="static">
+			<return type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="GetVersion" qualifiers="static">
+			<return type="String" />
+			<description>
+			</description>
+		</method>
+		<method name="GetWindowDockID" qualifiers="static">
+			<return type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="GetWindowDpiScale" qualifiers="static">
+			<return type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="GetWindowDrawList" qualifiers="static">
+			<return type="ImDrawListPtr" />
+			<description>
+			</description>
+		</method>
+		<method name="GetWindowHeight" qualifiers="static">
+			<return type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="GetWindowPos" qualifiers="static">
+			<return type="Vector2" />
+			<description>
+			</description>
+		</method>
+		<method name="GetWindowSize" qualifiers="static">
+			<return type="Vector2" />
+			<description>
+			</description>
+		</method>
+		<method name="GetWindowWidth" qualifiers="static">
+			<return type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="ImDrawList_AddBezierCubic" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="self" type="ImDrawListPtr" />
+			<param index="1" name="p1" type="Vector2" />
+			<param index="2" name="p2" type="Vector2" />
+			<param index="3" name="p3" type="Vector2" />
+			<param index="4" name="p4" type="Vector2" />
+			<param index="5" name="col" type="Color" />
+			<param index="6" name="thickness" type="float" />
+			<param index="7" name="num_segments" type="int" default="0" />
+			<description>
+			</description>
+		</method>
+		<method name="ImDrawList_AddBezierQuadratic" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="self" type="ImDrawListPtr" />
+			<param index="1" name="p1" type="Vector2" />
+			<param index="2" name="p2" type="Vector2" />
+			<param index="3" name="p3" type="Vector2" />
+			<param index="4" name="col" type="Color" />
+			<param index="5" name="thickness" type="float" />
+			<param index="6" name="num_segments" type="int" default="0" />
+			<description>
+			</description>
+		</method>
+		<method name="ImDrawList_AddCircle" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="self" type="ImDrawListPtr" />
+			<param index="1" name="center" type="Vector2" />
+			<param index="2" name="radius" type="float" />
+			<param index="3" name="col" type="Color" />
+			<description>
+			</description>
+		</method>
+		<method name="ImDrawList_AddCircleEx" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="self" type="ImDrawListPtr" />
+			<param index="1" name="center" type="Vector2" />
+			<param index="2" name="radius" type="float" />
+			<param index="3" name="col" type="Color" />
+			<param index="4" name="num_segments" type="int" default="0" />
+			<param index="5" name="thickness" type="float" default="1.0" />
+			<description>
+			</description>
+		</method>
+		<method name="ImDrawList_AddCircleFilled" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="self" type="ImDrawListPtr" />
+			<param index="1" name="center" type="Vector2" />
+			<param index="2" name="radius" type="float" />
+			<param index="3" name="col" type="Color" />
+			<param index="4" name="num_segments" type="int" default="0" />
+			<description>
+			</description>
+		</method>
+		<method name="ImDrawList_AddDrawCmd" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="self" type="ImDrawListPtr" />
+			<description>
+			</description>
+		</method>
+		<method name="ImDrawList_AddEllipse" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="self" type="ImDrawListPtr" />
+			<param index="1" name="center" type="Vector2" />
+			<param index="2" name="radius" type="Vector2" />
+			<param index="3" name="col" type="Color" />
+			<description>
+			</description>
+		</method>
+		<method name="ImDrawList_AddEllipseEx" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="self" type="ImDrawListPtr" />
+			<param index="1" name="center" type="Vector2" />
+			<param index="2" name="radius" type="Vector2" />
+			<param index="3" name="col" type="Color" />
+			<param index="4" name="rot" type="float" default="0.0" />
+			<param index="5" name="num_segments" type="int" default="0" />
+			<param index="6" name="thickness" type="float" default="1.0" />
+			<description>
+			</description>
+		</method>
+		<method name="ImDrawList_AddEllipseFilled" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="self" type="ImDrawListPtr" />
+			<param index="1" name="center" type="Vector2" />
+			<param index="2" name="radius" type="Vector2" />
+			<param index="3" name="col" type="Color" />
+			<description>
+			</description>
+		</method>
+		<method name="ImDrawList_AddEllipseFilledEx" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="self" type="ImDrawListPtr" />
+			<param index="1" name="center" type="Vector2" />
+			<param index="2" name="radius" type="Vector2" />
+			<param index="3" name="col" type="Color" />
+			<param index="4" name="rot" type="float" default="0.0" />
+			<param index="5" name="num_segments" type="int" default="0" />
+			<description>
+			</description>
+		</method>
+		<method name="ImDrawList_AddImage" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="self" type="ImDrawListPtr" />
+			<param index="1" name="user_texture_id" type="Texture2D" />
+			<param index="2" name="p_min" type="Vector2" />
+			<param index="3" name="p_max" type="Vector2" />
+			<description>
+			</description>
+		</method>
+		<method name="ImDrawList_AddImageEx" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="self" type="ImDrawListPtr" />
+			<param index="1" name="user_texture_id" type="Texture2D" />
+			<param index="2" name="p_min" type="Vector2" />
+			<param index="3" name="p_max" type="Vector2" />
+			<param index="4" name="uv_min" type="Vector2" default="Vector2(0, 0)" />
+			<param index="5" name="uv_max" type="Vector2" default="Vector2(1, 1)" />
+			<param index="6" name="col" type="Color" default="4294967295" />
+			<description>
+			</description>
+		</method>
+		<method name="ImDrawList_AddImageQuad" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="self" type="ImDrawListPtr" />
+			<param index="1" name="user_texture_id" type="Texture2D" />
+			<param index="2" name="p1" type="Vector2" />
+			<param index="3" name="p2" type="Vector2" />
+			<param index="4" name="p3" type="Vector2" />
+			<param index="5" name="p4" type="Vector2" />
+			<description>
+			</description>
+		</method>
+		<method name="ImDrawList_AddImageQuadEx" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="self" type="ImDrawListPtr" />
+			<param index="1" name="user_texture_id" type="Texture2D" />
+			<param index="2" name="p1" type="Vector2" />
+			<param index="3" name="p2" type="Vector2" />
+			<param index="4" name="p3" type="Vector2" />
+			<param index="5" name="p4" type="Vector2" />
+			<param index="6" name="uv1" type="Vector2" default="Vector2(0, 0)" />
+			<param index="7" name="uv2" type="Vector2" default="Vector2(1, 0)" />
+			<param index="8" name="uv3" type="Vector2" default="Vector2(1, 1)" />
+			<param index="9" name="uv4" type="Vector2" default="Vector2(0, 1)" />
+			<param index="10" name="col" type="Color" default="4294967295" />
+			<description>
+			</description>
+		</method>
+		<method name="ImDrawList_AddImageRounded" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="self" type="ImDrawListPtr" />
+			<param index="1" name="user_texture_id" type="Texture2D" />
+			<param index="2" name="p_min" type="Vector2" />
+			<param index="3" name="p_max" type="Vector2" />
+			<param index="4" name="uv_min" type="Vector2" />
+			<param index="5" name="uv_max" type="Vector2" />
+			<param index="6" name="col" type="Color" />
+			<param index="7" name="rounding" type="float" />
+			<param index="8" name="flags" type="int" enum="ImGui.DrawFlags" is_bitfield="true" default="0" />
+			<description>
+			</description>
+		</method>
+		<method name="ImDrawList_AddLine" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="self" type="ImDrawListPtr" />
+			<param index="1" name="p1" type="Vector2" />
+			<param index="2" name="p2" type="Vector2" />
+			<param index="3" name="col" type="Color" />
+			<description>
+			</description>
+		</method>
+		<method name="ImDrawList_AddLineEx" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="self" type="ImDrawListPtr" />
+			<param index="1" name="p1" type="Vector2" />
+			<param index="2" name="p2" type="Vector2" />
+			<param index="3" name="col" type="Color" />
+			<param index="4" name="thickness" type="float" default="1.0" />
+			<description>
+			</description>
+		</method>
+		<method name="ImDrawList_AddNgon" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="self" type="ImDrawListPtr" />
+			<param index="1" name="center" type="Vector2" />
+			<param index="2" name="radius" type="float" />
+			<param index="3" name="col" type="Color" />
+			<param index="4" name="num_segments" type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="ImDrawList_AddNgonEx" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="self" type="ImDrawListPtr" />
+			<param index="1" name="center" type="Vector2" />
+			<param index="2" name="radius" type="float" />
+			<param index="3" name="col" type="Color" />
+			<param index="4" name="num_segments" type="int" />
+			<param index="5" name="thickness" type="float" default="1.0" />
+			<description>
+			</description>
+		</method>
+		<method name="ImDrawList_AddNgonFilled" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="self" type="ImDrawListPtr" />
+			<param index="1" name="center" type="Vector2" />
+			<param index="2" name="radius" type="float" />
+			<param index="3" name="col" type="Color" />
+			<param index="4" name="num_segments" type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="ImDrawList_AddQuad" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="self" type="ImDrawListPtr" />
+			<param index="1" name="p1" type="Vector2" />
+			<param index="2" name="p2" type="Vector2" />
+			<param index="3" name="p3" type="Vector2" />
+			<param index="4" name="p4" type="Vector2" />
+			<param index="5" name="col" type="Color" />
+			<description>
+			</description>
+		</method>
+		<method name="ImDrawList_AddQuadEx" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="self" type="ImDrawListPtr" />
+			<param index="1" name="p1" type="Vector2" />
+			<param index="2" name="p2" type="Vector2" />
+			<param index="3" name="p3" type="Vector2" />
+			<param index="4" name="p4" type="Vector2" />
+			<param index="5" name="col" type="Color" />
+			<param index="6" name="thickness" type="float" default="1.0" />
+			<description>
+			</description>
+		</method>
+		<method name="ImDrawList_AddQuadFilled" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="self" type="ImDrawListPtr" />
+			<param index="1" name="p1" type="Vector2" />
+			<param index="2" name="p2" type="Vector2" />
+			<param index="3" name="p3" type="Vector2" />
+			<param index="4" name="p4" type="Vector2" />
+			<param index="5" name="col" type="Color" />
+			<description>
+			</description>
+		</method>
+		<method name="ImDrawList_AddRect" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="self" type="ImDrawListPtr" />
+			<param index="1" name="p_min" type="Vector2" />
+			<param index="2" name="p_max" type="Vector2" />
+			<param index="3" name="col" type="Color" />
+			<description>
+			</description>
+		</method>
+		<method name="ImDrawList_AddRectEx" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="self" type="ImDrawListPtr" />
+			<param index="1" name="p_min" type="Vector2" />
+			<param index="2" name="p_max" type="Vector2" />
+			<param index="3" name="col" type="Color" />
+			<param index="4" name="rounding" type="float" default="0.0" />
+			<param index="5" name="flags" type="int" enum="ImGui.DrawFlags" is_bitfield="true" default="0" />
+			<param index="6" name="thickness" type="float" default="1.0" />
+			<description>
+			</description>
+		</method>
+		<method name="ImDrawList_AddRectFilled" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="self" type="ImDrawListPtr" />
+			<param index="1" name="p_min" type="Vector2" />
+			<param index="2" name="p_max" type="Vector2" />
+			<param index="3" name="col" type="Color" />
+			<description>
+			</description>
+		</method>
+		<method name="ImDrawList_AddRectFilledEx" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="self" type="ImDrawListPtr" />
+			<param index="1" name="p_min" type="Vector2" />
+			<param index="2" name="p_max" type="Vector2" />
+			<param index="3" name="col" type="Color" />
+			<param index="4" name="rounding" type="float" default="0.0" />
+			<param index="5" name="flags" type="int" enum="ImGui.DrawFlags" is_bitfield="true" default="0" />
+			<description>
+			</description>
+		</method>
+		<method name="ImDrawList_AddRectFilledMultiColor" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="self" type="ImDrawListPtr" />
+			<param index="1" name="p_min" type="Vector2" />
+			<param index="2" name="p_max" type="Vector2" />
+			<param index="3" name="col_upr_left" type="Color" />
+			<param index="4" name="col_upr_right" type="Color" />
+			<param index="5" name="col_bot_right" type="Color" />
+			<param index="6" name="col_bot_left" type="Color" />
+			<description>
+			</description>
+		</method>
+		<method name="ImDrawList_AddText" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="self" type="ImDrawListPtr" />
+			<param index="1" name="pos" type="Vector2" />
+			<param index="2" name="col" type="Color" />
+			<param index="3" name="text_begin" type="String" />
+			<description>
+			</description>
+		</method>
+		<method name="ImDrawList_AddTextEx" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="self" type="ImDrawListPtr" />
+			<param index="1" name="pos" type="Vector2" />
+			<param index="2" name="col" type="Color" />
+			<param index="3" name="text_begin" type="String" />
+			<param index="4" name="text_end" type="String" default="&quot;&quot;" />
+			<description>
+			</description>
+		</method>
+		<method name="ImDrawList_AddTextImFontPtr" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="self" type="ImDrawListPtr" />
+			<param index="1" name="font" type="int" />
+			<param index="2" name="font_size" type="float" />
+			<param index="3" name="pos" type="Vector2" />
+			<param index="4" name="col" type="Color" />
+			<param index="5" name="text_begin" type="String" />
+			<description>
+			</description>
+		</method>
+		<method name="ImDrawList_AddTriangle" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="self" type="ImDrawListPtr" />
+			<param index="1" name="p1" type="Vector2" />
+			<param index="2" name="p2" type="Vector2" />
+			<param index="3" name="p3" type="Vector2" />
+			<param index="4" name="col" type="Color" />
+			<description>
+			</description>
+		</method>
+		<method name="ImDrawList_AddTriangleEx" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="self" type="ImDrawListPtr" />
+			<param index="1" name="p1" type="Vector2" />
+			<param index="2" name="p2" type="Vector2" />
+			<param index="3" name="p3" type="Vector2" />
+			<param index="4" name="col" type="Color" />
+			<param index="5" name="thickness" type="float" default="1.0" />
+			<description>
+			</description>
+		</method>
+		<method name="ImDrawList_AddTriangleFilled" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="self" type="ImDrawListPtr" />
+			<param index="1" name="p1" type="Vector2" />
+			<param index="2" name="p2" type="Vector2" />
+			<param index="3" name="p3" type="Vector2" />
+			<param index="4" name="col" type="Color" />
+			<description>
+			</description>
+		</method>
+		<method name="ImDrawList_ChannelsMerge" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="self" type="ImDrawListPtr" />
+			<description>
+			</description>
+		</method>
+		<method name="ImDrawList_ChannelsSetCurrent" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="self" type="ImDrawListPtr" />
+			<param index="1" name="n" type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="ImDrawList_ChannelsSplit" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="self" type="ImDrawListPtr" />
+			<param index="1" name="count" type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="ImDrawList_PathArcTo" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="self" type="ImDrawListPtr" />
+			<param index="1" name="center" type="Vector2" />
+			<param index="2" name="radius" type="float" />
+			<param index="3" name="a_min" type="float" />
+			<param index="4" name="a_max" type="float" />
+			<param index="5" name="num_segments" type="int" default="0" />
+			<description>
+			</description>
+		</method>
+		<method name="ImDrawList_PathArcToFast" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="self" type="ImDrawListPtr" />
+			<param index="1" name="center" type="Vector2" />
+			<param index="2" name="radius" type="float" />
+			<param index="3" name="a_min_of_12" type="int" />
+			<param index="4" name="a_max_of_12" type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="ImDrawList_PathBezierCubicCurveTo" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="self" type="ImDrawListPtr" />
+			<param index="1" name="p2" type="Vector2" />
+			<param index="2" name="p3" type="Vector2" />
+			<param index="3" name="p4" type="Vector2" />
+			<param index="4" name="num_segments" type="int" default="0" />
+			<description>
+			</description>
+		</method>
+		<method name="ImDrawList_PathBezierQuadraticCurveTo" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="self" type="ImDrawListPtr" />
+			<param index="1" name="p2" type="Vector2" />
+			<param index="2" name="p3" type="Vector2" />
+			<param index="3" name="num_segments" type="int" default="0" />
+			<description>
+			</description>
+		</method>
+		<method name="ImDrawList_PathClear" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="self" type="ImDrawListPtr" />
+			<description>
+			</description>
+		</method>
+		<method name="ImDrawList_PathEllipticalArcTo" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="self" type="ImDrawListPtr" />
+			<param index="1" name="center" type="Vector2" />
+			<param index="2" name="radius" type="Vector2" />
+			<param index="3" name="rot" type="float" />
+			<param index="4" name="a_min" type="float" />
+			<param index="5" name="a_max" type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="ImDrawList_PathEllipticalArcToEx" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="self" type="ImDrawListPtr" />
+			<param index="1" name="center" type="Vector2" />
+			<param index="2" name="radius" type="Vector2" />
+			<param index="3" name="rot" type="float" />
+			<param index="4" name="a_min" type="float" />
+			<param index="5" name="a_max" type="float" />
+			<param index="6" name="num_segments" type="int" default="0" />
+			<description>
+			</description>
+		</method>
+		<method name="ImDrawList_PathFillConcave" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="self" type="ImDrawListPtr" />
+			<param index="1" name="col" type="Color" />
+			<description>
+			</description>
+		</method>
+		<method name="ImDrawList_PathFillConvex" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="self" type="ImDrawListPtr" />
+			<param index="1" name="col" type="Color" />
+			<description>
+			</description>
+		</method>
+		<method name="ImDrawList_PathLineTo" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="self" type="ImDrawListPtr" />
+			<param index="1" name="pos" type="Vector2" />
+			<description>
+			</description>
+		</method>
+		<method name="ImDrawList_PathLineToMergeDuplicate" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="self" type="ImDrawListPtr" />
+			<param index="1" name="pos" type="Vector2" />
+			<description>
+			</description>
+		</method>
+		<method name="ImDrawList_PathRect" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="self" type="ImDrawListPtr" />
+			<param index="1" name="rect_min" type="Vector2" />
+			<param index="2" name="rect_max" type="Vector2" />
+			<param index="3" name="rounding" type="float" default="0.0" />
+			<param index="4" name="flags" type="int" enum="ImGui.DrawFlags" is_bitfield="true" default="0" />
+			<description>
+			</description>
+		</method>
+		<method name="ImDrawList_PathStroke" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="self" type="ImDrawListPtr" />
+			<param index="1" name="col" type="Color" />
+			<param index="2" name="flags" type="int" enum="ImGui.DrawFlags" is_bitfield="true" default="0" />
+			<param index="3" name="thickness" type="float" default="1.0" />
+			<description>
+			</description>
+		</method>
+		<method name="ImDrawList_PopClipRect" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="self" type="ImDrawListPtr" />
+			<description>
+			</description>
+		</method>
+		<method name="ImDrawList_PopTextureID" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="self" type="ImDrawListPtr" />
+			<description>
+			</description>
+		</method>
+		<method name="ImDrawList_PrimRect" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="self" type="ImDrawListPtr" />
+			<param index="1" name="a" type="Vector2" />
+			<param index="2" name="b" type="Vector2" />
+			<param index="3" name="col" type="Color" />
+			<description>
+			</description>
+		</method>
+		<method name="ImDrawList_PrimReserve" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="self" type="ImDrawListPtr" />
+			<param index="1" name="idx_count" type="int" />
+			<param index="2" name="vtx_count" type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="ImDrawList_PrimUnreserve" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="self" type="ImDrawListPtr" />
+			<param index="1" name="idx_count" type="int" />
+			<param index="2" name="vtx_count" type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="ImDrawList_PrimVtx" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="self" type="ImDrawListPtr" />
+			<param index="1" name="pos" type="Vector2" />
+			<param index="2" name="uv" type="Vector2" />
+			<param index="3" name="col" type="Color" />
+			<description>
+			</description>
+		</method>
+		<method name="ImDrawList_PrimWriteVtx" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="self" type="ImDrawListPtr" />
+			<param index="1" name="pos" type="Vector2" />
+			<param index="2" name="uv" type="Vector2" />
+			<param index="3" name="col" type="Color" />
+			<description>
+			</description>
+		</method>
+		<method name="ImDrawList_PushClipRect" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="self" type="ImDrawListPtr" />
+			<param index="1" name="clip_rect_min" type="Vector2" />
+			<param index="2" name="clip_rect_max" type="Vector2" />
+			<param index="3" name="intersect_with_current_clip_rect" type="bool" default="false" />
+			<description>
+			</description>
+		</method>
+		<method name="ImDrawList_PushClipRectFullScreen" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="self" type="ImDrawListPtr" />
+			<description>
+			</description>
+		</method>
+		<method name="ImDrawList_PushTextureID" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="self" type="ImDrawListPtr" />
+			<param index="1" name="texture_id" type="Texture2D" />
+			<description>
+			</description>
+		</method>
+		<method name="ImGuiListClipper_Begin" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="self" type="ImGuiListClipperPtr" />
+			<param index="1" name="items_count" type="int" />
+			<param index="2" name="items_height" type="float" default="-1.0" />
+			<description>
+			</description>
+		</method>
+		<method name="ImGuiListClipper_End" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="self" type="ImGuiListClipperPtr" />
+			<description>
+			</description>
+		</method>
+		<method name="ImGuiListClipper_IncludeItemByIndex" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="self" type="ImGuiListClipperPtr" />
+			<param index="1" name="item_index" type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="ImGuiListClipper_IncludeItemsByIndex" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="self" type="ImGuiListClipperPtr" />
+			<param index="1" name="item_begin" type="int" />
+			<param index="2" name="item_end" type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="ImGuiListClipper_SeekCursorForItem" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="self" type="ImGuiListClipperPtr" />
+			<param index="1" name="item_index" type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="ImGuiListClipper_Step" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="self" type="ImGuiListClipperPtr" />
+			<description>
+			</description>
+		</method>
+		<method name="ImGuiStyle_ScaleAllSizes" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="self" type="ImGuiStylePtr" />
+			<param index="1" name="scale_factor" type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="Image" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="user_texture_id" type="Texture2D" />
+			<param index="1" name="image_size" type="Vector2" />
+			<description>
+			</description>
+		</method>
+		<method name="ImageButton" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="str_id" type="StringName" />
+			<param index="1" name="user_texture_id" type="Texture2D" />
+			<param index="2" name="image_size" type="Vector2" />
+			<description>
+			</description>
+		</method>
+		<method name="ImageButtonEx" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="str_id" type="StringName" />
+			<param index="1" name="user_texture_id" type="Texture2D" />
+			<param index="2" name="image_size" type="Vector2" />
+			<param index="3" name="uv0" type="Vector2" default="Vector2(0, 0)" />
+			<param index="4" name="uv1" type="Vector2" default="Vector2(1, 1)" />
+			<param index="5" name="bg_col" type="Color" default="Color(0, 0, 0, 0)" />
+			<param index="6" name="tint_col" type="Color" default="Color(1, 1, 1, 1)" />
+			<description>
+			</description>
+		</method>
+		<method name="ImageEx" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="user_texture_id" type="Texture2D" />
+			<param index="1" name="image_size" type="Vector2" />
+			<param index="2" name="uv0" type="Vector2" default="Vector2(0, 0)" />
+			<param index="3" name="uv1" type="Vector2" default="Vector2(1, 1)" />
+			<param index="4" name="tint_col" type="Color" default="Color(1, 1, 1, 1)" />
+			<param index="5" name="border_col" type="Color" default="Color(0, 0, 0, 0)" />
+			<description>
+			</description>
+		</method>
+		<method name="Indent" qualifiers="static">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="IndentEx" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="indent_w" type="float" default="0.0" />
+			<description>
+			</description>
+		</method>
+		<method name="InputDouble" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="v" type="Array" />
+			<description>
+			</description>
+		</method>
+		<method name="InputDoubleEx" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="v" type="Array" />
+			<param index="2" name="step" type="float" default="0.0" />
+			<param index="3" name="step_fast" type="float" default="0.0" />
+			<param index="4" name="format" type="String" default="&quot;%.6f&quot;" />
+			<param index="5" name="flags" type="int" enum="ImGui.InputTextFlags" is_bitfield="true" default="0" />
+			<description>
+			</description>
+		</method>
+		<method name="InputFloat" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="v" type="Array" />
+			<description>
+			</description>
+		</method>
+		<method name="InputFloat2" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="v" type="Array" />
+			<description>
+			</description>
+		</method>
+		<method name="InputFloat2Ex" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="v" type="Array" />
+			<param index="2" name="format" type="String" default="&quot;%.3f&quot;" />
+			<param index="3" name="flags" type="int" enum="ImGui.InputTextFlags" is_bitfield="true" default="0" />
+			<description>
+			</description>
+		</method>
+		<method name="InputFloat3" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="v" type="Array" />
+			<description>
+			</description>
+		</method>
+		<method name="InputFloat3Ex" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="v" type="Array" />
+			<param index="2" name="format" type="String" default="&quot;%.3f&quot;" />
+			<param index="3" name="flags" type="int" enum="ImGui.InputTextFlags" is_bitfield="true" default="0" />
+			<description>
+			</description>
+		</method>
+		<method name="InputFloat4" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="v" type="Array" />
+			<description>
+			</description>
+		</method>
+		<method name="InputFloat4Ex" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="v" type="Array" />
+			<param index="2" name="format" type="String" default="&quot;%.3f&quot;" />
+			<param index="3" name="flags" type="int" enum="ImGui.InputTextFlags" is_bitfield="true" default="0" />
+			<description>
+			</description>
+		</method>
+		<method name="InputFloatEx" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="v" type="Array" />
+			<param index="2" name="step" type="float" default="0.0" />
+			<param index="3" name="step_fast" type="float" default="0.0" />
+			<param index="4" name="format" type="String" default="&quot;%.3f&quot;" />
+			<param index="5" name="flags" type="int" enum="ImGui.InputTextFlags" is_bitfield="true" default="0" />
+			<description>
+			</description>
+		</method>
+		<method name="InputInt" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="v" type="Array" />
+			<description>
+			</description>
+		</method>
+		<method name="InputInt2" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="v" type="Array" />
+			<param index="2" name="flags" type="int" enum="ImGui.InputTextFlags" is_bitfield="true" default="0" />
+			<description>
+			</description>
+		</method>
+		<method name="InputInt3" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="v" type="Array" />
+			<param index="2" name="flags" type="int" enum="ImGui.InputTextFlags" is_bitfield="true" default="0" />
+			<description>
+			</description>
+		</method>
+		<method name="InputInt4" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="v" type="Array" />
+			<param index="2" name="flags" type="int" enum="ImGui.InputTextFlags" is_bitfield="true" default="0" />
+			<description>
+			</description>
+		</method>
+		<method name="InputIntEx" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="v" type="Array" />
+			<param index="2" name="step" type="int" default="1" />
+			<param index="3" name="step_fast" type="int" default="100" />
+			<param index="4" name="flags" type="int" enum="ImGui.InputTextFlags" is_bitfield="true" default="0" />
+			<description>
+			</description>
+		</method>
+		<method name="InputText" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="buf" type="Array" />
+			<param index="2" name="buf_size" type="int" />
+			<param index="3" name="flags" type="int" enum="ImGui.InputTextFlags" is_bitfield="true" default="0" />
+			<description>
+			</description>
+		</method>
+		<method name="InputTextMultiline" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="buf" type="Array" />
+			<param index="2" name="buf_size" type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="InputTextWithHint" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="hint" type="String" />
+			<param index="2" name="buf" type="Array" />
+			<param index="3" name="buf_size" type="int" />
+			<param index="4" name="flags" type="int" enum="ImGui.InputTextFlags" is_bitfield="true" default="0" />
+			<description>
+			</description>
+		</method>
+		<method name="InvisibleButton" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="str_id" type="StringName" />
+			<param index="1" name="size" type="Vector2" />
+			<param index="2" name="flags" type="int" enum="ImGui.ButtonFlags" is_bitfield="true" default="0" />
+			<description>
+			</description>
+		</method>
+		<method name="IsAnyItemActive" qualifiers="static">
+			<return type="bool" />
+			<description>
+			</description>
+		</method>
+		<method name="IsAnyItemFocused" qualifiers="static">
+			<return type="bool" />
+			<description>
+			</description>
+		</method>
+		<method name="IsAnyItemHovered" qualifiers="static">
+			<return type="bool" />
+			<description>
+			</description>
+		</method>
+		<method name="IsAnyMouseDown" qualifiers="static">
+			<return type="bool" />
+			<description>
+			</description>
+		</method>
+		<method name="IsItemActivated" qualifiers="static">
+			<return type="bool" />
+			<description>
+			</description>
+		</method>
+		<method name="IsItemActive" qualifiers="static">
+			<return type="bool" />
+			<description>
+			</description>
+		</method>
+		<method name="IsItemClicked" qualifiers="static">
+			<return type="bool" />
+			<description>
+			</description>
+		</method>
+		<method name="IsItemClickedEx" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="mouse_button" type="int" enum="ImGui.MouseButton" default="0" />
+			<description>
+			</description>
+		</method>
+		<method name="IsItemDeactivated" qualifiers="static">
+			<return type="bool" />
+			<description>
+			</description>
+		</method>
+		<method name="IsItemDeactivatedAfterEdit" qualifiers="static">
+			<return type="bool" />
+			<description>
+			</description>
+		</method>
+		<method name="IsItemEdited" qualifiers="static">
+			<return type="bool" />
+			<description>
+			</description>
+		</method>
+		<method name="IsItemFocused" qualifiers="static">
+			<return type="bool" />
+			<description>
+			</description>
+		</method>
+		<method name="IsItemHovered" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="flags" type="int" enum="ImGui.HoveredFlags" is_bitfield="true" default="0" />
+			<description>
+			</description>
+		</method>
+		<method name="IsItemToggledOpen" qualifiers="static">
+			<return type="bool" />
+			<description>
+			</description>
+		</method>
+		<method name="IsItemToggledSelection" qualifiers="static">
+			<return type="bool" />
+			<description>
+			</description>
+		</method>
+		<method name="IsItemVisible" qualifiers="static">
+			<return type="bool" />
+			<description>
+			</description>
+		</method>
+		<method name="IsKeyDown" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="key" type="int" enum="ImGui.Key" />
+			<description>
+			</description>
+		</method>
+		<method name="IsKeyPressed" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="key" type="int" enum="ImGui.Key" />
+			<description>
+			</description>
+		</method>
+		<method name="IsKeyPressedEx" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="key" type="int" enum="ImGui.Key" />
+			<param index="1" name="repeat" type="bool" default="true" />
+			<description>
+			</description>
+		</method>
+		<method name="IsKeyReleased" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="key" type="int" enum="ImGui.Key" />
+			<description>
+			</description>
+		</method>
+		<method name="IsMouseClicked" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="button" type="int" enum="ImGui.MouseButton" />
+			<description>
+			</description>
+		</method>
+		<method name="IsMouseClickedEx" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="button" type="int" enum="ImGui.MouseButton" />
+			<param index="1" name="repeat" type="bool" default="false" />
+			<description>
+			</description>
+		</method>
+		<method name="IsMouseDoubleClicked" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="button" type="int" enum="ImGui.MouseButton" />
+			<description>
+			</description>
+		</method>
+		<method name="IsMouseDown" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="button" type="int" enum="ImGui.MouseButton" />
+			<description>
+			</description>
+		</method>
+		<method name="IsMouseDragging" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="button" type="int" enum="ImGui.MouseButton" />
+			<param index="1" name="lock_threshold" type="float" default="-1.0" />
+			<description>
+			</description>
+		</method>
+		<method name="IsMouseHoveringRect" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="r_min" type="Vector2" />
+			<param index="1" name="r_max" type="Vector2" />
+			<description>
+			</description>
+		</method>
+		<method name="IsMouseHoveringRectEx" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="r_min" type="Vector2" />
+			<param index="1" name="r_max" type="Vector2" />
+			<param index="2" name="clip" type="bool" default="true" />
+			<description>
+			</description>
+		</method>
+		<method name="IsMouseReleased" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="button" type="int" enum="ImGui.MouseButton" />
+			<description>
+			</description>
+		</method>
+		<method name="IsPopupOpen" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="str_id" type="StringName" />
+			<param index="1" name="flags" type="int" enum="ImGui.PopupFlags" is_bitfield="true" default="0" />
+			<description>
+			</description>
+		</method>
+		<method name="IsRectVisible" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="rect_min" type="Vector2" />
+			<param index="1" name="rect_max" type="Vector2" />
+			<description>
+			</description>
+		</method>
+		<method name="IsRectVisibleBySize" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="size" type="Vector2" />
+			<description>
+			</description>
+		</method>
+		<method name="IsWindowAppearing" qualifiers="static">
+			<return type="bool" />
+			<description>
+			</description>
+		</method>
+		<method name="IsWindowCollapsed" qualifiers="static">
+			<return type="bool" />
+			<description>
+			</description>
+		</method>
+		<method name="IsWindowDocked" qualifiers="static">
+			<return type="bool" />
+			<description>
+			</description>
+		</method>
+		<method name="IsWindowFocused" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="flags" type="int" enum="ImGui.FocusedFlags" is_bitfield="true" default="0" />
+			<description>
+			</description>
+		</method>
+		<method name="IsWindowHovered" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="flags" type="int" enum="ImGui.HoveredFlags" is_bitfield="true" default="0" />
+			<description>
+			</description>
+		</method>
+		<method name="LabelText" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="fmt" type="String" />
+			<description>
+			</description>
+		</method>
+		<method name="ListBox" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="current_item" type="Array" />
+			<param index="2" name="items" type="Array" />
+			<param index="3" name="items_count" type="int" />
+			<param index="4" name="height_in_items" type="int" default="-1" />
+			<description>
+			</description>
+		</method>
+		<method name="LoadIniSettingsFromDisk" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="ini_filename" type="String" />
+			<description>
+			</description>
+		</method>
+		<method name="LoadIniSettingsFromMemory" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="ini_data" type="String" />
+			<param index="1" name="ini_size" type="int" default="0" />
+			<description>
+			</description>
+		</method>
+		<method name="LogButtons" qualifiers="static">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="LogFinish" qualifiers="static">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="LogText" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="fmt" type="String" />
+			<description>
+			</description>
+		</method>
+		<method name="LogToClipboard" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="auto_open_depth" type="int" default="-1" />
+			<description>
+			</description>
+		</method>
+		<method name="LogToFile" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="auto_open_depth" type="int" default="-1" />
+			<param index="1" name="filename" type="String" default="&quot;&quot;" />
+			<description>
+			</description>
+		</method>
+		<method name="LogToTTY" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="auto_open_depth" type="int" default="-1" />
+			<description>
+			</description>
+		</method>
+		<method name="MenuItem" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<description>
+			</description>
+		</method>
+		<method name="MenuItemBoolPtr" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="shortcut" type="String" />
+			<param index="2" name="p_selected" type="Array" />
+			<param index="3" name="enabled" type="bool" default="true" />
+			<description>
+			</description>
+		</method>
+		<method name="MenuItemEx" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="shortcut" type="String" default="&quot;&quot;" />
+			<param index="2" name="selected" type="bool" default="false" />
+			<param index="3" name="enabled" type="bool" default="true" />
+			<description>
+			</description>
+		</method>
+		<method name="NewLine" qualifiers="static">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="NextColumn" qualifiers="static">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="OpenPopup" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="str_id" type="StringName" />
+			<param index="1" name="popup_flags" type="int" enum="ImGui.PopupFlags" is_bitfield="true" default="0" />
+			<description>
+			</description>
+		</method>
+		<method name="OpenPopupID" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="id" type="int" />
+			<param index="1" name="popup_flags" type="int" enum="ImGui.PopupFlags" is_bitfield="true" default="0" />
+			<description>
+			</description>
+		</method>
+		<method name="OpenPopupOnItemClick" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="str_id" type="StringName" default="&amp;&quot;&quot;" />
+			<param index="1" name="popup_flags" type="int" enum="ImGui.PopupFlags" is_bitfield="true" default="1" />
+			<description>
+			</description>
+		</method>
+		<method name="PlotHistogram" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="values" type="Array" />
+			<param index="2" name="values_count" type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="PlotHistogramEx" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="values" type="Array" />
+			<param index="2" name="values_count" type="int" />
+			<param index="3" name="values_offset" type="int" default="0" />
+			<param index="4" name="overlay_text" type="String" default="&quot;&quot;" />
+			<param index="5" name="scale_min" type="float" default="3.4028235e+38" />
+			<param index="6" name="scale_max" type="float" default="3.4028235e+38" />
+			<param index="7" name="graph_size" type="Vector2" default="Vector2(0, 0)" />
+			<param index="8" name="stride" type="int" default="4" />
+			<description>
+			</description>
+		</method>
+		<method name="PlotLines" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="values" type="Array" />
+			<param index="2" name="values_count" type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="PlotLinesEx" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="values" type="Array" />
+			<param index="2" name="values_count" type="int" />
+			<param index="3" name="values_offset" type="int" default="0" />
+			<param index="4" name="overlay_text" type="String" default="&quot;&quot;" />
+			<param index="5" name="scale_min" type="float" default="3.4028235e+38" />
+			<param index="6" name="scale_max" type="float" default="3.4028235e+38" />
+			<param index="7" name="graph_size" type="Vector2" default="Vector2(0, 0)" />
+			<param index="8" name="stride" type="int" default="4" />
+			<description>
+			</description>
+		</method>
+		<method name="PopClipRect" qualifiers="static">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="PopFont" qualifiers="static">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="PopID" qualifiers="static">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="PopItemFlag" qualifiers="static">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="PopItemWidth" qualifiers="static">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="PopStyleColor" qualifiers="static">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="PopStyleColorEx" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="count" type="int" default="1" />
+			<description>
+			</description>
+		</method>
+		<method name="PopStyleVar" qualifiers="static">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="PopStyleVarEx" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="count" type="int" default="1" />
+			<description>
+			</description>
+		</method>
+		<method name="PopTextWrapPos" qualifiers="static">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="ProgressBar" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="fraction" type="float" />
+			<param index="1" name="size_arg" type="Vector2" default="Vector2(-1.1754944e-38, 0)" />
+			<param index="2" name="overlay" type="String" default="&quot;&quot;" />
+			<description>
+			</description>
+		</method>
+		<method name="PushClipRect" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="clip_rect_min" type="Vector2" />
+			<param index="1" name="clip_rect_max" type="Vector2" />
+			<param index="2" name="intersect_with_current_clip_rect" type="bool" />
+			<description>
+			</description>
+		</method>
+		<method name="PushFont" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="font" type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="PushID" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="str_id" type="StringName" />
+			<description>
+			</description>
+		</method>
+		<method name="PushIDInt" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="int_id" type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="PushIDStr" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="str_id_begin" type="StringName" />
+			<param index="1" name="str_id_end" type="StringName" />
+			<description>
+			</description>
+		</method>
+		<method name="PushItemFlag" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="option" type="int" enum="ImGui.ItemFlags" is_bitfield="true" />
+			<param index="1" name="enabled" type="bool" />
+			<description>
+			</description>
+		</method>
+		<method name="PushItemWidth" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="item_width" type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="PushStyleColor" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="idx" type="int" enum="ImGui.Col" />
+			<param index="1" name="col" type="Color" />
+			<description>
+			</description>
+		</method>
+		<method name="PushStyleColorImVec4" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="idx" type="int" enum="ImGui.Col" />
+			<param index="1" name="col" type="Color" />
+			<description>
+			</description>
+		</method>
+		<method name="PushStyleVar" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="idx" type="int" enum="ImGui.StyleVar" />
+			<param index="1" name="val" type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="PushStyleVarImVec2" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="idx" type="int" enum="ImGui.StyleVar" />
+			<param index="1" name="val" type="Vector2" />
+			<description>
+			</description>
+		</method>
+		<method name="PushStyleVarX" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="idx" type="int" enum="ImGui.StyleVar" />
+			<param index="1" name="val_x" type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="PushStyleVarY" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="idx" type="int" enum="ImGui.StyleVar" />
+			<param index="1" name="val_y" type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="PushTextWrapPos" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="wrap_local_pos_x" type="float" default="0.0" />
+			<description>
+			</description>
+		</method>
+		<method name="RadioButton" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="active" type="bool" />
+			<description>
+			</description>
+		</method>
+		<method name="RadioButtonIntPtr" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="v" type="Array" />
+			<param index="2" name="v_button" type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="ResetMouseDragDelta" qualifiers="static">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="ResetMouseDragDeltaEx" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="button" type="int" enum="ImGui.MouseButton" default="0" />
+			<description>
+			</description>
+		</method>
+		<method name="SameLine" qualifiers="static">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="SameLineEx" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="offset_from_start_x" type="float" default="0.0" />
+			<param index="1" name="spacing" type="float" default="-1.0" />
+			<description>
+			</description>
+		</method>
+		<method name="SaveIniSettingsToDisk" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="ini_filename" type="String" />
+			<description>
+			</description>
+		</method>
+		<method name="Selectable" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<description>
+			</description>
+		</method>
+		<method name="SelectableBoolPtr" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="p_selected" type="Array" />
+			<param index="2" name="flags" type="int" enum="ImGui.SelectableFlags" is_bitfield="true" default="0" />
+			<description>
+			</description>
+		</method>
+		<method name="SelectableBoolPtrEx" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="p_selected" type="Array" />
+			<param index="2" name="flags" type="int" enum="ImGui.SelectableFlags" is_bitfield="true" default="0" />
+			<param index="3" name="size" type="Vector2" default="Vector2(0, 0)" />
+			<description>
+			</description>
+		</method>
+		<method name="SelectableEx" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="selected" type="bool" default="false" />
+			<param index="2" name="flags" type="int" enum="ImGui.SelectableFlags" is_bitfield="true" default="0" />
+			<param index="3" name="size" type="Vector2" default="Vector2(0, 0)" />
+			<description>
+			</description>
+		</method>
+		<method name="Separator" qualifiers="static">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="SeparatorText" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="label" type="StringName" />
+			<description>
+			</description>
+		</method>
+		<method name="SetClipboardText" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="text" type="String" />
+			<description>
+			</description>
+		</method>
+		<method name="SetColorEditOptions" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="flags" type="int" enum="ImGui.ColorEditFlags" is_bitfield="true" />
+			<description>
+			</description>
+		</method>
+		<method name="SetColumnOffset" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="column_index" type="int" />
+			<param index="1" name="offset_x" type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="SetColumnWidth" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="column_index" type="int" />
+			<param index="1" name="width" type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="SetCursorPos" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="local_pos" type="Vector2" />
+			<description>
+			</description>
+		</method>
+		<method name="SetCursorPosX" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="local_x" type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="SetCursorPosY" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="local_y" type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="SetCursorScreenPos" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="pos" type="Vector2" />
+			<description>
+			</description>
+		</method>
+		<method name="SetItemDefaultFocus" qualifiers="static">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="SetItemKeyOwner" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="key" type="int" enum="ImGui.Key" />
+			<description>
+			</description>
+		</method>
+		<method name="SetItemTooltip" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="fmt" type="String" />
+			<description>
+			</description>
+		</method>
+		<method name="SetKeyboardFocusHere" qualifiers="static">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="SetKeyboardFocusHereEx" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="offset" type="int" default="0" />
+			<description>
+			</description>
+		</method>
+		<method name="SetMouseCursor" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="cursor_type" type="int" enum="ImGui.MouseCursor" />
+			<description>
+			</description>
+		</method>
+		<method name="SetNavCursorVisible" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="visible" type="bool" />
+			<description>
+			</description>
+		</method>
+		<method name="SetNextFrameWantCaptureKeyboard" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="want_capture_keyboard" type="bool" />
+			<description>
+			</description>
+		</method>
+		<method name="SetNextFrameWantCaptureMouse" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="want_capture_mouse" type="bool" />
+			<description>
+			</description>
+		</method>
+		<method name="SetNextItemAllowOverlap" qualifiers="static">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="SetNextItemOpen" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="is_open" type="bool" />
+			<param index="1" name="cond" type="int" enum="ImGui.Cond" default="0" />
+			<description>
+			</description>
+		</method>
+		<method name="SetNextItemSelectionUserData" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="selection_user_data" type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="SetNextItemStorageID" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="storage_id" type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="SetNextItemWidth" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="item_width" type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="SetNextWindowBgAlpha" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="alpha" type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="SetNextWindowClass" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="window_class" type="ImGuiWindowClassPtr" />
+			<description>
+			</description>
+		</method>
+		<method name="SetNextWindowCollapsed" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="collapsed" type="bool" />
+			<param index="1" name="cond" type="int" enum="ImGui.Cond" default="0" />
+			<description>
+			</description>
+		</method>
+		<method name="SetNextWindowContentSize" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="size" type="Vector2" />
+			<description>
+			</description>
+		</method>
+		<method name="SetNextWindowDockID" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="dock_id" type="int" />
+			<param index="1" name="cond" type="int" enum="ImGui.Cond" default="0" />
+			<description>
+			</description>
+		</method>
+		<method name="SetNextWindowFocus" qualifiers="static">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="SetNextWindowPos" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="pos" type="Vector2" />
+			<param index="1" name="cond" type="int" enum="ImGui.Cond" default="0" />
+			<description>
+			</description>
+		</method>
+		<method name="SetNextWindowPosEx" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="pos" type="Vector2" />
+			<param index="1" name="cond" type="int" enum="ImGui.Cond" default="0" />
+			<param index="2" name="pivot" type="Vector2" default="Vector2(0, 0)" />
+			<description>
+			</description>
+		</method>
+		<method name="SetNextWindowScroll" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="scroll" type="Vector2" />
+			<description>
+			</description>
+		</method>
+		<method name="SetNextWindowSize" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="size" type="Vector2" />
+			<param index="1" name="cond" type="int" enum="ImGui.Cond" default="0" />
+			<description>
+			</description>
+		</method>
+		<method name="SetNextWindowViewport" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="viewport_id" type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="SetScrollFromPosX" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="local_x" type="float" />
+			<param index="1" name="center_x_ratio" type="float" default="0.5" />
+			<description>
+			</description>
+		</method>
+		<method name="SetScrollFromPosY" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="local_y" type="float" />
+			<param index="1" name="center_y_ratio" type="float" default="0.5" />
+			<description>
+			</description>
+		</method>
+		<method name="SetScrollHereX" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="center_x_ratio" type="float" default="0.5" />
+			<description>
+			</description>
+		</method>
+		<method name="SetScrollHereY" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="center_y_ratio" type="float" default="0.5" />
+			<description>
+			</description>
+		</method>
+		<method name="SetScrollX" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="scroll_x" type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="SetScrollY" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="scroll_y" type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="SetTabItemClosed" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="tab_or_docked_window_label" type="StringName" />
+			<description>
+			</description>
+		</method>
+		<method name="SetTooltip" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="fmt" type="String" />
+			<description>
+			</description>
+		</method>
+		<method name="SetWindowCollapsed" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="collapsed" type="bool" />
+			<param index="1" name="cond" type="int" enum="ImGui.Cond" default="0" />
+			<description>
+			</description>
+		</method>
+		<method name="SetWindowCollapsedStr" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="name" type="StringName" />
+			<param index="1" name="collapsed" type="bool" />
+			<param index="2" name="cond" type="int" enum="ImGui.Cond" default="0" />
+			<description>
+			</description>
+		</method>
+		<method name="SetWindowFocus" qualifiers="static">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="SetWindowFocusStr" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="name" type="StringName" />
+			<description>
+			</description>
+		</method>
+		<method name="SetWindowFontScale" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="scale" type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="SetWindowPos" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="pos" type="Vector2" />
+			<param index="1" name="cond" type="int" enum="ImGui.Cond" default="0" />
+			<description>
+			</description>
+		</method>
+		<method name="SetWindowPosStr" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="name" type="StringName" />
+			<param index="1" name="pos" type="Vector2" />
+			<param index="2" name="cond" type="int" enum="ImGui.Cond" default="0" />
+			<description>
+			</description>
+		</method>
+		<method name="SetWindowSize" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="size" type="Vector2" />
+			<param index="1" name="cond" type="int" enum="ImGui.Cond" default="0" />
+			<description>
+			</description>
+		</method>
+		<method name="SetWindowSizeStr" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="name" type="StringName" />
+			<param index="1" name="size" type="Vector2" />
+			<param index="2" name="cond" type="int" enum="ImGui.Cond" default="0" />
+			<description>
+			</description>
+		</method>
+		<method name="ShowAboutWindow" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="p_open" type="Array" default="[]" />
+			<description>
+			</description>
+		</method>
+		<method name="ShowDebugLogWindow" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="p_open" type="Array" default="[]" />
+			<description>
+			</description>
+		</method>
+		<method name="ShowDemoWindow" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="p_open" type="Array" default="[]" />
+			<description>
+			</description>
+		</method>
+		<method name="ShowFontSelector" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="label" type="StringName" />
+			<description>
+			</description>
+		</method>
+		<method name="ShowIDStackToolWindow" qualifiers="static">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="ShowIDStackToolWindowEx" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="p_open" type="Array" default="[]" />
+			<description>
+			</description>
+		</method>
+		<method name="ShowMetricsWindow" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="p_open" type="Array" default="[]" />
+			<description>
+			</description>
+		</method>
+		<method name="ShowStyleEditor" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="ref" type="ImGuiStylePtr" default="null" />
+			<description>
+			</description>
+		</method>
+		<method name="ShowStyleSelector" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<description>
+			</description>
+		</method>
+		<method name="ShowUserGuide" qualifiers="static">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="SliderAngle" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="v_rad" type="Array" />
+			<description>
+			</description>
+		</method>
+		<method name="SliderAngleEx" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="v_rad" type="Array" />
+			<param index="2" name="v_degrees_min" type="float" default="-360.0" />
+			<param index="3" name="v_degrees_max" type="float" default="360.0" />
+			<param index="4" name="format" type="String" default="&quot;%.0f deg&quot;" />
+			<param index="5" name="flags" type="int" enum="ImGui.SliderFlags" is_bitfield="true" default="0" />
+			<description>
+			</description>
+		</method>
+		<method name="SliderFloat" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="v" type="Array" />
+			<param index="2" name="v_min" type="float" />
+			<param index="3" name="v_max" type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="SliderFloat2" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="v" type="Array" />
+			<param index="2" name="v_min" type="float" />
+			<param index="3" name="v_max" type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="SliderFloat2Ex" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="v" type="Array" />
+			<param index="2" name="v_min" type="float" />
+			<param index="3" name="v_max" type="float" />
+			<param index="4" name="format" type="String" default="&quot;%.3f&quot;" />
+			<param index="5" name="flags" type="int" enum="ImGui.SliderFlags" is_bitfield="true" default="0" />
+			<description>
+			</description>
+		</method>
+		<method name="SliderFloat3" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="v" type="Array" />
+			<param index="2" name="v_min" type="float" />
+			<param index="3" name="v_max" type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="SliderFloat3Ex" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="v" type="Array" />
+			<param index="2" name="v_min" type="float" />
+			<param index="3" name="v_max" type="float" />
+			<param index="4" name="format" type="String" default="&quot;%.3f&quot;" />
+			<param index="5" name="flags" type="int" enum="ImGui.SliderFlags" is_bitfield="true" default="0" />
+			<description>
+			</description>
+		</method>
+		<method name="SliderFloat4" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="v" type="Array" />
+			<param index="2" name="v_min" type="float" />
+			<param index="3" name="v_max" type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="SliderFloat4Ex" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="v" type="Array" />
+			<param index="2" name="v_min" type="float" />
+			<param index="3" name="v_max" type="float" />
+			<param index="4" name="format" type="String" default="&quot;%.3f&quot;" />
+			<param index="5" name="flags" type="int" enum="ImGui.SliderFlags" is_bitfield="true" default="0" />
+			<description>
+			</description>
+		</method>
+		<method name="SliderFloatEx" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="v" type="Array" />
+			<param index="2" name="v_min" type="float" />
+			<param index="3" name="v_max" type="float" />
+			<param index="4" name="format" type="String" default="&quot;%.3f&quot;" />
+			<param index="5" name="flags" type="int" enum="ImGui.SliderFlags" is_bitfield="true" default="0" />
+			<description>
+			</description>
+		</method>
+		<method name="SliderInt" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="v" type="Array" />
+			<param index="2" name="v_min" type="int" />
+			<param index="3" name="v_max" type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="SliderInt2" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="v" type="Array" />
+			<param index="2" name="v_min" type="int" />
+			<param index="3" name="v_max" type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="SliderInt2Ex" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="v" type="Array" />
+			<param index="2" name="v_min" type="int" />
+			<param index="3" name="v_max" type="int" />
+			<param index="4" name="format" type="String" default="&quot;%d&quot;" />
+			<param index="5" name="flags" type="int" enum="ImGui.SliderFlags" is_bitfield="true" default="0" />
+			<description>
+			</description>
+		</method>
+		<method name="SliderInt3" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="v" type="Array" />
+			<param index="2" name="v_min" type="int" />
+			<param index="3" name="v_max" type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="SliderInt3Ex" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="v" type="Array" />
+			<param index="2" name="v_min" type="int" />
+			<param index="3" name="v_max" type="int" />
+			<param index="4" name="format" type="String" default="&quot;%d&quot;" />
+			<param index="5" name="flags" type="int" enum="ImGui.SliderFlags" is_bitfield="true" default="0" />
+			<description>
+			</description>
+		</method>
+		<method name="SliderInt4" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="v" type="Array" />
+			<param index="2" name="v_min" type="int" />
+			<param index="3" name="v_max" type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="SliderInt4Ex" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="v" type="Array" />
+			<param index="2" name="v_min" type="int" />
+			<param index="3" name="v_max" type="int" />
+			<param index="4" name="format" type="String" default="&quot;%d&quot;" />
+			<param index="5" name="flags" type="int" enum="ImGui.SliderFlags" is_bitfield="true" default="0" />
+			<description>
+			</description>
+		</method>
+		<method name="SliderIntEx" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="v" type="Array" />
+			<param index="2" name="v_min" type="int" />
+			<param index="3" name="v_max" type="int" />
+			<param index="4" name="format" type="String" default="&quot;%d&quot;" />
+			<param index="5" name="flags" type="int" enum="ImGui.SliderFlags" is_bitfield="true" default="0" />
+			<description>
+			</description>
+		</method>
+		<method name="SmallButton" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<description>
+			</description>
+		</method>
+		<method name="Spacing" qualifiers="static">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="StyleColorsClassic" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="dst" type="ImGuiStylePtr" default="null" />
+			<description>
+			</description>
+		</method>
+		<method name="StyleColorsDark" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="dst" type="ImGuiStylePtr" default="null" />
+			<description>
+			</description>
+		</method>
+		<method name="StyleColorsLight" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="dst" type="ImGuiStylePtr" default="null" />
+			<description>
+			</description>
+		</method>
+		<method name="TabItemButton" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="flags" type="int" enum="ImGui.TabItemFlags" is_bitfield="true" default="0" />
+			<description>
+			</description>
+		</method>
+		<method name="TableAngledHeadersRow" qualifiers="static">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="TableGetColumnCount" qualifiers="static">
+			<return type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="TableGetColumnFlags" qualifiers="static">
+			<return type="int" enum="ImGui.TableColumnFlags" is_bitfield="true" />
+			<param index="0" name="column_n" type="int" default="-1" />
+			<description>
+			</description>
+		</method>
+		<method name="TableGetColumnIndex" qualifiers="static">
+			<return type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="TableGetColumnName" qualifiers="static">
+			<return type="String" />
+			<param index="0" name="column_n" type="int" default="-1" />
+			<description>
+			</description>
+		</method>
+		<method name="TableGetHoveredColumn" qualifiers="static">
+			<return type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="TableGetRowIndex" qualifiers="static">
+			<return type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="TableGetSortSpecs" qualifiers="static">
+			<return type="ImGuiTableSortSpecsPtr" />
+			<description>
+			</description>
+		</method>
+		<method name="TableHeader" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="label" type="StringName" />
+			<description>
+			</description>
+		</method>
+		<method name="TableHeadersRow" qualifiers="static">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="TableNextColumn" qualifiers="static">
+			<return type="bool" />
+			<description>
+			</description>
+		</method>
+		<method name="TableNextRow" qualifiers="static">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="TableNextRowEx" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="row_flags" type="int" enum="ImGui.TableRowFlags" is_bitfield="true" default="0" />
+			<param index="1" name="min_row_height" type="float" default="0.0" />
+			<description>
+			</description>
+		</method>
+		<method name="TableSetBgColor" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="target" type="int" enum="ImGui.TableBgTarget" />
+			<param index="1" name="color" type="Color" />
+			<param index="2" name="column_n" type="int" default="-1" />
+			<description>
+			</description>
+		</method>
+		<method name="TableSetColumnEnabled" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="column_n" type="int" />
+			<param index="1" name="v" type="bool" />
+			<description>
+			</description>
+		</method>
+		<method name="TableSetColumnIndex" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="column_n" type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="TableSetupColumn" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="flags" type="int" enum="ImGui.TableColumnFlags" is_bitfield="true" default="0" />
+			<description>
+			</description>
+		</method>
+		<method name="TableSetupColumnEx" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="flags" type="int" enum="ImGui.TableColumnFlags" is_bitfield="true" default="0" />
+			<param index="2" name="init_width_or_weight" type="float" default="0.0" />
+			<param index="3" name="user_id" type="int" default="0" />
+			<description>
+			</description>
+		</method>
+		<method name="TableSetupScrollFreeze" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="cols" type="int" />
+			<param index="1" name="rows" type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="Text" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="fmt" type="String" />
+			<description>
+			</description>
+		</method>
+		<method name="TextColored" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="col" type="Color" />
+			<param index="1" name="fmt" type="String" />
+			<description>
+			</description>
+		</method>
+		<method name="TextDisabled" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="fmt" type="String" />
+			<description>
+			</description>
+		</method>
+		<method name="TextLink" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<description>
+			</description>
+		</method>
+		<method name="TextLinkOpenURL" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="label" type="StringName" />
+			<description>
+			</description>
+		</method>
+		<method name="TextLinkOpenURLEx" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="url" type="String" default="&quot;&quot;" />
+			<description>
+			</description>
+		</method>
+		<method name="TextWrapped" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="fmt" type="String" />
+			<description>
+			</description>
+		</method>
+		<method name="TreeNode" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<description>
+			</description>
+		</method>
+		<method name="TreeNodeEx" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="flags" type="int" enum="ImGui.TreeNodeFlags" is_bitfield="true" default="0" />
+			<description>
+			</description>
+		</method>
+		<method name="TreeNodeExStr" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="str_id" type="StringName" />
+			<param index="1" name="flags" type="int" enum="ImGui.TreeNodeFlags" is_bitfield="true" />
+			<param index="2" name="fmt" type="String" />
+			<description>
+			</description>
+		</method>
+		<method name="TreeNodeStr" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="str_id" type="StringName" />
+			<param index="1" name="fmt" type="String" />
+			<description>
+			</description>
+		</method>
+		<method name="TreePop" qualifiers="static">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="TreePush" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="str_id" type="StringName" />
+			<description>
+			</description>
+		</method>
+		<method name="Unindent" qualifiers="static">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="UnindentEx" qualifiers="static">
+			<return type="void" />
+			<param index="0" name="indent_w" type="float" default="0.0" />
+			<description>
+			</description>
+		</method>
+		<method name="VSliderFloat" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="size" type="Vector2" />
+			<param index="2" name="v" type="Array" />
+			<param index="3" name="v_min" type="float" />
+			<param index="4" name="v_max" type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="VSliderFloatEx" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="size" type="Vector2" />
+			<param index="2" name="v" type="Array" />
+			<param index="3" name="v_min" type="float" />
+			<param index="4" name="v_max" type="float" />
+			<param index="5" name="format" type="String" default="&quot;%.3f&quot;" />
+			<param index="6" name="flags" type="int" enum="ImGui.SliderFlags" is_bitfield="true" default="0" />
+			<description>
+			</description>
+		</method>
+		<method name="VSliderInt" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="size" type="Vector2" />
+			<param index="2" name="v" type="Array" />
+			<param index="3" name="v_min" type="int" />
+			<param index="4" name="v_max" type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="VSliderIntEx" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="label" type="StringName" />
+			<param index="1" name="size" type="Vector2" />
+			<param index="2" name="v" type="Array" />
+			<param index="3" name="v_min" type="int" />
+			<param index="4" name="v_max" type="int" />
+			<param index="5" name="format" type="String" default="&quot;%d&quot;" />
+			<param index="6" name="flags" type="int" enum="ImGui.SliderFlags" is_bitfield="true" default="0" />
+			<description>
+			</description>
+		</method>
+	</methods>
+	<constants>
+		<constant name="WindowFlags_None" value="0" enum="WindowFlags" is_bitfield="true">
+		</constant>
+		<constant name="WindowFlags_NoTitleBar" value="1" enum="WindowFlags" is_bitfield="true">
+		</constant>
+		<constant name="WindowFlags_NoResize" value="2" enum="WindowFlags" is_bitfield="true">
+		</constant>
+		<constant name="WindowFlags_NoMove" value="4" enum="WindowFlags" is_bitfield="true">
+		</constant>
+		<constant name="WindowFlags_NoScrollbar" value="8" enum="WindowFlags" is_bitfield="true">
+		</constant>
+		<constant name="WindowFlags_NoScrollWithMouse" value="16" enum="WindowFlags" is_bitfield="true">
+		</constant>
+		<constant name="WindowFlags_NoCollapse" value="32" enum="WindowFlags" is_bitfield="true">
+		</constant>
+		<constant name="WindowFlags_AlwaysAutoResize" value="64" enum="WindowFlags" is_bitfield="true">
+		</constant>
+		<constant name="WindowFlags_NoBackground" value="128" enum="WindowFlags" is_bitfield="true">
+		</constant>
+		<constant name="WindowFlags_NoSavedSettings" value="256" enum="WindowFlags" is_bitfield="true">
+		</constant>
+		<constant name="WindowFlags_NoMouseInputs" value="512" enum="WindowFlags" is_bitfield="true">
+		</constant>
+		<constant name="WindowFlags_MenuBar" value="1024" enum="WindowFlags" is_bitfield="true">
+		</constant>
+		<constant name="WindowFlags_HorizontalScrollbar" value="2048" enum="WindowFlags" is_bitfield="true">
+		</constant>
+		<constant name="WindowFlags_NoFocusOnAppearing" value="4096" enum="WindowFlags" is_bitfield="true">
+		</constant>
+		<constant name="WindowFlags_NoBringToFrontOnFocus" value="8192" enum="WindowFlags" is_bitfield="true">
+		</constant>
+		<constant name="WindowFlags_AlwaysVerticalScrollbar" value="16384" enum="WindowFlags" is_bitfield="true">
+		</constant>
+		<constant name="WindowFlags_AlwaysHorizontalScrollbar" value="32768" enum="WindowFlags" is_bitfield="true">
+		</constant>
+		<constant name="WindowFlags_NoNavInputs" value="65536" enum="WindowFlags" is_bitfield="true">
+		</constant>
+		<constant name="WindowFlags_NoNavFocus" value="131072" enum="WindowFlags" is_bitfield="true">
+		</constant>
+		<constant name="WindowFlags_UnsavedDocument" value="262144" enum="WindowFlags" is_bitfield="true">
+		</constant>
+		<constant name="WindowFlags_NoDocking" value="524288" enum="WindowFlags" is_bitfield="true">
+		</constant>
+		<constant name="WindowFlags_NoNav" value="196608" enum="WindowFlags" is_bitfield="true">
+		</constant>
+		<constant name="WindowFlags_NoDecoration" value="43" enum="WindowFlags" is_bitfield="true">
+		</constant>
+		<constant name="WindowFlags_NoInputs" value="197120" enum="WindowFlags" is_bitfield="true">
+		</constant>
+		<constant name="WindowFlags_ChildWindow" value="16777216" enum="WindowFlags" is_bitfield="true">
+		</constant>
+		<constant name="WindowFlags_Tooltip" value="33554432" enum="WindowFlags" is_bitfield="true">
+		</constant>
+		<constant name="WindowFlags_Popup" value="67108864" enum="WindowFlags" is_bitfield="true">
+		</constant>
+		<constant name="WindowFlags_Modal" value="134217728" enum="WindowFlags" is_bitfield="true">
+		</constant>
+		<constant name="WindowFlags_ChildMenu" value="268435456" enum="WindowFlags" is_bitfield="true">
+		</constant>
+		<constant name="WindowFlags_DockNodeHost" value="536870912" enum="WindowFlags" is_bitfield="true">
+		</constant>
+		<constant name="ChildFlags_None" value="0" enum="ChildFlags" is_bitfield="true">
+		</constant>
+		<constant name="ChildFlags_Borders" value="1" enum="ChildFlags" is_bitfield="true">
+		</constant>
+		<constant name="ChildFlags_AlwaysUseWindowPadding" value="2" enum="ChildFlags" is_bitfield="true">
+		</constant>
+		<constant name="ChildFlags_ResizeX" value="4" enum="ChildFlags" is_bitfield="true">
+		</constant>
+		<constant name="ChildFlags_ResizeY" value="8" enum="ChildFlags" is_bitfield="true">
+		</constant>
+		<constant name="ChildFlags_AutoResizeX" value="16" enum="ChildFlags" is_bitfield="true">
+		</constant>
+		<constant name="ChildFlags_AutoResizeY" value="32" enum="ChildFlags" is_bitfield="true">
+		</constant>
+		<constant name="ChildFlags_AlwaysAutoResize" value="64" enum="ChildFlags" is_bitfield="true">
+		</constant>
+		<constant name="ChildFlags_FrameStyle" value="128" enum="ChildFlags" is_bitfield="true">
+		</constant>
+		<constant name="ChildFlags_NavFlattened" value="256" enum="ChildFlags" is_bitfield="true">
+		</constant>
+		<constant name="ItemFlags_None" value="0" enum="ItemFlags" is_bitfield="true">
+		</constant>
+		<constant name="ItemFlags_NoTabStop" value="1" enum="ItemFlags" is_bitfield="true">
+		</constant>
+		<constant name="ItemFlags_NoNav" value="2" enum="ItemFlags" is_bitfield="true">
+		</constant>
+		<constant name="ItemFlags_NoNavDefaultFocus" value="4" enum="ItemFlags" is_bitfield="true">
+		</constant>
+		<constant name="ItemFlags_ButtonRepeat" value="8" enum="ItemFlags" is_bitfield="true">
+		</constant>
+		<constant name="ItemFlags_AutoClosePopups" value="16" enum="ItemFlags" is_bitfield="true">
+		</constant>
+		<constant name="ItemFlags_AllowDuplicateId" value="32" enum="ItemFlags" is_bitfield="true">
+		</constant>
+		<constant name="InputTextFlags_None" value="0" enum="InputTextFlags" is_bitfield="true">
+		</constant>
+		<constant name="InputTextFlags_CharsDecimal" value="1" enum="InputTextFlags" is_bitfield="true">
+		</constant>
+		<constant name="InputTextFlags_CharsHexadecimal" value="2" enum="InputTextFlags" is_bitfield="true">
+		</constant>
+		<constant name="InputTextFlags_CharsScientific" value="4" enum="InputTextFlags" is_bitfield="true">
+		</constant>
+		<constant name="InputTextFlags_CharsUppercase" value="8" enum="InputTextFlags" is_bitfield="true">
+		</constant>
+		<constant name="InputTextFlags_CharsNoBlank" value="16" enum="InputTextFlags" is_bitfield="true">
+		</constant>
+		<constant name="InputTextFlags_AllowTabInput" value="32" enum="InputTextFlags" is_bitfield="true">
+		</constant>
+		<constant name="InputTextFlags_EnterReturnsTrue" value="64" enum="InputTextFlags" is_bitfield="true">
+		</constant>
+		<constant name="InputTextFlags_EscapeClearsAll" value="128" enum="InputTextFlags" is_bitfield="true">
+		</constant>
+		<constant name="InputTextFlags_CtrlEnterForNewLine" value="256" enum="InputTextFlags" is_bitfield="true">
+		</constant>
+		<constant name="InputTextFlags_ReadOnly" value="512" enum="InputTextFlags" is_bitfield="true">
+		</constant>
+		<constant name="InputTextFlags_Password" value="1024" enum="InputTextFlags" is_bitfield="true">
+		</constant>
+		<constant name="InputTextFlags_AlwaysOverwrite" value="2048" enum="InputTextFlags" is_bitfield="true">
+		</constant>
+		<constant name="InputTextFlags_AutoSelectAll" value="4096" enum="InputTextFlags" is_bitfield="true">
+		</constant>
+		<constant name="InputTextFlags_ParseEmptyRefVal" value="8192" enum="InputTextFlags" is_bitfield="true">
+		</constant>
+		<constant name="InputTextFlags_DisplayEmptyRefVal" value="16384" enum="InputTextFlags" is_bitfield="true">
+		</constant>
+		<constant name="InputTextFlags_NoHorizontalScroll" value="32768" enum="InputTextFlags" is_bitfield="true">
+		</constant>
+		<constant name="InputTextFlags_NoUndoRedo" value="65536" enum="InputTextFlags" is_bitfield="true">
+		</constant>
+		<constant name="InputTextFlags_ElideLeft" value="131072" enum="InputTextFlags" is_bitfield="true">
+		</constant>
+		<constant name="InputTextFlags_CallbackCompletion" value="262144" enum="InputTextFlags" is_bitfield="true">
+		</constant>
+		<constant name="InputTextFlags_CallbackHistory" value="524288" enum="InputTextFlags" is_bitfield="true">
+		</constant>
+		<constant name="InputTextFlags_CallbackAlways" value="1048576" enum="InputTextFlags" is_bitfield="true">
+		</constant>
+		<constant name="InputTextFlags_CallbackCharFilter" value="2097152" enum="InputTextFlags" is_bitfield="true">
+		</constant>
+		<constant name="InputTextFlags_CallbackResize" value="4194304" enum="InputTextFlags" is_bitfield="true">
+		</constant>
+		<constant name="InputTextFlags_CallbackEdit" value="8388608" enum="InputTextFlags" is_bitfield="true">
+		</constant>
+		<constant name="TreeNodeFlags_None" value="0" enum="TreeNodeFlags" is_bitfield="true">
+		</constant>
+		<constant name="TreeNodeFlags_Selected" value="1" enum="TreeNodeFlags" is_bitfield="true">
+		</constant>
+		<constant name="TreeNodeFlags_Framed" value="2" enum="TreeNodeFlags" is_bitfield="true">
+		</constant>
+		<constant name="TreeNodeFlags_AllowOverlap" value="4" enum="TreeNodeFlags" is_bitfield="true">
+		</constant>
+		<constant name="TreeNodeFlags_NoTreePushOnOpen" value="8" enum="TreeNodeFlags" is_bitfield="true">
+		</constant>
+		<constant name="TreeNodeFlags_NoAutoOpenOnLog" value="16" enum="TreeNodeFlags" is_bitfield="true">
+		</constant>
+		<constant name="TreeNodeFlags_DefaultOpen" value="32" enum="TreeNodeFlags" is_bitfield="true">
+		</constant>
+		<constant name="TreeNodeFlags_OpenOnDoubleClick" value="64" enum="TreeNodeFlags" is_bitfield="true">
+		</constant>
+		<constant name="TreeNodeFlags_OpenOnArrow" value="128" enum="TreeNodeFlags" is_bitfield="true">
+		</constant>
+		<constant name="TreeNodeFlags_Leaf" value="256" enum="TreeNodeFlags" is_bitfield="true">
+		</constant>
+		<constant name="TreeNodeFlags_Bullet" value="512" enum="TreeNodeFlags" is_bitfield="true">
+		</constant>
+		<constant name="TreeNodeFlags_FramePadding" value="1024" enum="TreeNodeFlags" is_bitfield="true">
+		</constant>
+		<constant name="TreeNodeFlags_SpanAvailWidth" value="2048" enum="TreeNodeFlags" is_bitfield="true">
+		</constant>
+		<constant name="TreeNodeFlags_SpanFullWidth" value="4096" enum="TreeNodeFlags" is_bitfield="true">
+		</constant>
+		<constant name="TreeNodeFlags_SpanTextWidth" value="8192" enum="TreeNodeFlags" is_bitfield="true">
+		</constant>
+		<constant name="TreeNodeFlags_SpanAllColumns" value="16384" enum="TreeNodeFlags" is_bitfield="true">
+		</constant>
+		<constant name="TreeNodeFlags_NavLeftJumpsBackHere" value="32768" enum="TreeNodeFlags" is_bitfield="true">
+		</constant>
+		<constant name="TreeNodeFlags_CollapsingHeader" value="26" enum="TreeNodeFlags" is_bitfield="true">
+		</constant>
+		<constant name="PopupFlags_None" value="0" enum="PopupFlags" is_bitfield="true">
+		</constant>
+		<constant name="PopupFlags_MouseButtonLeft" value="0" enum="PopupFlags" is_bitfield="true">
+		</constant>
+		<constant name="PopupFlags_MouseButtonRight" value="1" enum="PopupFlags" is_bitfield="true">
+		</constant>
+		<constant name="PopupFlags_MouseButtonMiddle" value="2" enum="PopupFlags" is_bitfield="true">
+		</constant>
+		<constant name="PopupFlags_NoReopen" value="32" enum="PopupFlags" is_bitfield="true">
+		</constant>
+		<constant name="PopupFlags_NoOpenOverExistingPopup" value="128" enum="PopupFlags" is_bitfield="true">
+		</constant>
+		<constant name="PopupFlags_NoOpenOverItems" value="256" enum="PopupFlags" is_bitfield="true">
+		</constant>
+		<constant name="PopupFlags_AnyPopupId" value="1024" enum="PopupFlags" is_bitfield="true">
+		</constant>
+		<constant name="PopupFlags_AnyPopupLevel" value="2048" enum="PopupFlags" is_bitfield="true">
+		</constant>
+		<constant name="PopupFlags_AnyPopup" value="3072" enum="PopupFlags" is_bitfield="true">
+		</constant>
+		<constant name="SelectableFlags_None" value="0" enum="SelectableFlags" is_bitfield="true">
+		</constant>
+		<constant name="SelectableFlags_NoAutoClosePopups" value="1" enum="SelectableFlags" is_bitfield="true">
+		</constant>
+		<constant name="SelectableFlags_SpanAllColumns" value="2" enum="SelectableFlags" is_bitfield="true">
+		</constant>
+		<constant name="SelectableFlags_AllowDoubleClick" value="4" enum="SelectableFlags" is_bitfield="true">
+		</constant>
+		<constant name="SelectableFlags_Disabled" value="8" enum="SelectableFlags" is_bitfield="true">
+		</constant>
+		<constant name="SelectableFlags_AllowOverlap" value="16" enum="SelectableFlags" is_bitfield="true">
+		</constant>
+		<constant name="SelectableFlags_Highlight" value="32" enum="SelectableFlags" is_bitfield="true">
+		</constant>
+		<constant name="ComboFlags_None" value="0" enum="ComboFlags" is_bitfield="true">
+		</constant>
+		<constant name="ComboFlags_PopupAlignLeft" value="1" enum="ComboFlags" is_bitfield="true">
+		</constant>
+		<constant name="ComboFlags_HeightSmall" value="2" enum="ComboFlags" is_bitfield="true">
+		</constant>
+		<constant name="ComboFlags_HeightRegular" value="4" enum="ComboFlags" is_bitfield="true">
+		</constant>
+		<constant name="ComboFlags_HeightLarge" value="8" enum="ComboFlags" is_bitfield="true">
+		</constant>
+		<constant name="ComboFlags_HeightLargest" value="16" enum="ComboFlags" is_bitfield="true">
+		</constant>
+		<constant name="ComboFlags_NoArrowButton" value="32" enum="ComboFlags" is_bitfield="true">
+		</constant>
+		<constant name="ComboFlags_NoPreview" value="64" enum="ComboFlags" is_bitfield="true">
+		</constant>
+		<constant name="ComboFlags_WidthFitPreview" value="128" enum="ComboFlags" is_bitfield="true">
+		</constant>
+		<constant name="TabBarFlags_None" value="0" enum="TabBarFlags" is_bitfield="true">
+		</constant>
+		<constant name="TabBarFlags_Reorderable" value="1" enum="TabBarFlags" is_bitfield="true">
+		</constant>
+		<constant name="TabBarFlags_AutoSelectNewTabs" value="2" enum="TabBarFlags" is_bitfield="true">
+		</constant>
+		<constant name="TabBarFlags_TabListPopupButton" value="4" enum="TabBarFlags" is_bitfield="true">
+		</constant>
+		<constant name="TabBarFlags_NoCloseWithMiddleMouseButton" value="8" enum="TabBarFlags" is_bitfield="true">
+		</constant>
+		<constant name="TabBarFlags_NoTabListScrollingButtons" value="16" enum="TabBarFlags" is_bitfield="true">
+		</constant>
+		<constant name="TabBarFlags_NoTooltip" value="32" enum="TabBarFlags" is_bitfield="true">
+		</constant>
+		<constant name="TabBarFlags_DrawSelectedOverline" value="64" enum="TabBarFlags" is_bitfield="true">
+		</constant>
+		<constant name="TabBarFlags_FittingPolicyResizeDown" value="128" enum="TabBarFlags" is_bitfield="true">
+		</constant>
+		<constant name="TabBarFlags_FittingPolicyScroll" value="256" enum="TabBarFlags" is_bitfield="true">
+		</constant>
+		<constant name="TabItemFlags_None" value="0" enum="TabItemFlags" is_bitfield="true">
+		</constant>
+		<constant name="TabItemFlags_UnsavedDocument" value="1" enum="TabItemFlags" is_bitfield="true">
+		</constant>
+		<constant name="TabItemFlags_SetSelected" value="2" enum="TabItemFlags" is_bitfield="true">
+		</constant>
+		<constant name="TabItemFlags_NoCloseWithMiddleMouseButton" value="4" enum="TabItemFlags" is_bitfield="true">
+		</constant>
+		<constant name="TabItemFlags_NoPushId" value="8" enum="TabItemFlags" is_bitfield="true">
+		</constant>
+		<constant name="TabItemFlags_NoTooltip" value="16" enum="TabItemFlags" is_bitfield="true">
+		</constant>
+		<constant name="TabItemFlags_NoReorder" value="32" enum="TabItemFlags" is_bitfield="true">
+		</constant>
+		<constant name="TabItemFlags_Leading" value="64" enum="TabItemFlags" is_bitfield="true">
+		</constant>
+		<constant name="TabItemFlags_Trailing" value="128" enum="TabItemFlags" is_bitfield="true">
+		</constant>
+		<constant name="TabItemFlags_NoAssumedClosure" value="256" enum="TabItemFlags" is_bitfield="true">
+		</constant>
+		<constant name="FocusedFlags_None" value="0" enum="FocusedFlags" is_bitfield="true">
+		</constant>
+		<constant name="FocusedFlags_ChildWindows" value="1" enum="FocusedFlags" is_bitfield="true">
+		</constant>
+		<constant name="FocusedFlags_RootWindow" value="2" enum="FocusedFlags" is_bitfield="true">
+		</constant>
+		<constant name="FocusedFlags_AnyWindow" value="4" enum="FocusedFlags" is_bitfield="true">
+		</constant>
+		<constant name="FocusedFlags_NoPopupHierarchy" value="8" enum="FocusedFlags" is_bitfield="true">
+		</constant>
+		<constant name="FocusedFlags_DockHierarchy" value="16" enum="FocusedFlags" is_bitfield="true">
+		</constant>
+		<constant name="FocusedFlags_RootAndChildWindows" value="3" enum="FocusedFlags" is_bitfield="true">
+		</constant>
+		<constant name="HoveredFlags_None" value="0" enum="HoveredFlags" is_bitfield="true">
+		</constant>
+		<constant name="HoveredFlags_ChildWindows" value="1" enum="HoveredFlags" is_bitfield="true">
+		</constant>
+		<constant name="HoveredFlags_RootWindow" value="2" enum="HoveredFlags" is_bitfield="true">
+		</constant>
+		<constant name="HoveredFlags_AnyWindow" value="4" enum="HoveredFlags" is_bitfield="true">
+		</constant>
+		<constant name="HoveredFlags_NoPopupHierarchy" value="8" enum="HoveredFlags" is_bitfield="true">
+		</constant>
+		<constant name="HoveredFlags_DockHierarchy" value="16" enum="HoveredFlags" is_bitfield="true">
+		</constant>
+		<constant name="HoveredFlags_AllowWhenBlockedByPopup" value="32" enum="HoveredFlags" is_bitfield="true">
+		</constant>
+		<constant name="HoveredFlags_AllowWhenBlockedByActiveItem" value="128" enum="HoveredFlags" is_bitfield="true">
+		</constant>
+		<constant name="HoveredFlags_AllowWhenOverlappedByItem" value="256" enum="HoveredFlags" is_bitfield="true">
+		</constant>
+		<constant name="HoveredFlags_AllowWhenOverlappedByWindow" value="512" enum="HoveredFlags" is_bitfield="true">
+		</constant>
+		<constant name="HoveredFlags_AllowWhenDisabled" value="1024" enum="HoveredFlags" is_bitfield="true">
+		</constant>
+		<constant name="HoveredFlags_NoNavOverride" value="2048" enum="HoveredFlags" is_bitfield="true">
+		</constant>
+		<constant name="HoveredFlags_AllowWhenOverlapped" value="768" enum="HoveredFlags" is_bitfield="true">
+		</constant>
+		<constant name="HoveredFlags_RectOnly" value="928" enum="HoveredFlags" is_bitfield="true">
+		</constant>
+		<constant name="HoveredFlags_RootAndChildWindows" value="3" enum="HoveredFlags" is_bitfield="true">
+		</constant>
+		<constant name="HoveredFlags_ForTooltip" value="4096" enum="HoveredFlags" is_bitfield="true">
+		</constant>
+		<constant name="HoveredFlags_Stationary" value="8192" enum="HoveredFlags" is_bitfield="true">
+		</constant>
+		<constant name="HoveredFlags_DelayNone" value="16384" enum="HoveredFlags" is_bitfield="true">
+		</constant>
+		<constant name="HoveredFlags_DelayShort" value="32768" enum="HoveredFlags" is_bitfield="true">
+		</constant>
+		<constant name="HoveredFlags_DelayNormal" value="65536" enum="HoveredFlags" is_bitfield="true">
+		</constant>
+		<constant name="HoveredFlags_NoSharedDelay" value="131072" enum="HoveredFlags" is_bitfield="true">
+		</constant>
+		<constant name="DockNodeFlags_None" value="0" enum="DockNodeFlags" is_bitfield="true">
+		</constant>
+		<constant name="DockNodeFlags_KeepAliveOnly" value="1" enum="DockNodeFlags" is_bitfield="true">
+		</constant>
+		<constant name="DockNodeFlags_NoDockingOverCentralNode" value="4" enum="DockNodeFlags" is_bitfield="true">
+		</constant>
+		<constant name="DockNodeFlags_PassthruCentralNode" value="8" enum="DockNodeFlags" is_bitfield="true">
+		</constant>
+		<constant name="DockNodeFlags_NoDockingSplit" value="16" enum="DockNodeFlags" is_bitfield="true">
+		</constant>
+		<constant name="DockNodeFlags_NoResize" value="32" enum="DockNodeFlags" is_bitfield="true">
+		</constant>
+		<constant name="DockNodeFlags_AutoHideTabBar" value="64" enum="DockNodeFlags" is_bitfield="true">
+		</constant>
+		<constant name="DockNodeFlags_NoUndocking" value="128" enum="DockNodeFlags" is_bitfield="true">
+		</constant>
+		<constant name="DragDropFlags_None" value="0" enum="DragDropFlags" is_bitfield="true">
+		</constant>
+		<constant name="DragDropFlags_SourceNoPreviewTooltip" value="1" enum="DragDropFlags" is_bitfield="true">
+		</constant>
+		<constant name="DragDropFlags_SourceNoDisableHover" value="2" enum="DragDropFlags" is_bitfield="true">
+		</constant>
+		<constant name="DragDropFlags_SourceNoHoldToOpenOthers" value="4" enum="DragDropFlags" is_bitfield="true">
+		</constant>
+		<constant name="DragDropFlags_SourceAllowNullID" value="8" enum="DragDropFlags" is_bitfield="true">
+		</constant>
+		<constant name="DragDropFlags_SourceExtern" value="16" enum="DragDropFlags" is_bitfield="true">
+		</constant>
+		<constant name="DragDropFlags_PayloadAutoExpire" value="32" enum="DragDropFlags" is_bitfield="true">
+		</constant>
+		<constant name="DragDropFlags_PayloadNoCrossContext" value="64" enum="DragDropFlags" is_bitfield="true">
+		</constant>
+		<constant name="DragDropFlags_PayloadNoCrossProcess" value="128" enum="DragDropFlags" is_bitfield="true">
+		</constant>
+		<constant name="DragDropFlags_AcceptBeforeDelivery" value="1024" enum="DragDropFlags" is_bitfield="true">
+		</constant>
+		<constant name="DragDropFlags_AcceptNoDrawDefaultRect" value="2048" enum="DragDropFlags" is_bitfield="true">
+		</constant>
+		<constant name="DragDropFlags_AcceptNoPreviewTooltip" value="4096" enum="DragDropFlags" is_bitfield="true">
+		</constant>
+		<constant name="DragDropFlags_AcceptPeekOnly" value="3072" enum="DragDropFlags" is_bitfield="true">
+		</constant>
+		<constant name="DataType_S8" value="0" enum="DataType">
+		</constant>
+		<constant name="DataType_U8" value="1" enum="DataType">
+		</constant>
+		<constant name="DataType_S16" value="2" enum="DataType">
+		</constant>
+		<constant name="DataType_U16" value="3" enum="DataType">
+		</constant>
+		<constant name="DataType_S32" value="4" enum="DataType">
+		</constant>
+		<constant name="DataType_U32" value="5" enum="DataType">
+		</constant>
+		<constant name="DataType_S64" value="6" enum="DataType">
+		</constant>
+		<constant name="DataType_U64" value="7" enum="DataType">
+		</constant>
+		<constant name="DataType_Float" value="8" enum="DataType">
+		</constant>
+		<constant name="DataType_Double" value="9" enum="DataType">
+		</constant>
+		<constant name="DataType_Bool" value="10" enum="DataType">
+		</constant>
+		<constant name="Dir_None" value="-1" enum="Dir">
+		</constant>
+		<constant name="Dir_Left" value="0" enum="Dir">
+		</constant>
+		<constant name="Dir_Right" value="1" enum="Dir">
+		</constant>
+		<constant name="Dir_Up" value="2" enum="Dir">
+		</constant>
+		<constant name="Dir_Down" value="3" enum="Dir">
+		</constant>
+		<constant name="SortDirection_None" value="0" enum="SortDirection">
+		</constant>
+		<constant name="SortDirection_Ascending" value="1" enum="SortDirection">
+		</constant>
+		<constant name="SortDirection_Descending" value="2" enum="SortDirection">
+		</constant>
+		<constant name="Key_None" value="0" enum="Key">
+		</constant>
+		<constant name="Key_Tab" value="512" enum="Key">
+		</constant>
+		<constant name="Key_LeftArrow" value="513" enum="Key">
+		</constant>
+		<constant name="Key_RightArrow" value="514" enum="Key">
+		</constant>
+		<constant name="Key_UpArrow" value="515" enum="Key">
+		</constant>
+		<constant name="Key_DownArrow" value="516" enum="Key">
+		</constant>
+		<constant name="Key_PageUp" value="517" enum="Key">
+		</constant>
+		<constant name="Key_PageDown" value="518" enum="Key">
+		</constant>
+		<constant name="Key_Home" value="519" enum="Key">
+		</constant>
+		<constant name="Key_End" value="520" enum="Key">
+		</constant>
+		<constant name="Key_Insert" value="521" enum="Key">
+		</constant>
+		<constant name="Key_Delete" value="522" enum="Key">
+		</constant>
+		<constant name="Key_Backspace" value="523" enum="Key">
+		</constant>
+		<constant name="Key_Space" value="524" enum="Key">
+		</constant>
+		<constant name="Key_Enter" value="525" enum="Key">
+		</constant>
+		<constant name="Key_Escape" value="526" enum="Key">
+		</constant>
+		<constant name="Key_LeftCtrl" value="527" enum="Key">
+		</constant>
+		<constant name="Key_LeftShift" value="528" enum="Key">
+		</constant>
+		<constant name="Key_LeftAlt" value="529" enum="Key">
+		</constant>
+		<constant name="Key_LeftSuper" value="530" enum="Key">
+		</constant>
+		<constant name="Key_RightCtrl" value="531" enum="Key">
+		</constant>
+		<constant name="Key_RightShift" value="532" enum="Key">
+		</constant>
+		<constant name="Key_RightAlt" value="533" enum="Key">
+		</constant>
+		<constant name="Key_RightSuper" value="534" enum="Key">
+		</constant>
+		<constant name="Key_Menu" value="535" enum="Key">
+		</constant>
+		<constant name="Key_0" value="536" enum="Key">
+		</constant>
+		<constant name="Key_1" value="537" enum="Key">
+		</constant>
+		<constant name="Key_2" value="538" enum="Key">
+		</constant>
+		<constant name="Key_3" value="539" enum="Key">
+		</constant>
+		<constant name="Key_4" value="540" enum="Key">
+		</constant>
+		<constant name="Key_5" value="541" enum="Key">
+		</constant>
+		<constant name="Key_6" value="542" enum="Key">
+		</constant>
+		<constant name="Key_7" value="543" enum="Key">
+		</constant>
+		<constant name="Key_8" value="544" enum="Key">
+		</constant>
+		<constant name="Key_9" value="545" enum="Key">
+		</constant>
+		<constant name="Key_A" value="546" enum="Key">
+		</constant>
+		<constant name="Key_B" value="547" enum="Key">
+		</constant>
+		<constant name="Key_C" value="548" enum="Key">
+		</constant>
+		<constant name="Key_D" value="549" enum="Key">
+		</constant>
+		<constant name="Key_E" value="550" enum="Key">
+		</constant>
+		<constant name="Key_F" value="551" enum="Key">
+		</constant>
+		<constant name="Key_G" value="552" enum="Key">
+		</constant>
+		<constant name="Key_H" value="553" enum="Key">
+		</constant>
+		<constant name="Key_I" value="554" enum="Key">
+		</constant>
+		<constant name="Key_J" value="555" enum="Key">
+		</constant>
+		<constant name="Key_K" value="556" enum="Key">
+		</constant>
+		<constant name="Key_L" value="557" enum="Key">
+		</constant>
+		<constant name="Key_M" value="558" enum="Key">
+		</constant>
+		<constant name="Key_N" value="559" enum="Key">
+		</constant>
+		<constant name="Key_O" value="560" enum="Key">
+		</constant>
+		<constant name="Key_P" value="561" enum="Key">
+		</constant>
+		<constant name="Key_Q" value="562" enum="Key">
+		</constant>
+		<constant name="Key_R" value="563" enum="Key">
+		</constant>
+		<constant name="Key_S" value="564" enum="Key">
+		</constant>
+		<constant name="Key_T" value="565" enum="Key">
+		</constant>
+		<constant name="Key_U" value="566" enum="Key">
+		</constant>
+		<constant name="Key_V" value="567" enum="Key">
+		</constant>
+		<constant name="Key_W" value="568" enum="Key">
+		</constant>
+		<constant name="Key_X" value="569" enum="Key">
+		</constant>
+		<constant name="Key_Y" value="570" enum="Key">
+		</constant>
+		<constant name="Key_Z" value="571" enum="Key">
+		</constant>
+		<constant name="Key_F1" value="572" enum="Key">
+		</constant>
+		<constant name="Key_F2" value="573" enum="Key">
+		</constant>
+		<constant name="Key_F3" value="574" enum="Key">
+		</constant>
+		<constant name="Key_F4" value="575" enum="Key">
+		</constant>
+		<constant name="Key_F5" value="576" enum="Key">
+		</constant>
+		<constant name="Key_F6" value="577" enum="Key">
+		</constant>
+		<constant name="Key_F7" value="578" enum="Key">
+		</constant>
+		<constant name="Key_F8" value="579" enum="Key">
+		</constant>
+		<constant name="Key_F9" value="580" enum="Key">
+		</constant>
+		<constant name="Key_F10" value="581" enum="Key">
+		</constant>
+		<constant name="Key_F11" value="582" enum="Key">
+		</constant>
+		<constant name="Key_F12" value="583" enum="Key">
+		</constant>
+		<constant name="Key_F13" value="584" enum="Key">
+		</constant>
+		<constant name="Key_F14" value="585" enum="Key">
+		</constant>
+		<constant name="Key_F15" value="586" enum="Key">
+		</constant>
+		<constant name="Key_F16" value="587" enum="Key">
+		</constant>
+		<constant name="Key_F17" value="588" enum="Key">
+		</constant>
+		<constant name="Key_F18" value="589" enum="Key">
+		</constant>
+		<constant name="Key_F19" value="590" enum="Key">
+		</constant>
+		<constant name="Key_F20" value="591" enum="Key">
+		</constant>
+		<constant name="Key_F21" value="592" enum="Key">
+		</constant>
+		<constant name="Key_F22" value="593" enum="Key">
+		</constant>
+		<constant name="Key_F23" value="594" enum="Key">
+		</constant>
+		<constant name="Key_F24" value="595" enum="Key">
+		</constant>
+		<constant name="Key_Apostrophe" value="596" enum="Key">
+		</constant>
+		<constant name="Key_Comma" value="597" enum="Key">
+		</constant>
+		<constant name="Key_Minus" value="598" enum="Key">
+		</constant>
+		<constant name="Key_Period" value="599" enum="Key">
+		</constant>
+		<constant name="Key_Slash" value="600" enum="Key">
+		</constant>
+		<constant name="Key_Semicolon" value="601" enum="Key">
+		</constant>
+		<constant name="Key_Equal" value="602" enum="Key">
+		</constant>
+		<constant name="Key_LeftBracket" value="603" enum="Key">
+		</constant>
+		<constant name="Key_Backslash" value="604" enum="Key">
+		</constant>
+		<constant name="Key_RightBracket" value="605" enum="Key">
+		</constant>
+		<constant name="Key_GraveAccent" value="606" enum="Key">
+		</constant>
+		<constant name="Key_CapsLock" value="607" enum="Key">
+		</constant>
+		<constant name="Key_ScrollLock" value="608" enum="Key">
+		</constant>
+		<constant name="Key_NumLock" value="609" enum="Key">
+		</constant>
+		<constant name="Key_PrintScreen" value="610" enum="Key">
+		</constant>
+		<constant name="Key_Pause" value="611" enum="Key">
+		</constant>
+		<constant name="Key_Keypad0" value="612" enum="Key">
+		</constant>
+		<constant name="Key_Keypad1" value="613" enum="Key">
+		</constant>
+		<constant name="Key_Keypad2" value="614" enum="Key">
+		</constant>
+		<constant name="Key_Keypad3" value="615" enum="Key">
+		</constant>
+		<constant name="Key_Keypad4" value="616" enum="Key">
+		</constant>
+		<constant name="Key_Keypad5" value="617" enum="Key">
+		</constant>
+		<constant name="Key_Keypad6" value="618" enum="Key">
+		</constant>
+		<constant name="Key_Keypad7" value="619" enum="Key">
+		</constant>
+		<constant name="Key_Keypad8" value="620" enum="Key">
+		</constant>
+		<constant name="Key_Keypad9" value="621" enum="Key">
+		</constant>
+		<constant name="Key_KeypadDecimal" value="622" enum="Key">
+		</constant>
+		<constant name="Key_KeypadDivide" value="623" enum="Key">
+		</constant>
+		<constant name="Key_KeypadMultiply" value="624" enum="Key">
+		</constant>
+		<constant name="Key_KeypadSubtract" value="625" enum="Key">
+		</constant>
+		<constant name="Key_KeypadAdd" value="626" enum="Key">
+		</constant>
+		<constant name="Key_KeypadEnter" value="627" enum="Key">
+		</constant>
+		<constant name="Key_KeypadEqual" value="628" enum="Key">
+		</constant>
+		<constant name="Key_AppBack" value="629" enum="Key">
+		</constant>
+		<constant name="Key_AppForward" value="630" enum="Key">
+		</constant>
+		<constant name="Key_GamepadStart" value="631" enum="Key">
+		</constant>
+		<constant name="Key_GamepadBack" value="632" enum="Key">
+		</constant>
+		<constant name="Key_GamepadFaceLeft" value="633" enum="Key">
+		</constant>
+		<constant name="Key_GamepadFaceRight" value="634" enum="Key">
+		</constant>
+		<constant name="Key_GamepadFaceUp" value="635" enum="Key">
+		</constant>
+		<constant name="Key_GamepadFaceDown" value="636" enum="Key">
+		</constant>
+		<constant name="Key_GamepadDpadLeft" value="637" enum="Key">
+		</constant>
+		<constant name="Key_GamepadDpadRight" value="638" enum="Key">
+		</constant>
+		<constant name="Key_GamepadDpadUp" value="639" enum="Key">
+		</constant>
+		<constant name="Key_GamepadDpadDown" value="640" enum="Key">
+		</constant>
+		<constant name="Key_GamepadL1" value="641" enum="Key">
+		</constant>
+		<constant name="Key_GamepadR1" value="642" enum="Key">
+		</constant>
+		<constant name="Key_GamepadL2" value="643" enum="Key">
+		</constant>
+		<constant name="Key_GamepadR2" value="644" enum="Key">
+		</constant>
+		<constant name="Key_GamepadL3" value="645" enum="Key">
+		</constant>
+		<constant name="Key_GamepadR3" value="646" enum="Key">
+		</constant>
+		<constant name="Key_GamepadLStickLeft" value="647" enum="Key">
+		</constant>
+		<constant name="Key_GamepadLStickRight" value="648" enum="Key">
+		</constant>
+		<constant name="Key_GamepadLStickUp" value="649" enum="Key">
+		</constant>
+		<constant name="Key_GamepadLStickDown" value="650" enum="Key">
+		</constant>
+		<constant name="Key_GamepadRStickLeft" value="651" enum="Key">
+		</constant>
+		<constant name="Key_GamepadRStickRight" value="652" enum="Key">
+		</constant>
+		<constant name="Key_GamepadRStickUp" value="653" enum="Key">
+		</constant>
+		<constant name="Key_GamepadRStickDown" value="654" enum="Key">
+		</constant>
+		<constant name="Key_MouseLeft" value="655" enum="Key">
+		</constant>
+		<constant name="Key_MouseRight" value="656" enum="Key">
+		</constant>
+		<constant name="Key_MouseMiddle" value="657" enum="Key">
+		</constant>
+		<constant name="Key_MouseX1" value="658" enum="Key">
+		</constant>
+		<constant name="Key_MouseX2" value="659" enum="Key">
+		</constant>
+		<constant name="Key_MouseWheelX" value="660" enum="Key">
+		</constant>
+		<constant name="Key_MouseWheelY" value="661" enum="Key">
+		</constant>
+		<constant name="Key_ReservedForModCtrl" value="662" enum="Key">
+		</constant>
+		<constant name="Key_ReservedForModShift" value="663" enum="Key">
+		</constant>
+		<constant name="Key_ReservedForModAlt" value="664" enum="Key">
+		</constant>
+		<constant name="Key_ReservedForModSuper" value="665" enum="Key">
+		</constant>
+		<constant name="Mod_None" value="0" enum="Key">
+		</constant>
+		<constant name="Mod_Ctrl" value="4096" enum="Key">
+		</constant>
+		<constant name="Mod_Shift" value="8192" enum="Key">
+		</constant>
+		<constant name="Mod_Alt" value="16384" enum="Key">
+		</constant>
+		<constant name="Mod_Super" value="32768" enum="Key">
+		</constant>
+		<constant name="InputFlags_None" value="0" enum="InputFlags" is_bitfield="true">
+		</constant>
+		<constant name="InputFlags_Repeat" value="1" enum="InputFlags" is_bitfield="true">
+		</constant>
+		<constant name="InputFlags_RouteActive" value="1024" enum="InputFlags" is_bitfield="true">
+		</constant>
+		<constant name="InputFlags_RouteFocused" value="2048" enum="InputFlags" is_bitfield="true">
+		</constant>
+		<constant name="InputFlags_RouteGlobal" value="4096" enum="InputFlags" is_bitfield="true">
+		</constant>
+		<constant name="InputFlags_RouteAlways" value="8192" enum="InputFlags" is_bitfield="true">
+		</constant>
+		<constant name="InputFlags_RouteOverFocused" value="16384" enum="InputFlags" is_bitfield="true">
+		</constant>
+		<constant name="InputFlags_RouteOverActive" value="32768" enum="InputFlags" is_bitfield="true">
+		</constant>
+		<constant name="InputFlags_RouteUnlessBgFocused" value="65536" enum="InputFlags" is_bitfield="true">
+		</constant>
+		<constant name="InputFlags_RouteFromRootWindow" value="131072" enum="InputFlags" is_bitfield="true">
+		</constant>
+		<constant name="InputFlags_Tooltip" value="262144" enum="InputFlags" is_bitfield="true">
+		</constant>
+		<constant name="ConfigFlags_None" value="0" enum="ConfigFlags" is_bitfield="true">
+		</constant>
+		<constant name="ConfigFlags_NavEnableKeyboard" value="1" enum="ConfigFlags" is_bitfield="true">
+		</constant>
+		<constant name="ConfigFlags_NavEnableGamepad" value="2" enum="ConfigFlags" is_bitfield="true">
+		</constant>
+		<constant name="ConfigFlags_NoMouse" value="16" enum="ConfigFlags" is_bitfield="true">
+		</constant>
+		<constant name="ConfigFlags_NoMouseCursorChange" value="32" enum="ConfigFlags" is_bitfield="true">
+		</constant>
+		<constant name="ConfigFlags_NoKeyboard" value="64" enum="ConfigFlags" is_bitfield="true">
+		</constant>
+		<constant name="ConfigFlags_DockingEnable" value="128" enum="ConfigFlags" is_bitfield="true">
+		</constant>
+		<constant name="ConfigFlags_ViewportsEnable" value="1024" enum="ConfigFlags" is_bitfield="true">
+		</constant>
+		<constant name="ConfigFlags_DpiEnableScaleViewports" value="16384" enum="ConfigFlags" is_bitfield="true">
+		</constant>
+		<constant name="ConfigFlags_DpiEnableScaleFonts" value="32768" enum="ConfigFlags" is_bitfield="true">
+		</constant>
+		<constant name="ConfigFlags_IsSRGB" value="1048576" enum="ConfigFlags" is_bitfield="true">
+		</constant>
+		<constant name="ConfigFlags_IsTouchScreen" value="2097152" enum="ConfigFlags" is_bitfield="true">
+		</constant>
+		<constant name="BackendFlags_None" value="0" enum="BackendFlags" is_bitfield="true">
+		</constant>
+		<constant name="BackendFlags_HasGamepad" value="1" enum="BackendFlags" is_bitfield="true">
+		</constant>
+		<constant name="BackendFlags_HasMouseCursors" value="2" enum="BackendFlags" is_bitfield="true">
+		</constant>
+		<constant name="BackendFlags_HasSetMousePos" value="4" enum="BackendFlags" is_bitfield="true">
+		</constant>
+		<constant name="BackendFlags_RendererHasVtxOffset" value="8" enum="BackendFlags" is_bitfield="true">
+		</constant>
+		<constant name="BackendFlags_PlatformHasViewports" value="1024" enum="BackendFlags" is_bitfield="true">
+		</constant>
+		<constant name="BackendFlags_HasMouseHoveredViewport" value="2048" enum="BackendFlags" is_bitfield="true">
+		</constant>
+		<constant name="BackendFlags_RendererHasViewports" value="4096" enum="BackendFlags" is_bitfield="true">
+		</constant>
+		<constant name="Col_Text" value="0" enum="Col">
+		</constant>
+		<constant name="Col_TextDisabled" value="1" enum="Col">
+		</constant>
+		<constant name="Col_WindowBg" value="2" enum="Col">
+		</constant>
+		<constant name="Col_ChildBg" value="3" enum="Col">
+		</constant>
+		<constant name="Col_PopupBg" value="4" enum="Col">
+		</constant>
+		<constant name="Col_Border" value="5" enum="Col">
+		</constant>
+		<constant name="Col_BorderShadow" value="6" enum="Col">
+		</constant>
+		<constant name="Col_FrameBg" value="7" enum="Col">
+		</constant>
+		<constant name="Col_FrameBgHovered" value="8" enum="Col">
+		</constant>
+		<constant name="Col_FrameBgActive" value="9" enum="Col">
+		</constant>
+		<constant name="Col_TitleBg" value="10" enum="Col">
+		</constant>
+		<constant name="Col_TitleBgActive" value="11" enum="Col">
+		</constant>
+		<constant name="Col_TitleBgCollapsed" value="12" enum="Col">
+		</constant>
+		<constant name="Col_MenuBarBg" value="13" enum="Col">
+		</constant>
+		<constant name="Col_ScrollbarBg" value="14" enum="Col">
+		</constant>
+		<constant name="Col_ScrollbarGrab" value="15" enum="Col">
+		</constant>
+		<constant name="Col_ScrollbarGrabHovered" value="16" enum="Col">
+		</constant>
+		<constant name="Col_ScrollbarGrabActive" value="17" enum="Col">
+		</constant>
+		<constant name="Col_CheckMark" value="18" enum="Col">
+		</constant>
+		<constant name="Col_SliderGrab" value="19" enum="Col">
+		</constant>
+		<constant name="Col_SliderGrabActive" value="20" enum="Col">
+		</constant>
+		<constant name="Col_Button" value="21" enum="Col">
+		</constant>
+		<constant name="Col_ButtonHovered" value="22" enum="Col">
+		</constant>
+		<constant name="Col_ButtonActive" value="23" enum="Col">
+		</constant>
+		<constant name="Col_Header" value="24" enum="Col">
+		</constant>
+		<constant name="Col_HeaderHovered" value="25" enum="Col">
+		</constant>
+		<constant name="Col_HeaderActive" value="26" enum="Col">
+		</constant>
+		<constant name="Col_Separator" value="27" enum="Col">
+		</constant>
+		<constant name="Col_SeparatorHovered" value="28" enum="Col">
+		</constant>
+		<constant name="Col_SeparatorActive" value="29" enum="Col">
+		</constant>
+		<constant name="Col_ResizeGrip" value="30" enum="Col">
+		</constant>
+		<constant name="Col_ResizeGripHovered" value="31" enum="Col">
+		</constant>
+		<constant name="Col_ResizeGripActive" value="32" enum="Col">
+		</constant>
+		<constant name="Col_TabHovered" value="33" enum="Col">
+		</constant>
+		<constant name="Col_Tab" value="34" enum="Col">
+		</constant>
+		<constant name="Col_TabSelected" value="35" enum="Col">
+		</constant>
+		<constant name="Col_TabSelectedOverline" value="36" enum="Col">
+		</constant>
+		<constant name="Col_TabDimmed" value="37" enum="Col">
+		</constant>
+		<constant name="Col_TabDimmedSelected" value="38" enum="Col">
+		</constant>
+		<constant name="Col_TabDimmedSelectedOverline" value="39" enum="Col">
+		</constant>
+		<constant name="Col_DockingPreview" value="40" enum="Col">
+		</constant>
+		<constant name="Col_DockingEmptyBg" value="41" enum="Col">
+		</constant>
+		<constant name="Col_PlotLines" value="42" enum="Col">
+		</constant>
+		<constant name="Col_PlotLinesHovered" value="43" enum="Col">
+		</constant>
+		<constant name="Col_PlotHistogram" value="44" enum="Col">
+		</constant>
+		<constant name="Col_PlotHistogramHovered" value="45" enum="Col">
+		</constant>
+		<constant name="Col_TableHeaderBg" value="46" enum="Col">
+		</constant>
+		<constant name="Col_TableBorderStrong" value="47" enum="Col">
+		</constant>
+		<constant name="Col_TableBorderLight" value="48" enum="Col">
+		</constant>
+		<constant name="Col_TableRowBg" value="49" enum="Col">
+		</constant>
+		<constant name="Col_TableRowBgAlt" value="50" enum="Col">
+		</constant>
+		<constant name="Col_TextLink" value="51" enum="Col">
+		</constant>
+		<constant name="Col_TextSelectedBg" value="52" enum="Col">
+		</constant>
+		<constant name="Col_DragDropTarget" value="53" enum="Col">
+		</constant>
+		<constant name="Col_NavCursor" value="54" enum="Col">
+		</constant>
+		<constant name="Col_NavWindowingHighlight" value="55" enum="Col">
+		</constant>
+		<constant name="Col_NavWindowingDimBg" value="56" enum="Col">
+		</constant>
+		<constant name="Col_ModalWindowDimBg" value="57" enum="Col">
+		</constant>
+		<constant name="StyleVar_Alpha" value="0" enum="StyleVar">
+		</constant>
+		<constant name="StyleVar_DisabledAlpha" value="1" enum="StyleVar">
+		</constant>
+		<constant name="StyleVar_WindowPadding" value="2" enum="StyleVar">
+		</constant>
+		<constant name="StyleVar_WindowRounding" value="3" enum="StyleVar">
+		</constant>
+		<constant name="StyleVar_WindowBorderSize" value="4" enum="StyleVar">
+		</constant>
+		<constant name="StyleVar_WindowMinSize" value="5" enum="StyleVar">
+		</constant>
+		<constant name="StyleVar_WindowTitleAlign" value="6" enum="StyleVar">
+		</constant>
+		<constant name="StyleVar_ChildRounding" value="7" enum="StyleVar">
+		</constant>
+		<constant name="StyleVar_ChildBorderSize" value="8" enum="StyleVar">
+		</constant>
+		<constant name="StyleVar_PopupRounding" value="9" enum="StyleVar">
+		</constant>
+		<constant name="StyleVar_PopupBorderSize" value="10" enum="StyleVar">
+		</constant>
+		<constant name="StyleVar_FramePadding" value="11" enum="StyleVar">
+		</constant>
+		<constant name="StyleVar_FrameRounding" value="12" enum="StyleVar">
+		</constant>
+		<constant name="StyleVar_FrameBorderSize" value="13" enum="StyleVar">
+		</constant>
+		<constant name="StyleVar_ItemSpacing" value="14" enum="StyleVar">
+		</constant>
+		<constant name="StyleVar_ItemInnerSpacing" value="15" enum="StyleVar">
+		</constant>
+		<constant name="StyleVar_IndentSpacing" value="16" enum="StyleVar">
+		</constant>
+		<constant name="StyleVar_CellPadding" value="17" enum="StyleVar">
+		</constant>
+		<constant name="StyleVar_ScrollbarSize" value="18" enum="StyleVar">
+		</constant>
+		<constant name="StyleVar_ScrollbarRounding" value="19" enum="StyleVar">
+		</constant>
+		<constant name="StyleVar_GrabMinSize" value="20" enum="StyleVar">
+		</constant>
+		<constant name="StyleVar_GrabRounding" value="21" enum="StyleVar">
+		</constant>
+		<constant name="StyleVar_TabRounding" value="22" enum="StyleVar">
+		</constant>
+		<constant name="StyleVar_TabBorderSize" value="23" enum="StyleVar">
+		</constant>
+		<constant name="StyleVar_TabBarBorderSize" value="24" enum="StyleVar">
+		</constant>
+		<constant name="StyleVar_TabBarOverlineSize" value="25" enum="StyleVar">
+		</constant>
+		<constant name="StyleVar_TableAngledHeadersAngle" value="26" enum="StyleVar">
+		</constant>
+		<constant name="StyleVar_TableAngledHeadersTextAlign" value="27" enum="StyleVar">
+		</constant>
+		<constant name="StyleVar_ButtonTextAlign" value="28" enum="StyleVar">
+		</constant>
+		<constant name="StyleVar_SelectableTextAlign" value="29" enum="StyleVar">
+		</constant>
+		<constant name="StyleVar_SeparatorTextBorderSize" value="30" enum="StyleVar">
+		</constant>
+		<constant name="StyleVar_SeparatorTextAlign" value="31" enum="StyleVar">
+		</constant>
+		<constant name="StyleVar_SeparatorTextPadding" value="32" enum="StyleVar">
+		</constant>
+		<constant name="StyleVar_DockingSeparatorSize" value="33" enum="StyleVar">
+		</constant>
+		<constant name="ButtonFlags_None" value="0" enum="ButtonFlags" is_bitfield="true">
+		</constant>
+		<constant name="ButtonFlags_MouseButtonLeft" value="1" enum="ButtonFlags" is_bitfield="true">
+		</constant>
+		<constant name="ButtonFlags_MouseButtonRight" value="2" enum="ButtonFlags" is_bitfield="true">
+		</constant>
+		<constant name="ButtonFlags_MouseButtonMiddle" value="4" enum="ButtonFlags" is_bitfield="true">
+		</constant>
+		<constant name="ButtonFlags_EnableNav" value="8" enum="ButtonFlags" is_bitfield="true">
+		</constant>
+		<constant name="ColorEditFlags_None" value="0" enum="ColorEditFlags" is_bitfield="true">
+		</constant>
+		<constant name="ColorEditFlags_NoAlpha" value="2" enum="ColorEditFlags" is_bitfield="true">
+		</constant>
+		<constant name="ColorEditFlags_NoPicker" value="4" enum="ColorEditFlags" is_bitfield="true">
+		</constant>
+		<constant name="ColorEditFlags_NoOptions" value="8" enum="ColorEditFlags" is_bitfield="true">
+		</constant>
+		<constant name="ColorEditFlags_NoSmallPreview" value="16" enum="ColorEditFlags" is_bitfield="true">
+		</constant>
+		<constant name="ColorEditFlags_NoInputs" value="32" enum="ColorEditFlags" is_bitfield="true">
+		</constant>
+		<constant name="ColorEditFlags_NoTooltip" value="64" enum="ColorEditFlags" is_bitfield="true">
+		</constant>
+		<constant name="ColorEditFlags_NoLabel" value="128" enum="ColorEditFlags" is_bitfield="true">
+		</constant>
+		<constant name="ColorEditFlags_NoSidePreview" value="256" enum="ColorEditFlags" is_bitfield="true">
+		</constant>
+		<constant name="ColorEditFlags_NoDragDrop" value="512" enum="ColorEditFlags" is_bitfield="true">
+		</constant>
+		<constant name="ColorEditFlags_NoBorder" value="1024" enum="ColorEditFlags" is_bitfield="true">
+		</constant>
+		<constant name="ColorEditFlags_AlphaBar" value="65536" enum="ColorEditFlags" is_bitfield="true">
+		</constant>
+		<constant name="ColorEditFlags_AlphaPreview" value="131072" enum="ColorEditFlags" is_bitfield="true">
+		</constant>
+		<constant name="ColorEditFlags_AlphaPreviewHalf" value="262144" enum="ColorEditFlags" is_bitfield="true">
+		</constant>
+		<constant name="ColorEditFlags_HDR" value="524288" enum="ColorEditFlags" is_bitfield="true">
+		</constant>
+		<constant name="ColorEditFlags_DisplayRGB" value="1048576" enum="ColorEditFlags" is_bitfield="true">
+		</constant>
+		<constant name="ColorEditFlags_DisplayHSV" value="2097152" enum="ColorEditFlags" is_bitfield="true">
+		</constant>
+		<constant name="ColorEditFlags_DisplayHex" value="4194304" enum="ColorEditFlags" is_bitfield="true">
+		</constant>
+		<constant name="ColorEditFlags_Uint8" value="8388608" enum="ColorEditFlags" is_bitfield="true">
+		</constant>
+		<constant name="ColorEditFlags_Float" value="16777216" enum="ColorEditFlags" is_bitfield="true">
+		</constant>
+		<constant name="ColorEditFlags_PickerHueBar" value="33554432" enum="ColorEditFlags" is_bitfield="true">
+		</constant>
+		<constant name="ColorEditFlags_PickerHueWheel" value="67108864" enum="ColorEditFlags" is_bitfield="true">
+		</constant>
+		<constant name="ColorEditFlags_InputRGB" value="134217728" enum="ColorEditFlags" is_bitfield="true">
+		</constant>
+		<constant name="ColorEditFlags_InputHSV" value="268435456" enum="ColorEditFlags" is_bitfield="true">
+		</constant>
+		<constant name="SliderFlags_None" value="0" enum="SliderFlags" is_bitfield="true">
+		</constant>
+		<constant name="SliderFlags_Logarithmic" value="32" enum="SliderFlags" is_bitfield="true">
+		</constant>
+		<constant name="SliderFlags_NoRoundToFormat" value="64" enum="SliderFlags" is_bitfield="true">
+		</constant>
+		<constant name="SliderFlags_NoInput" value="128" enum="SliderFlags" is_bitfield="true">
+		</constant>
+		<constant name="SliderFlags_WrapAround" value="256" enum="SliderFlags" is_bitfield="true">
+		</constant>
+		<constant name="SliderFlags_ClampOnInput" value="512" enum="SliderFlags" is_bitfield="true">
+		</constant>
+		<constant name="SliderFlags_ClampZeroRange" value="1024" enum="SliderFlags" is_bitfield="true">
+		</constant>
+		<constant name="SliderFlags_AlwaysClamp" value="1536" enum="SliderFlags" is_bitfield="true">
+		</constant>
+		<constant name="MouseButton_Left" value="0" enum="MouseButton">
+		</constant>
+		<constant name="MouseButton_Right" value="1" enum="MouseButton">
+		</constant>
+		<constant name="MouseButton_Middle" value="2" enum="MouseButton">
+		</constant>
+		<constant name="MouseCursor_None" value="-1" enum="MouseCursor">
+		</constant>
+		<constant name="MouseCursor_Arrow" value="0" enum="MouseCursor">
+		</constant>
+		<constant name="MouseCursor_TextInput" value="1" enum="MouseCursor">
+		</constant>
+		<constant name="MouseCursor_ResizeAll" value="2" enum="MouseCursor">
+		</constant>
+		<constant name="MouseCursor_ResizeNS" value="3" enum="MouseCursor">
+		</constant>
+		<constant name="MouseCursor_ResizeEW" value="4" enum="MouseCursor">
+		</constant>
+		<constant name="MouseCursor_ResizeNESW" value="5" enum="MouseCursor">
+		</constant>
+		<constant name="MouseCursor_ResizeNWSE" value="6" enum="MouseCursor">
+		</constant>
+		<constant name="MouseCursor_Hand" value="7" enum="MouseCursor">
+		</constant>
+		<constant name="MouseCursor_NotAllowed" value="8" enum="MouseCursor">
+		</constant>
+		<constant name="MouseSource_Mouse" value="0" enum="MouseSource">
+		</constant>
+		<constant name="MouseSource_TouchScreen" value="1" enum="MouseSource">
+		</constant>
+		<constant name="MouseSource_Pen" value="2" enum="MouseSource">
+		</constant>
+		<constant name="Cond_None" value="0" enum="Cond">
+		</constant>
+		<constant name="Cond_Always" value="1" enum="Cond">
+		</constant>
+		<constant name="Cond_Once" value="2" enum="Cond">
+		</constant>
+		<constant name="Cond_FirstUseEver" value="4" enum="Cond">
+		</constant>
+		<constant name="Cond_Appearing" value="8" enum="Cond">
+		</constant>
+		<constant name="TableFlags_None" value="0" enum="TableFlags" is_bitfield="true">
+		</constant>
+		<constant name="TableFlags_Resizable" value="1" enum="TableFlags" is_bitfield="true">
+		</constant>
+		<constant name="TableFlags_Reorderable" value="2" enum="TableFlags" is_bitfield="true">
+		</constant>
+		<constant name="TableFlags_Hideable" value="4" enum="TableFlags" is_bitfield="true">
+		</constant>
+		<constant name="TableFlags_Sortable" value="8" enum="TableFlags" is_bitfield="true">
+		</constant>
+		<constant name="TableFlags_NoSavedSettings" value="16" enum="TableFlags" is_bitfield="true">
+		</constant>
+		<constant name="TableFlags_ContextMenuInBody" value="32" enum="TableFlags" is_bitfield="true">
+		</constant>
+		<constant name="TableFlags_RowBg" value="64" enum="TableFlags" is_bitfield="true">
+		</constant>
+		<constant name="TableFlags_BordersInnerH" value="128" enum="TableFlags" is_bitfield="true">
+		</constant>
+		<constant name="TableFlags_BordersOuterH" value="256" enum="TableFlags" is_bitfield="true">
+		</constant>
+		<constant name="TableFlags_BordersInnerV" value="512" enum="TableFlags" is_bitfield="true">
+		</constant>
+		<constant name="TableFlags_BordersOuterV" value="1024" enum="TableFlags" is_bitfield="true">
+		</constant>
+		<constant name="TableFlags_BordersH" value="384" enum="TableFlags" is_bitfield="true">
+		</constant>
+		<constant name="TableFlags_BordersV" value="1536" enum="TableFlags" is_bitfield="true">
+		</constant>
+		<constant name="TableFlags_BordersInner" value="640" enum="TableFlags" is_bitfield="true">
+		</constant>
+		<constant name="TableFlags_BordersOuter" value="1280" enum="TableFlags" is_bitfield="true">
+		</constant>
+		<constant name="TableFlags_Borders" value="1920" enum="TableFlags" is_bitfield="true">
+		</constant>
+		<constant name="TableFlags_NoBordersInBody" value="2048" enum="TableFlags" is_bitfield="true">
+		</constant>
+		<constant name="TableFlags_NoBordersInBodyUntilResize" value="4096" enum="TableFlags" is_bitfield="true">
+		</constant>
+		<constant name="TableFlags_SizingFixedFit" value="8192" enum="TableFlags" is_bitfield="true">
+		</constant>
+		<constant name="TableFlags_SizingFixedSame" value="16384" enum="TableFlags" is_bitfield="true">
+		</constant>
+		<constant name="TableFlags_SizingStretchProp" value="24576" enum="TableFlags" is_bitfield="true">
+		</constant>
+		<constant name="TableFlags_SizingStretchSame" value="32768" enum="TableFlags" is_bitfield="true">
+		</constant>
+		<constant name="TableFlags_NoHostExtendX" value="65536" enum="TableFlags" is_bitfield="true">
+		</constant>
+		<constant name="TableFlags_NoHostExtendY" value="131072" enum="TableFlags" is_bitfield="true">
+		</constant>
+		<constant name="TableFlags_NoKeepColumnsVisible" value="262144" enum="TableFlags" is_bitfield="true">
+		</constant>
+		<constant name="TableFlags_PreciseWidths" value="524288" enum="TableFlags" is_bitfield="true">
+		</constant>
+		<constant name="TableFlags_NoClip" value="1048576" enum="TableFlags" is_bitfield="true">
+		</constant>
+		<constant name="TableFlags_PadOuterX" value="2097152" enum="TableFlags" is_bitfield="true">
+		</constant>
+		<constant name="TableFlags_NoPadOuterX" value="4194304" enum="TableFlags" is_bitfield="true">
+		</constant>
+		<constant name="TableFlags_NoPadInnerX" value="8388608" enum="TableFlags" is_bitfield="true">
+		</constant>
+		<constant name="TableFlags_ScrollX" value="16777216" enum="TableFlags" is_bitfield="true">
+		</constant>
+		<constant name="TableFlags_ScrollY" value="33554432" enum="TableFlags" is_bitfield="true">
+		</constant>
+		<constant name="TableFlags_SortMulti" value="67108864" enum="TableFlags" is_bitfield="true">
+		</constant>
+		<constant name="TableFlags_SortTristate" value="134217728" enum="TableFlags" is_bitfield="true">
+		</constant>
+		<constant name="TableFlags_HighlightHoveredColumn" value="268435456" enum="TableFlags" is_bitfield="true">
+		</constant>
+		<constant name="TableColumnFlags_None" value="0" enum="TableColumnFlags" is_bitfield="true">
+		</constant>
+		<constant name="TableColumnFlags_Disabled" value="1" enum="TableColumnFlags" is_bitfield="true">
+		</constant>
+		<constant name="TableColumnFlags_DefaultHide" value="2" enum="TableColumnFlags" is_bitfield="true">
+		</constant>
+		<constant name="TableColumnFlags_DefaultSort" value="4" enum="TableColumnFlags" is_bitfield="true">
+		</constant>
+		<constant name="TableColumnFlags_WidthStretch" value="8" enum="TableColumnFlags" is_bitfield="true">
+		</constant>
+		<constant name="TableColumnFlags_WidthFixed" value="16" enum="TableColumnFlags" is_bitfield="true">
+		</constant>
+		<constant name="TableColumnFlags_NoResize" value="32" enum="TableColumnFlags" is_bitfield="true">
+		</constant>
+		<constant name="TableColumnFlags_NoReorder" value="64" enum="TableColumnFlags" is_bitfield="true">
+		</constant>
+		<constant name="TableColumnFlags_NoHide" value="128" enum="TableColumnFlags" is_bitfield="true">
+		</constant>
+		<constant name="TableColumnFlags_NoClip" value="256" enum="TableColumnFlags" is_bitfield="true">
+		</constant>
+		<constant name="TableColumnFlags_NoSort" value="512" enum="TableColumnFlags" is_bitfield="true">
+		</constant>
+		<constant name="TableColumnFlags_NoSortAscending" value="1024" enum="TableColumnFlags" is_bitfield="true">
+		</constant>
+		<constant name="TableColumnFlags_NoSortDescending" value="2048" enum="TableColumnFlags" is_bitfield="true">
+		</constant>
+		<constant name="TableColumnFlags_NoHeaderLabel" value="4096" enum="TableColumnFlags" is_bitfield="true">
+		</constant>
+		<constant name="TableColumnFlags_NoHeaderWidth" value="8192" enum="TableColumnFlags" is_bitfield="true">
+		</constant>
+		<constant name="TableColumnFlags_PreferSortAscending" value="16384" enum="TableColumnFlags" is_bitfield="true">
+		</constant>
+		<constant name="TableColumnFlags_PreferSortDescending" value="32768" enum="TableColumnFlags" is_bitfield="true">
+		</constant>
+		<constant name="TableColumnFlags_IndentEnable" value="65536" enum="TableColumnFlags" is_bitfield="true">
+		</constant>
+		<constant name="TableColumnFlags_IndentDisable" value="131072" enum="TableColumnFlags" is_bitfield="true">
+		</constant>
+		<constant name="TableColumnFlags_AngledHeader" value="262144" enum="TableColumnFlags" is_bitfield="true">
+		</constant>
+		<constant name="TableColumnFlags_IsEnabled" value="16777216" enum="TableColumnFlags" is_bitfield="true">
+		</constant>
+		<constant name="TableColumnFlags_IsVisible" value="33554432" enum="TableColumnFlags" is_bitfield="true">
+		</constant>
+		<constant name="TableColumnFlags_IsSorted" value="67108864" enum="TableColumnFlags" is_bitfield="true">
+		</constant>
+		<constant name="TableColumnFlags_IsHovered" value="134217728" enum="TableColumnFlags" is_bitfield="true">
+		</constant>
+		<constant name="TableRowFlags_None" value="0" enum="TableRowFlags" is_bitfield="true">
+		</constant>
+		<constant name="TableRowFlags_Headers" value="1" enum="TableRowFlags" is_bitfield="true">
+		</constant>
+		<constant name="TableBgTarget_None" value="0" enum="TableBgTarget">
+		</constant>
+		<constant name="TableBgTarget_RowBg0" value="1" enum="TableBgTarget">
+		</constant>
+		<constant name="TableBgTarget_RowBg1" value="2" enum="TableBgTarget">
+		</constant>
+		<constant name="TableBgTarget_CellBg" value="3" enum="TableBgTarget">
+		</constant>
+		<constant name="MultiSelectFlags_None" value="0" enum="MultiSelectFlags" is_bitfield="true">
+		</constant>
+		<constant name="MultiSelectFlags_SingleSelect" value="1" enum="MultiSelectFlags" is_bitfield="true">
+		</constant>
+		<constant name="MultiSelectFlags_NoSelectAll" value="2" enum="MultiSelectFlags" is_bitfield="true">
+		</constant>
+		<constant name="MultiSelectFlags_NoRangeSelect" value="4" enum="MultiSelectFlags" is_bitfield="true">
+		</constant>
+		<constant name="MultiSelectFlags_NoAutoSelect" value="8" enum="MultiSelectFlags" is_bitfield="true">
+		</constant>
+		<constant name="MultiSelectFlags_NoAutoClear" value="16" enum="MultiSelectFlags" is_bitfield="true">
+		</constant>
+		<constant name="MultiSelectFlags_NoAutoClearOnReselect" value="32" enum="MultiSelectFlags" is_bitfield="true">
+		</constant>
+		<constant name="MultiSelectFlags_BoxSelect1d" value="64" enum="MultiSelectFlags" is_bitfield="true">
+		</constant>
+		<constant name="MultiSelectFlags_BoxSelect2d" value="128" enum="MultiSelectFlags" is_bitfield="true">
+		</constant>
+		<constant name="MultiSelectFlags_BoxSelectNoScroll" value="256" enum="MultiSelectFlags" is_bitfield="true">
+		</constant>
+		<constant name="MultiSelectFlags_ClearOnEscape" value="512" enum="MultiSelectFlags" is_bitfield="true">
+		</constant>
+		<constant name="MultiSelectFlags_ClearOnClickVoid" value="1024" enum="MultiSelectFlags" is_bitfield="true">
+		</constant>
+		<constant name="MultiSelectFlags_ScopeWindow" value="2048" enum="MultiSelectFlags" is_bitfield="true">
+		</constant>
+		<constant name="MultiSelectFlags_ScopeRect" value="4096" enum="MultiSelectFlags" is_bitfield="true">
+		</constant>
+		<constant name="MultiSelectFlags_SelectOnClick" value="8192" enum="MultiSelectFlags" is_bitfield="true">
+		</constant>
+		<constant name="MultiSelectFlags_SelectOnClickRelease" value="16384" enum="MultiSelectFlags" is_bitfield="true">
+		</constant>
+		<constant name="MultiSelectFlags_NavWrapX" value="65536" enum="MultiSelectFlags" is_bitfield="true">
+		</constant>
+		<constant name="SelectionRequestType_None" value="0" enum="SelectionRequestType">
+		</constant>
+		<constant name="SelectionRequestType_SetAll" value="1" enum="SelectionRequestType">
+		</constant>
+		<constant name="SelectionRequestType_SetRange" value="2" enum="SelectionRequestType">
+		</constant>
+		<constant name="DrawFlags_None" value="0" enum="DrawFlags" is_bitfield="true">
+		</constant>
+		<constant name="DrawFlags_Closed" value="1" enum="DrawFlags" is_bitfield="true">
+		</constant>
+		<constant name="DrawFlags_RoundCornersTopLeft" value="16" enum="DrawFlags" is_bitfield="true">
+		</constant>
+		<constant name="DrawFlags_RoundCornersTopRight" value="32" enum="DrawFlags" is_bitfield="true">
+		</constant>
+		<constant name="DrawFlags_RoundCornersBottomLeft" value="64" enum="DrawFlags" is_bitfield="true">
+		</constant>
+		<constant name="DrawFlags_RoundCornersBottomRight" value="128" enum="DrawFlags" is_bitfield="true">
+		</constant>
+		<constant name="DrawFlags_RoundCornersNone" value="256" enum="DrawFlags" is_bitfield="true">
+		</constant>
+		<constant name="DrawFlags_RoundCornersTop" value="48" enum="DrawFlags" is_bitfield="true">
+		</constant>
+		<constant name="DrawFlags_RoundCornersBottom" value="192" enum="DrawFlags" is_bitfield="true">
+		</constant>
+		<constant name="DrawFlags_RoundCornersLeft" value="80" enum="DrawFlags" is_bitfield="true">
+		</constant>
+		<constant name="DrawFlags_RoundCornersRight" value="160" enum="DrawFlags" is_bitfield="true">
+		</constant>
+		<constant name="DrawFlags_RoundCornersAll" value="240" enum="DrawFlags" is_bitfield="true">
+		</constant>
+		<constant name="DrawListFlags_None" value="0" enum="DrawListFlags" is_bitfield="true">
+		</constant>
+		<constant name="DrawListFlags_AntiAliasedLines" value="1" enum="DrawListFlags" is_bitfield="true">
+		</constant>
+		<constant name="DrawListFlags_AntiAliasedLinesUseTex" value="2" enum="DrawListFlags" is_bitfield="true">
+		</constant>
+		<constant name="DrawListFlags_AntiAliasedFill" value="4" enum="DrawListFlags" is_bitfield="true">
+		</constant>
+		<constant name="DrawListFlags_AllowVtxOffset" value="8" enum="DrawListFlags" is_bitfield="true">
+		</constant>
+		<constant name="FontAtlasFlags_None" value="0" enum="FontAtlasFlags" is_bitfield="true">
+		</constant>
+		<constant name="FontAtlasFlags_NoPowerOfTwoHeight" value="1" enum="FontAtlasFlags" is_bitfield="true">
+		</constant>
+		<constant name="FontAtlasFlags_NoMouseCursors" value="2" enum="FontAtlasFlags" is_bitfield="true">
+		</constant>
+		<constant name="FontAtlasFlags_NoBakedLines" value="4" enum="FontAtlasFlags" is_bitfield="true">
+		</constant>
+		<constant name="ViewportFlags_None" value="0" enum="ViewportFlags" is_bitfield="true">
+		</constant>
+		<constant name="ViewportFlags_IsPlatformWindow" value="1" enum="ViewportFlags" is_bitfield="true">
+		</constant>
+		<constant name="ViewportFlags_IsPlatformMonitor" value="2" enum="ViewportFlags" is_bitfield="true">
+		</constant>
+		<constant name="ViewportFlags_OwnedByApp" value="4" enum="ViewportFlags" is_bitfield="true">
+		</constant>
+		<constant name="ViewportFlags_NoDecoration" value="8" enum="ViewportFlags" is_bitfield="true">
+		</constant>
+		<constant name="ViewportFlags_NoTaskBarIcon" value="16" enum="ViewportFlags" is_bitfield="true">
+		</constant>
+		<constant name="ViewportFlags_NoFocusOnAppearing" value="32" enum="ViewportFlags" is_bitfield="true">
+		</constant>
+		<constant name="ViewportFlags_NoFocusOnClick" value="64" enum="ViewportFlags" is_bitfield="true">
+		</constant>
+		<constant name="ViewportFlags_NoInputs" value="128" enum="ViewportFlags" is_bitfield="true">
+		</constant>
+		<constant name="ViewportFlags_NoRendererClear" value="256" enum="ViewportFlags" is_bitfield="true">
+		</constant>
+		<constant name="ViewportFlags_NoAutoMerge" value="512" enum="ViewportFlags" is_bitfield="true">
+		</constant>
+		<constant name="ViewportFlags_TopMost" value="1024" enum="ViewportFlags" is_bitfield="true">
+		</constant>
+		<constant name="ViewportFlags_CanHostOtherWindows" value="2048" enum="ViewportFlags" is_bitfield="true">
+		</constant>
+		<constant name="ViewportFlags_IsMinimized" value="4096" enum="ViewportFlags" is_bitfield="true">
+		</constant>
+		<constant name="ViewportFlags_IsFocused" value="8192" enum="ViewportFlags" is_bitfield="true">
+		</constant>
+	</constants>
+</class>

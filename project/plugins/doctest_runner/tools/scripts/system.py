@@ -143,6 +143,8 @@ def add_cpp_defines(env, cpp_defines):
     elif env["target"] == "template_release":
         cpp_defines.append("RELEASE")
     else:
+        if env["target"] == "development":
+            cpp_defines.append("DEVELOPMENT")
         cpp_defines.append("DEBUG")
 
 def add_plugins(plugin_names, env, customs, all_directories_array):

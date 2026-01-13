@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="ImGuiIOPtr" inherits="RefCounted" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+	</brief_description>
+	<description>
+	</description>
+	<tutorials>
+	</tutorials>
+	<members>
+		<member name="AppAcceptingEvents" type="bool" setter="_SetAppAcceptingEvents" getter="_GetAppAcceptingEvents" default="false">
+		</member>
+		<member name="AppFocusLost" type="bool" setter="_SetAppFocusLost" getter="_GetAppFocusLost" default="false">
+		</member>
+		<member name="BackendFlags" type="int" setter="_SetBackendFlags" getter="_GetBackendFlags" enum="ImGui.BackendFlags" is_bitfield="true" default="0">
+		</member>
+		<member name="ConfigDebugBeginReturnValueLoop" type="bool" setter="_SetConfigDebugBeginReturnValueLoop" getter="_GetConfigDebugBeginReturnValueLoop" default="false">
+		</member>
+		<member name="ConfigDebugBeginReturnValueOnce" type="bool" setter="_SetConfigDebugBeginReturnValueOnce" getter="_GetConfigDebugBeginReturnValueOnce" default="false">
+		</member>
+		<member name="ConfigDebugHighlightIdConflicts" type="bool" setter="_SetConfigDebugHighlightIdConflicts" getter="_GetConfigDebugHighlightIdConflicts" default="false">
+		</member>
+		<member name="ConfigDebugIgnoreFocusLoss" type="bool" setter="_SetConfigDebugIgnoreFocusLoss" getter="_GetConfigDebugIgnoreFocusLoss" default="false">
+		</member>
+		<member name="ConfigDebugIniSettings" type="bool" setter="_SetConfigDebugIniSettings" getter="_GetConfigDebugIniSettings" default="false">
+		</member>
+		<member name="ConfigDebugIsDebuggerPresent" type="bool" setter="_SetConfigDebugIsDebuggerPresent" getter="_GetConfigDebugIsDebuggerPresent" default="false">
+		</member>
+		<member name="ConfigDockingAlwaysTabBar" type="bool" setter="_SetConfigDockingAlwaysTabBar" getter="_GetConfigDockingAlwaysTabBar" default="false">
+		</member>
+		<member name="ConfigDockingNoSplit" type="bool" setter="_SetConfigDockingNoSplit" getter="_GetConfigDockingNoSplit" default="false">
+		</member>
+		<member name="ConfigDockingTransparentPayload" type="bool" setter="_SetConfigDockingTransparentPayload" getter="_GetConfigDockingTransparentPayload" default="false">
+		</member>
+		<member name="ConfigDockingWithShift" type="bool" setter="_SetConfigDockingWithShift" getter="_GetConfigDockingWithShift" default="false">
+		</member>
+		<member name="ConfigDragClickToInputText" type="bool" setter="_SetConfigDragClickToInputText" getter="_GetConfigDragClickToInputText" default="false">
+		</member>
+		<member name="ConfigErrorRecovery" type="bool" setter="_SetConfigErrorRecovery" getter="_GetConfigErrorRecovery" default="false">
+		</member>
+		<member name="ConfigErrorRecoveryEnableAssert" type="bool" setter="_SetConfigErrorRecoveryEnableAssert" getter="_GetConfigErrorRecoveryEnableAssert" default="false">
+		</member>
+		<member name="ConfigErrorRecoveryEnableDebugLog" type="bool" setter="_SetConfigErrorRecoveryEnableDebugLog" getter="_GetConfigErrorRecoveryEnableDebugLog" default="false">
+		</member>
+		<member name="ConfigErrorRecoveryEnableTooltip" type="bool" setter="_SetConfigErrorRecoveryEnableTooltip" getter="_GetConfigErrorRecoveryEnableTooltip" default="false">
+		</member>
+		<member name="ConfigFlags" type="int" setter="_SetConfigFlags" getter="_GetConfigFlags" enum="ImGui.ConfigFlags" is_bitfield="true" default="0">
+		</member>
+		<member name="ConfigInputTextCursorBlink" type="bool" setter="_SetConfigInputTextCursorBlink" getter="_GetConfigInputTextCursorBlink" default="false">
+		</member>
+		<member name="ConfigInputTextEnterKeepActive" type="bool" setter="_SetConfigInputTextEnterKeepActive" getter="_GetConfigInputTextEnterKeepActive" default="false">
+		</member>
+		<member name="ConfigInputTrickleEventQueue" type="bool" setter="_SetConfigInputTrickleEventQueue" getter="_GetConfigInputTrickleEventQueue" default="false">
+		</member>
+		<member name="ConfigMacOSXBehaviors" type="bool" setter="_SetConfigMacOSXBehaviors" getter="_GetConfigMacOSXBehaviors" default="false">
+		</member>
+		<member name="ConfigMemoryCompactTimer" type="float" setter="_SetConfigMemoryCompactTimer" getter="_GetConfigMemoryCompactTimer" default="0.0">
+		</member>
+		<member name="ConfigNavCaptureKeyboard" type="bool" setter="_SetConfigNavCaptureKeyboard" getter="_GetConfigNavCaptureKeyboard" default="false">
+		</member>
+		<member name="ConfigNavCursorVisibleAlways" type="bool" setter="_SetConfigNavCursorVisibleAlways" getter="_GetConfigNavCursorVisibleAlways" default="false">
+		</member>
+		<member name="ConfigNavCursorVisibleAuto" type="bool" setter="_SetConfigNavCursorVisibleAuto" getter="_GetConfigNavCursorVisibleAuto" default="false">
+		</member>
+		<member name="ConfigNavEscapeClearFocusItem" type="bool" setter="_SetConfigNavEscapeClearFocusItem" getter="_GetConfigNavEscapeClearFocusItem" default="false">
+		</member>
+		<member name="ConfigNavEscapeClearFocusWindow" type="bool" setter="_SetConfigNavEscapeClearFocusWindow" getter="_GetConfigNavEscapeClearFocusWindow" default="false">
+		</member>
+		<member name="ConfigNavMoveSetMousePos" type="bool" setter="_SetConfigNavMoveSetMousePos" getter="_GetConfigNavMoveSetMousePos" default="false">
+		</member>
+		<member name="ConfigNavSwapGamepadButtons" type="bool" setter="_SetConfigNavSwapGamepadButtons" getter="_GetConfigNavSwapGamepadButtons" default="false">
+		</member>
+		<member name="ConfigScrollbarScrollByPage" type="bool" setter="_SetConfigScrollbarScrollByPage" getter="_GetConfigScrollbarScrollByPage" default="false">
+		</member>
+		<member name="ConfigViewportsNoAutoMerge" type="bool" setter="_SetConfigViewportsNoAutoMerge" getter="_GetConfigViewportsNoAutoMerge" default="false">
+		</member>
+		<member name="ConfigViewportsNoDecoration" type="bool" setter="_SetConfigViewportsNoDecoration" getter="_GetConfigViewportsNoDecoration" default="false">
+		</member>
+		<member name="ConfigViewportsNoDefaultParent" type="bool" setter="_SetConfigViewportsNoDefaultParent" getter="_GetConfigViewportsNoDefaultParent" default="false">
+		</member>
+		<member name="ConfigViewportsNoTaskBarIcon" type="bool" setter="_SetConfigViewportsNoTaskBarIcon" getter="_GetConfigViewportsNoTaskBarIcon" default="false">
+		</member>
+		<member name="ConfigWindowsCopyContentsWithCtrlC" type="bool" setter="_SetConfigWindowsCopyContentsWithCtrlC" getter="_GetConfigWindowsCopyContentsWithCtrlC" default="false">
+		</member>
+		<member name="ConfigWindowsMoveFromTitleBarOnly" type="bool" setter="_SetConfigWindowsMoveFromTitleBarOnly" getter="_GetConfigWindowsMoveFromTitleBarOnly" default="false">
+		</member>
+		<member name="ConfigWindowsResizeFromEdges" type="bool" setter="_SetConfigWindowsResizeFromEdges" getter="_GetConfigWindowsResizeFromEdges" default="false">
+		</member>
+		<member name="DeltaTime" type="float" setter="_SetDeltaTime" getter="_GetDeltaTime" default="0.0">
+		</member>
+		<member name="DisplayFramebufferScale" type="Vector2" setter="_SetDisplayFramebufferScale" getter="_GetDisplayFramebufferScale" default="Vector2(0, 0)">
+		</member>
+		<member name="DisplaySize" type="Vector2" setter="_SetDisplaySize" getter="_GetDisplaySize" default="Vector2(0, 0)">
+		</member>
+		<member name="FontAllowUserScaling" type="bool" setter="_SetFontAllowUserScaling" getter="_GetFontAllowUserScaling" default="false">
+		</member>
+		<member name="FontDefault" type="int" setter="_SetFontDefault" getter="_GetFontDefault" default="0">
+		</member>
+		<member name="FontGlobalScale" type="float" setter="_SetFontGlobalScale" getter="_GetFontGlobalScale" default="0.0">
+		</member>
+		<member name="Framerate" type="float" setter="_SetFramerate" getter="_GetFramerate" default="0.0">
+		</member>
+		<member name="IniSavingRate" type="float" setter="_SetIniSavingRate" getter="_GetIniSavingRate" default="0.0">
+		</member>
+		<member name="KeyAlt" type="bool" setter="_SetKeyAlt" getter="_GetKeyAlt" default="false">
+		</member>
+		<member name="KeyCtrl" type="bool" setter="_SetKeyCtrl" getter="_GetKeyCtrl" default="false">
+		</member>
+		<member name="KeyRepeatDelay" type="float" setter="_SetKeyRepeatDelay" getter="_GetKeyRepeatDelay" default="0.0">
+		</member>
+		<member name="KeyRepeatRate" type="float" setter="_SetKeyRepeatRate" getter="_GetKeyRepeatRate" default="0.0">
+		</member>
+		<member name="KeyShift" type="bool" setter="_SetKeyShift" getter="_GetKeyShift" default="false">
+		</member>
+		<member name="KeySuper" type="bool" setter="_SetKeySuper" getter="_GetKeySuper" default="false">
+		</member>
+		<member name="MetricsActiveWindows" type="int" setter="_SetMetricsActiveWindows" getter="_GetMetricsActiveWindows" default="0">
+		</member>
+		<member name="MetricsRenderIndices" type="int" setter="_SetMetricsRenderIndices" getter="_GetMetricsRenderIndices" default="0">
+		</member>
+		<member name="MetricsRenderVertices" type="int" setter="_SetMetricsRenderVertices" getter="_GetMetricsRenderVertices" default="0">
+		</member>
+		<member name="MetricsRenderWindows" type="int" setter="_SetMetricsRenderWindows" getter="_GetMetricsRenderWindows" default="0">
+		</member>
+		<member name="MouseCtrlLeftAsRightClick" type="bool" setter="_SetMouseCtrlLeftAsRightClick" getter="_GetMouseCtrlLeftAsRightClick" default="false">
+		</member>
+		<member name="MouseDelta" type="Vector2" setter="_SetMouseDelta" getter="_GetMouseDelta" default="Vector2(0, 0)">
+		</member>
+		<member name="MouseDoubleClickMaxDist" type="float" setter="_SetMouseDoubleClickMaxDist" getter="_GetMouseDoubleClickMaxDist" default="0.0">
+		</member>
+		<member name="MouseDoubleClickTime" type="float" setter="_SetMouseDoubleClickTime" getter="_GetMouseDoubleClickTime" default="0.0">
+		</member>
+		<member name="MouseDragThreshold" type="float" setter="_SetMouseDragThreshold" getter="_GetMouseDragThreshold" default="0.0">
+		</member>
+		<member name="MouseDrawCursor" type="bool" setter="_SetMouseDrawCursor" getter="_GetMouseDrawCursor" default="false">
+		</member>
+		<member name="MouseHoveredViewport" type="int" setter="_SetMouseHoveredViewport" getter="_GetMouseHoveredViewport" default="0">
+		</member>
+		<member name="MousePos" type="Vector2" setter="_SetMousePos" getter="_GetMousePos" default="Vector2(0, 0)">
+		</member>
+		<member name="MousePosPrev" type="Vector2" setter="_SetMousePosPrev" getter="_GetMousePosPrev" default="Vector2(0, 0)">
+		</member>
+		<member name="MouseSource" type="int" setter="_SetMouseSource" getter="_GetMouseSource" enum="ImGui.MouseSource" default="0">
+		</member>
+		<member name="MouseWheel" type="float" setter="_SetMouseWheel" getter="_GetMouseWheel" default="0.0">
+		</member>
+		<member name="MouseWheelH" type="float" setter="_SetMouseWheelH" getter="_GetMouseWheelH" default="0.0">
+		</member>
+		<member name="MouseWheelRequestAxisSwap" type="bool" setter="_SetMouseWheelRequestAxisSwap" getter="_GetMouseWheelRequestAxisSwap" default="false">
+		</member>
+		<member name="NavActive" type="bool" setter="_SetNavActive" getter="_GetNavActive" default="false">
+		</member>
+		<member name="NavVisible" type="bool" setter="_SetNavVisible" getter="_GetNavVisible" default="false">
+		</member>
+		<member name="PenPressure" type="float" setter="_SetPenPressure" getter="_GetPenPressure" default="0.0">
+		</member>
+		<member name="WantCaptureKeyboard" type="bool" setter="_SetWantCaptureKeyboard" getter="_GetWantCaptureKeyboard" default="false">
+		</member>
+		<member name="WantCaptureMouse" type="bool" setter="_SetWantCaptureMouse" getter="_GetWantCaptureMouse" default="false">
+		</member>
+		<member name="WantCaptureMouseUnlessPopupClose" type="bool" setter="_SetWantCaptureMouseUnlessPopupClose" getter="_GetWantCaptureMouseUnlessPopupClose" default="false">
+		</member>
+		<member name="WantSaveIniSettings" type="bool" setter="_SetWantSaveIniSettings" getter="_GetWantSaveIniSettings" default="false">
+		</member>
+		<member name="WantSetMousePos" type="bool" setter="_SetWantSetMousePos" getter="_GetWantSetMousePos" default="false">
+		</member>
+		<member name="WantTextInput" type="bool" setter="_SetWantTextInput" getter="_GetWantTextInput" default="false">
+		</member>
+	</members>
+</class>

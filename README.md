@@ -1,7 +1,13 @@
 # Godot Project Template
 This repository serves as a quickstart template for game development with Godot 4.4+ using GDExtension.
 
+## Status
 [![🎮 Build & Export Game](https://github.com/comfyjase/godot-project-template/actions/workflows/builds.yml/badge.svg)](https://github.com/comfyjase/godot-project-template/actions/workflows/builds.yml)
+
+| Version | Comments |
+|---|---|
+| `Godot 4.4` | Should be working as expected, however, latest android exports expect SDK 35 so android exports will only produce SDK 34 builds |
+| `Godot 4.5` | Mostly working, however, creating builds via CI should be disabled (either `CI_ENABLED` set to `false` or `upload-artifact: false`) because of: [issue 111048](https://github.com/godotengine/godot/issues/111048) and [issue 111645](https://github.com/godotengine/godot/issues/111645) |
 
 ![Screenshot of a project open in the godot editor with a sprite on screen.](.github_assets/images/gdextension_cpp_example_project.png)
 > Godot C++ GDExtension tutorial implemented in the project.
@@ -104,3 +110,10 @@ Provides a way to compile for a different platform and configuration locally and
 ### Maintanence
 ![Screenshot of an python app named maintanence which lists workflows from the github repo and allows the user to select and delete them.](.github_assets/images/tools_maintanence.png)
 Provides a list of github workflows and allows the user to select one or multiple and delete them. I created this to help manage some of the GitHub actions/storage limits I was hitting with private repos and this is faster than having to scroll through each github workflow and manually delete it from there. Not really intended for wider use but might help some users manage their GitHub limits.
+
+### Acknowledgements
+[godot](https://godotengine.org/)
+[godot-cpp](https://github.com/godotengine/godot-cpp)
+[imgui-godot](https://github.com/pkdawson/imgui-godot)
+[CustomTkinter](https://customtkinter.tomschimansky.com/)
+[doctest](https://github.com/doctest/doctest)

@@ -25,8 +25,13 @@ public:
 	~BuildInformation();
 
 	void _ready() override;
-	void _input(const Ref<InputEvent> &p_event) override;
+	void _unhandled_input(const Ref<InputEvent> &p_event) override;
 	void _process(double delta) override;
+
+	void register_debug_system(Object *p_debug_system);
+	void unregister_debug_system(Object* p_debug_system);
+
+	bool is_showing() const;
 
 private:
 	void init_build_information_rich_text_label(RichTextLabel *rich_text_label, String label_name, const Vector2 &size);
@@ -45,6 +50,8 @@ private:
 	double cpu_times[FRAME_TIME_HISTORY];
 	double gpu_times[FRAME_TIME_HISTORY];
 	int current_frame_history_index;
+
+	TypedArray<Object> debug_systems;
 
 	Input *input;
 	RenderingServer *rendering_server;

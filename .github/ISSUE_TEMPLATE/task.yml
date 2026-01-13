@@ -1,0 +1,21 @@
+name: Task
+description: | 
+  Write up a new task for the godot-project-template.
+title: "[TASK] - Describe task briefly"
+labels: [enhancement, triage]
+
+body:
+    - type: markdown
+      attributes:
+        value: |
+          - Please make sure there isn't any existing [open](https://github.com/comfyjase/godot-project-template/issues) issues that might be considered a duplicate of this task.
+          
+    - type: textarea
+      attributes:
+        label: Describe the Task
+        description: |
+          - Brief description for the task.
+          - What work roughly will be involved for this task?
+          - NOTE: Please don't forget to assign a milestone and time estimate for this task
+      validations:
+        required: true

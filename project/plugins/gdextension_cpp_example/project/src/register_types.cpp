@@ -13,6 +13,7 @@
 #endif
 
 #include "custom_sprite.h"
+#include "function_library.h"
 
 using namespace godot;
 
@@ -30,6 +31,8 @@ void initialize_gdextension_cpp_example_gdextension_types(ModuleInitializationLe
 #endif
 
 	GDREGISTER_CLASS(CustomSprite);
+	
+	development_cleanup_temp_project_plugin_files();
 }
 
 void uninitialize_gdextension_cpp_example_gdextension_types(ModuleInitializationLevel p_level) {

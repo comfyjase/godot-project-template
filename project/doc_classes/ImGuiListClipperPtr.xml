@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="ImGuiListClipperPtr" inherits="RefCounted" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+	</brief_description>
+	<description>
+	</description>
+	<tutorials>
+	</tutorials>
+	<members>
+		<member name="DisplayEnd" type="int" setter="_SetDisplayEnd" getter="_GetDisplayEnd" default="0">
+		</member>
+		<member name="DisplayStart" type="int" setter="_SetDisplayStart" getter="_GetDisplayStart" default="0">
+		</member>
+		<member name="ItemsCount" type="int" setter="_SetItemsCount" getter="_GetItemsCount" default="0">
+		</member>
+		<member name="ItemsHeight" type="float" setter="_SetItemsHeight" getter="_GetItemsHeight" default="0.0">
+		</member>
+		<member name="StartPosY" type="float" setter="_SetStartPosY" getter="_GetStartPosY" default="0.0">
+		</member>
+		<member name="StartSeekOffsetY" type="float" setter="_SetStartSeekOffsetY" getter="_GetStartSeekOffsetY" default="0.0">
+		</member>
+	</members>
+</class>

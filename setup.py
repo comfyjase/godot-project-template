@@ -118,13 +118,13 @@ print("", flush=True)
 print("==========================================", flush=True)
 print("Installing Accesskit", flush=True)
 print("==========================================", flush=True)
-URL = "https://github.com/AccessKit/accesskit-c/releases/download/0.16.0/accesskit-c-0.16.0.zip"
+URL = "https://github.com/AccessKit/accesskit-c/releases/download/0.17.0/accesskit-c-0.17.0.zip"
 r = requests.get(URL)
-with open("accesskit-c-0.16.0.zip", "wb") as fd:
+with open("accesskit-c-0.17.0.zip", "wb") as fd:
     fd.write(r.content)
-with zipfile.ZipFile("accesskit-c-0.16.0.zip") as archive:
+with zipfile.ZipFile("accesskit-c-0.17.0.zip") as archive:
     for file in archive.namelist():
-        if file.startswith('accesskit-c-0.16.0'):
+        if file.startswith('accesskit-c-0.17.0'):
             archive.extract(file, "thirdparty/accesskit")
 print("Done", flush=True)
 print("", flush=True)
@@ -153,12 +153,16 @@ if (os.getenv("JAVA_HOME") is None and os.getenv("ANDROID_HOME") is None) or not
     android_sdk_downloaded_folder = downloads_folder / android_sdk_version_folder_name
     android_sdk_root_folder = Path.home().drive + "/sdks/android/"
     android_sdk_destination_folder = android_sdk_root_folder + "cmdline-tools/latest/"
+    android_sdk_version = "35"
+    android_sdk_version_number = "35.0.0"
+    android_ndk_version_number = "28.1.13356709"
+    android_cmake_version_number = "3.10.2.4988404"
     shutil.unpack_archive(android_sdk_downloaded_folder, android_sdk_destination_folder)
     shutil.copytree(android_sdk_destination_folder + "cmdline-tools", android_sdk_destination_folder, dirs_exist_ok=True)
     shutil.rmtree(android_sdk_destination_folder + "cmdline-tools")
     input(f"Please add ANDROID_HOME={Path.home().drive}/sdks/android and JAVA_HOME=path/to/Eclipse Adoptium/jdk-17.0.15.6-hotspot to your environment variables, and add {Path.home().drive}/sdks/android/platform-tools to your PATH, then press enter... \nNote: If it fails saying JAVA_HOME doesn't exist, please close this command prompt and open up a new one and run setup.py again (just skip any previous steps you completed).")
     run_subprocess(f"{android_sdk_root_folder}/cmdline-tools/latest/bin/sdkmanager.bat --sdk_root={android_sdk_root_folder} --licenses", f"Failed to install android sdk {android_sdk_version_folder_name}")
-    run_subprocess(f"{android_sdk_root_folder}/cmdline-tools/latest/bin/sdkmanager.bat --sdk_root={android_sdk_root_folder} \"platform-tools\" \"build-tools;34.0.0\" \"platforms;android-34\" \"cmdline-tools;latest\" \"cmake;3.10.2.4988404\" \"ndk;23.2.8568313\"", f"Failed to install android sdk {android_sdk_version_folder_name}")
+    run_subprocess(f"{android_sdk_root_folder}/cmdline-tools/latest/bin/sdkmanager.bat --sdk_root={android_sdk_root_folder} \"platform-tools\" \"build-tools;{android_sdk_version_number}\" \"platforms;android-{android_sdk_version}\" \"cmdline-tools;latest\" \"cmake;{android_cmake_version_number}\" \"ndk;{android_ndk_version_number}\"", f"Failed to install android sdk {android_sdk_version_folder_name}")
     print("Done", flush=True)
     print("", flush=True)
 

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="ImGuiWindowClassPtr" inherits="RefCounted" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+	</brief_description>
+	<description>
+	</description>
+	<tutorials>
+	</tutorials>
+	<members>
+		<member name="ClassId" type="int" setter="_SetClassId" getter="_GetClassId" default="0">
+		</member>
+		<member name="DockNodeFlagsOverrideSet" type="int" setter="_SetDockNodeFlagsOverrideSet" getter="_GetDockNodeFlagsOverrideSet" enum="ImGui.DockNodeFlags" is_bitfield="true" default="0">
+		</member>
+		<member name="DockingAllowUnclassed" type="bool" setter="_SetDockingAllowUnclassed" getter="_GetDockingAllowUnclassed" default="true">
+		</member>
+		<member name="DockingAlwaysTabBar" type="bool" setter="_SetDockingAlwaysTabBar" getter="_GetDockingAlwaysTabBar" default="false">
+		</member>
+		<member name="FocusRouteParentWindowId" type="int" setter="_SetFocusRouteParentWindowId" getter="_GetFocusRouteParentWindowId" default="0">
+		</member>
+		<member name="ParentViewportId" type="int" setter="_SetParentViewportId" getter="_GetParentViewportId" default="4294967295">
+		</member>
+		<member name="TabItemFlagsOverrideSet" type="int" setter="_SetTabItemFlagsOverrideSet" getter="_GetTabItemFlagsOverrideSet" enum="ImGui.TabItemFlags" is_bitfield="true" default="0">
+		</member>
+		<member name="ViewportFlagsOverrideClear" type="int" setter="_SetViewportFlagsOverrideClear" getter="_GetViewportFlagsOverrideClear" enum="ImGui.ViewportFlags" is_bitfield="true" default="0">
+		</member>
+		<member name="ViewportFlagsOverrideSet" type="int" setter="_SetViewportFlagsOverrideSet" getter="_GetViewportFlagsOverrideSet" enum="ImGui.ViewportFlags" is_bitfield="true" default="0">
+		</member>
+	</members>
+</class>

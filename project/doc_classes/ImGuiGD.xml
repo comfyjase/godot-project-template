@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="ImGuiGD" inherits="Object" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+	</brief_description>
+	<description>
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="AddFont">
+			<return type="void" />
+			<param index="0" name="font_file" type="FontFile" />
+			<param index="1" name="font_size" type="int" />
+			<param index="2" name="merge" type="bool" default="false" />
+			<param index="3" name="glyph_ranges" type="PackedInt32Array" default="PackedInt32Array()" />
+			<description>
+			</description>
+		</method>
+		<method name="AddFontDefault">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="Connect">
+			<return type="void" />
+			<param index="0" name="callable" type="Callable" />
+			<description>
+			</description>
+		</method>
+		<method name="GetFontPtrs">
+			<return type="PackedInt64Array" />
+			<description>
+			</description>
+		</method>
+		<method name="GetImGuiPtrs">
+			<return type="PackedInt64Array" />
+			<param index="0" name="version" type="String" />
+			<param index="1" name="ioSize" type="int" />
+			<param index="2" name="vertSize" type="int" />
+			<param index="3" name="idxSize" type="int" />
+			<param index="4" name="charSize" type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="RebuildFontAtlas">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="ResetFonts">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="SetIniFilename">
+			<return type="void" />
+			<param index="0" name="filename" type="String" />
+			<description>
+			</description>
+		</method>
+		<method name="SetMainViewport">
+			<return type="void" />
+			<param index="0" name="vp" type="Viewport" />
+			<description>
+			</description>
+		</method>
+		<method name="SubViewport">
+			<return type="bool" />
+			<param index="0" name="svp" type="SubViewport" />
+			<description>
+			</description>
+		</method>
+		<method name="ToolInit">
+			<return type="bool" />
+			<description>
+			</description>
+		</method>
+	</methods>
+	<members>
+		<member name="JoyAxisDeadZone" type="float" setter="_SetJoyAxisDeadZone" getter="_GetJoyAxisDeadZone" default="0.15">
+		</member>
+		<member name="Scale" type="float" setter="_SetScale" getter="_GetScale" default="1.0">
+		</member>
+		<member name="Visible" type="bool" setter="_SetVisible" getter="_GetVisible" default="false">
+		</member>
+	</members>
+</class>

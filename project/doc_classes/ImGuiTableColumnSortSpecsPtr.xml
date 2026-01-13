@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="ImGuiTableColumnSortSpecsPtr" inherits="RefCounted" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+	</brief_description>
+	<description>
+	</description>
+	<tutorials>
+	</tutorials>
+	<members>
+		<member name="ColumnIndex" type="int" setter="_SetColumnIndex" getter="_GetColumnIndex" default="0">
+		</member>
+		<member name="ColumnUserID" type="int" setter="_SetColumnUserID" getter="_GetColumnUserID" default="0">
+		</member>
+		<member name="SortDirection" type="int" setter="_SetSortDirection" getter="_GetSortDirection" enum="ImGui.SortDirection" default="0">
+		</member>
+		<member name="SortOrder" type="int" setter="_SetSortOrder" getter="_GetSortOrder" default="0">
+		</member>
+	</members>
+</class>

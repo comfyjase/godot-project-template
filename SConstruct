@@ -81,23 +81,23 @@ system.add_imgui(env, all_directories, all_source_files, project_source_files, a
 system.add_doctest(all_directories, all_include_files, cpp_defines)
 
 # godot-cpp
-all_directories.extend(get_all_directories_recursive(system.godot_cpp_extension_dir_path))
-all_directories.extend(get_all_directories_recursive(system.godot_cpp_gen_include_dir_path))
-all_directories.extend(get_all_directories_recursive(system.godot_cpp_gen_src_dir_path))
-all_directories.extend(get_all_directories_recursive(system.godot_cpp_include_dir_path))
-all_directories.extend(get_all_directories_recursive(system.godot_cpp_src_dir_path))
+all_directories.extend(get_all_directories_recursive(env, system.godot_cpp_extension_dir_path))
+all_directories.extend(get_all_directories_recursive(env, system.godot_cpp_gen_include_dir_path))
+all_directories.extend(get_all_directories_recursive(env, system.godot_cpp_gen_src_dir_path))
+all_directories.extend(get_all_directories_recursive(env, system.godot_cpp_include_dir_path))
+all_directories.extend(get_all_directories_recursive(env, system.godot_cpp_src_dir_path))
 
-all_include_files.extend(get_all_files_recursive(system.godot_cpp_extension_dir_path, "*.h"))
-all_include_files.extend(get_all_files_recursive(system.godot_cpp_gen_include_dir_path, "*.hpp"))
-all_source_files.extend(get_all_files_recursive(system.godot_cpp_gen_src_dir_path, "*.cpp"))
-all_include_files.extend(get_all_files_recursive(system.godot_cpp_include_dir_path, "*.hpp"))
-all_source_files.extend(get_all_files_recursive(system.godot_cpp_src_dir_path, "*.cpp"))
+all_include_files.extend(get_all_files_recursive(env, system.godot_cpp_extension_dir_path, "*.h"))
+all_include_files.extend(get_all_files_recursive(env, system.godot_cpp_gen_include_dir_path, "*.hpp"))
+all_source_files.extend(get_all_files_recursive(env, system.godot_cpp_gen_src_dir_path, "*.cpp"))
+all_include_files.extend(get_all_files_recursive(env, system.godot_cpp_include_dir_path, "*.hpp"))
+all_source_files.extend(get_all_files_recursive(env, system.godot_cpp_src_dir_path, "*.cpp"))
 
 # project
-all_directories.extend(get_all_directories_recursive(system.project_src_dir))
-all_source_files.extend(get_all_files_recursive(system.project_src_dir, "*.cpp"))
-project_source_files.extend(get_all_files_recursive(system.project_src_dir, "*.cpp"))
-all_include_files.extend(get_all_files_recursive(system.project_src_dir, "*.h"))
+all_directories.extend(get_all_directories_recursive(env, system.project_src_dir))
+all_source_files.extend(get_all_files_recursive(env, system.project_src_dir, "*.cpp"))
+project_source_files.extend(get_all_files_recursive(env, system.project_src_dir, "*.cpp"))
+all_include_files.extend(get_all_files_recursive(env, system.project_src_dir, "*.h"))
 system.add_cpp_defines(env, cpp_defines)
 
 # Add plugins

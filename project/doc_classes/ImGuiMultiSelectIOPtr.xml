@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="ImGuiMultiSelectIOPtr" inherits="RefCounted" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+	</brief_description>
+	<description>
+	</description>
+	<tutorials>
+	</tutorials>
+	<members>
+		<member name="ItemsCount" type="int" setter="_SetItemsCount" getter="_GetItemsCount" default="0">
+		</member>
+		<member name="NavIdItem" type="int" setter="_SetNavIdItem" getter="_GetNavIdItem" default="0">
+		</member>
+		<member name="NavIdSelected" type="bool" setter="_SetNavIdSelected" getter="_GetNavIdSelected" default="false">
+		</member>
+		<member name="RangeSrcItem" type="int" setter="_SetRangeSrcItem" getter="_GetRangeSrcItem" default="0">
+		</member>
+		<member name="RangeSrcReset" type="bool" setter="_SetRangeSrcReset" getter="_GetRangeSrcReset" default="false">
+		</member>
+		<member name="Requests" type="Array" setter="_SetRequests" getter="_GetRequests" default="[]">
+		</member>
+	</members>
+</class>

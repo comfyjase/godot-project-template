@@ -121,7 +121,7 @@ class App(customtkinter.CTk):
         # Target platform/configuration selection        
         self.target_platform_selection = TargetPlatformSelection(self.perform_checks_frame, 
                 "Checklist", "Run Checklist", self.get_compile_command,
-                auto_selected_platforms = ["android"], auto_selected_configurations = ["production"],
+                auto_selected_platforms = ["web"], auto_selected_configurations = ["production"],
                 custom_commands = perform_checks_custom_commands)
 
     def create_commit_message_frame(self):
@@ -302,7 +302,7 @@ class App(customtkinter.CTk):
        
     def get_issues(self):
         issues = []
-        issues_str = subprocess.check_output("gh issue list", shell=True).decode('ascii').strip()
+        issues_str = subprocess.check_output("gh issue list --limit 100", shell=True).decode('ascii').strip()
         if ("no open issues" in issues_str) or (issues_str != ""):
             issues = issues_str.split("\n")
             issues.reverse()

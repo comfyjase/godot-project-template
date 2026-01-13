@@ -92,6 +92,7 @@ def get_vs_cpp_defines():
             "DEBUG_ENABLED",
             "TESTS_ENABLED",
             "DEBUG",
+            "DEVELOPMENT",
             "DOCTEST_CONFIG_NO_EXCEPTIONS_BUT_WITH_ALL_ASSERTS"
         ],
         # android template_debug

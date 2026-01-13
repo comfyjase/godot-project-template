@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="ImGuiSelectionRequestPtr" inherits="RefCounted" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+	</brief_description>
+	<description>
+	</description>
+	<tutorials>
+	</tutorials>
+	<members>
+		<member name="RangeDirection" type="int" setter="_SetRangeDirection" getter="_GetRangeDirection" default="0">
+		</member>
+		<member name="RangeFirstItem" type="int" setter="_SetRangeFirstItem" getter="_GetRangeFirstItem" default="0">
+		</member>
+		<member name="RangeLastItem" type="int" setter="_SetRangeLastItem" getter="_GetRangeLastItem" default="0">
+		</member>
+		<member name="Selected" type="bool" setter="_SetSelected" getter="_GetSelected" default="false">
+		</member>
+		<member name="Type" type="int" setter="_SetType" getter="_GetType" enum="ImGui.SelectionRequestType" default="0">
+		</member>
+	</members>
+</class>

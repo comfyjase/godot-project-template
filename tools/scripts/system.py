@@ -93,6 +93,7 @@ repo_bin_path = os.path.join(repo_dir_path, "bin").replace("\\", "/")
 project_cache_path = scons_cache_dir_name
 plugin_cache_path = f"../../../{scons_cache_dir_name}" # Relative from where the SConstruct file is in the plugins folder
 project_dir_path = os.path.join(repo_dir_path, project_dir_name).replace("\\", "/")
+project_bin_path = os.path.join(project_dir_path, "bin").replace("\\", "/")
 project_src_path = os.path.join(project_dir_path, "src").replace("\\", "/")
 project_export_presets_path = os.path.join(project_dir_path, "export_presets.cfg").replace("\\", "/")
 absolute_plugins_dir_path = os.path.join(project_dir_path, "plugins").replace("\\", "/")
@@ -104,7 +105,7 @@ addons_imgui_godot_include_dir_path = os.path.join(addons_imgui_godot_dir_path, 
 absolute_thirdparty_dir_path = os.path.join(repo_dir_path, "thirdparty").replace("\\", "/")
 thirdparty_dir_path = "thirdparty"
 thirdparty_imgui_dir_path = os.path.join(thirdparty_dir_path, "imgui").replace("\\", "/")
-access_kit_path = os.path.join(absolute_thirdparty_dir_path, "accesskit", "accesskit-c-0.16.0").replace("\\", "/")
+access_kit_path = os.path.join(absolute_thirdparty_dir_path, "accesskit", "accesskit-c-0.17.0").replace("\\", "/")
 absolute_tools_scripts_dir_path = os.path.join(repo_dir_path, "tools", "scripts").replace("\\", "/")
 tools_scripts_dir_path = os.path.join("tools", "scripts").replace("\\", "/")
 
@@ -114,6 +115,8 @@ engine_dir_name = "engine"
 engine_godot_dir = os.path.join(engine_dir_name, "godot").replace("\\", "/")
 engine_godot_cpp_dir = os.path.join(engine_dir_name, "godot-cpp").replace("\\", "/")
 
+absolute_gdextension_doc_source_folder = os.path.join(repo_dir_path, "doc_classes").replace("\\", "/")
+absolute_gdextension_doc_destination_folder = os.path.join(project_dir_path, "doc_classes").replace("\\", "/")
 absolute_godot_dir_path = os.path.join(repo_dir_path, engine_godot_dir).replace("\\", "/")
 absolute_godot_bin_dir_path = os.path.join(absolute_godot_dir_path, "bin").replace("\\", "/")
 godot_thirdparty_dir_path = os.path.join(engine_godot_dir, "thirdparty").replace("\\", "/")
@@ -130,21 +133,24 @@ godot_cpp_src_dir_path = os.path.join(godot_cpp_dir_path, "src").replace("\\", "
 building_editor_for_non_native_os = False
 godot_engine_architecture_arg = ""
 
-def get_all_directories_recursive(root_directory):
+def get_all_directories_recursive(env, root_directory):
     directories = []
     
     for (search_path,directory_names,files) in os.walk(root_directory, topdown=True):
         search_path_with_ending_slash = os.path.join(search_path, '').replace('\\', '/')
+        if ("src/tests/" in search_path_with_ending_slash and not is_unit_testing_allowed(env)):
+            continue
         directories.append(search_path_with_ending_slash)
     
     return directories
     
-def get_all_files_recursive(root_directory, filetype='*.*'):
+def get_all_files_recursive(env, root_directory, filetype='*.*'):
     files_matching_type = []
 
     for (search_path,directory_names,files) in os.walk(root_directory, topdown=True):
         search_path_with_ending_slash = os.path.join(search_path, '').replace('\\', '/')
-        
+        if ("src/tests/" in search_path_with_ending_slash and not is_unit_testing_allowed(env)):
+            continue
         for (file) in files:
             if fnmatch.fnmatch(file, '*' + filetype):
                 files_matching_type.append(str(search_path_with_ending_slash + file))
@@ -163,7 +169,7 @@ def add_imgui(env, all_directories, all_source_files, project_source_files, all_
         all_source_files.extend(Glob(f"{thirdparty_imgui_dir_path}/*.cpp", strings=True))
         project_source_files.extend(Glob(f"{thirdparty_imgui_dir_path}/*.cpp", strings=True))
         all_include_files.extend(Glob(f"{thirdparty_imgui_dir_path}/*.h", strings=True))
-        all_include_files.extend(get_all_files_recursive(addons_imgui_godot_include_dir_path, "*.h"))
+        all_include_files.extend(get_all_files_recursive(env, addons_imgui_godot_include_dir_path, "*.h"))
         cpp_defines.extend([ 'IMGUI_USER_CONFIG="\\"imconfig-godot.h\\""', "IMGUI_ENABLED" ])
 
 def add_doctest(all_directories, all_include_files, cpp_defines):
@@ -171,11 +177,18 @@ def add_doctest(all_directories, all_include_files, cpp_defines):
     all_include_files.append(os.path.join(godot_thirdparty_dir_path, "doctest", "doctest.h"))
     cpp_defines.append("DOCTEST_CONFIG_NO_EXCEPTIONS_BUT_WITH_ALL_ASSERTS")
 
+def is_debug_target(env):
+    return env["target"] in ["editor", "editor_game", "development", "template_debug"]
+
+def is_unit_testing_allowed(env):
+    return is_debug_target(env) and (env["platform"] in ["windows", "linux", "macos"])
+
 def add_cpp_defines(env, cpp_defines):
-    if env["target"] in ["editor", "editor_game", "development", "template_debug"]:
+    if is_debug_target(env):
         cpp_defines.append("TOOLS_ENABLED")
         cpp_defines.append("DEBUG_ENABLED")
-        cpp_defines.append("TESTS_ENABLED")
+        if is_unit_testing_allowed(env):
+            cpp_defines.append("TESTS_ENABLED")
     
     if env["platform"] == "windows":
         cpp_defines.append("PLATFORM_WINDOWS")
@@ -197,6 +210,8 @@ def add_cpp_defines(env, cpp_defines):
     elif env["target"] == "template_release":
         cpp_defines.append("RELEASE")
     else:
+        if env["target"] == "development":
+            cpp_defines.append("DEVELOPMENT")
         cpp_defines.append("DEBUG")
     
 def process_exists(process_name):
@@ -316,17 +331,60 @@ def generate_cpp_bindings():
     except IOError as e:
         sys.exit(f"Error: Failed to copy extension api files from godot/bin -> godot_cpp/gdextension/ {e}")
         
+def generate_gdextension_documentation():
+    # Move plugins to addons folder
+    for (i, plugin_name) in enumerate(project_plugins):
+        plugins_dir = os.path.join(absolute_plugins_dir_path, plugin_name).replace("\\", "/")
+        addons_dir = os.path.join(absolute_addons_dir_path, plugin_name).replace("\\", "/")
+        try:
+            shutil.move(plugins_dir, addons_dir)
+        except IOError as e:
+            sys.exit(f"Error: Failed to move {plugins_dir} -> {addons_dir} {e}")
+    
+    # Clear previous documentation files to avoid having nested doc_classes folders
+    if os.path.exists(absolute_gdextension_doc_source_folder):
+        shutil.rmtree(absolute_gdextension_doc_source_folder)
+    if os.path.exists(absolute_gdextension_doc_destination_folder):
+        shutil.rmtree(absolute_gdextension_doc_destination_folder)
+    
+    # Generate documentation
+    previous_working_directory = os.getcwd().replace("\\", "/")
+    os.chdir(project_dir_path)
+    generate_documentation_command = f"\"{absolute_godot_bin_dir_path}/{get_godot_binary_file_name_for_system()}\" --doctool ../ --gdextension-docs"
+    print(f"Command: {generate_documentation_command}", flush=True)
+    return_code = subprocess.call(generate_documentation_command, shell=True)
+    if return_code != 0:
+        sys.exit(f"Error: Failed to generate gdextension documentation for {lib_name} {project_dir_path}") 
+    os.chdir(previous_working_directory)
+    
+    # Move documentation to correct folder under the project folder
+    try:
+        shutil.move(absolute_gdextension_doc_source_folder, absolute_gdextension_doc_destination_folder)
+    except IOError as e:
+        sys.exit(f"Error: Failed to move {absolute_gdextension_doc_source_folder} -> {absolute_gdextension_doc_destination_folder} {e}")
+    
+    # Move plugins back to where their previous location is
+    for (i, plugin_name) in enumerate(project_plugins):
+        plugins_dir = os.path.join(absolute_plugins_dir_path, plugin_name).replace("\\", "/")
+        addons_dir = os.path.join(absolute_addons_dir_path, plugin_name).replace("\\", "/")    
+        try:
+            shutil.move(addons_dir, plugins_dir)
+        except IOError as e:
+            sys.exit(f"Error: Failed to move {plugins_dir} -> {addons_dir} {e}")
+    
+    print("Done", flush=True)
+
 def add_plugins(plugin_names, env, customs, all_directories_array, project_source_files, all_source_files_array, all_include_files_array):
     dynamically_link_plugins = (env["platform"] != "web")
     
     # Include all plugin files so they can be seen in the IDE.
     for (i, plugin_name) in enumerate(plugin_names):
         plugin_src_dir_path = os.path.join(plugins_dir_path, plugin_name, project_dir_name, "src")
-        all_directories_array.extend(get_all_directories_recursive(plugin_src_dir_path))
-        all_source_files_array.extend(get_all_files_recursive(plugin_src_dir_path, "*.cpp"))
+        all_directories_array.extend(get_all_directories_recursive(env, plugin_src_dir_path))
+        all_source_files_array.extend(get_all_files_recursive(env, plugin_src_dir_path, "*.cpp"))
         if not dynamically_link_plugins:
-            project_source_files.extend(get_all_files_recursive(plugin_src_dir_path, "*.cpp"))
-        all_include_files_array.extend(get_all_files_recursive(plugin_src_dir_path, "*.h"))
+            project_source_files.extend(get_all_files_recursive(env, plugin_src_dir_path, "*.cpp"))
+        all_include_files_array.extend(get_all_files_recursive(env, plugin_src_dir_path, "*.h"))
 
     if not dynamically_link_plugins:
         print("Plugins will all be built into single project library", flush=True)
@@ -348,6 +406,37 @@ def add_plugins(plugin_names, env, customs, all_directories_array, project_sourc
         
         env.AppendUnique(LIBS=[lib_filename])
         env.AppendUnique(LIBPATH=[".", f"{plugins_dir_path}/{plugin_name}/bin/{env["platform"]}/"])
+
+def get_gdextension_binary_file_path(gdextension_name):
+    library_suffix = ""
+    if platform_arg == "windows":
+        library_suffix = ".dll"
+    elif platform_arg == "macos":
+        library_suffix = ".dylib"
+    elif platform_arg == "linux":
+        library_suffix = ".so"
+    elif platform_arg == "web":
+        library_suffix = ".wasm"
+    elif platform_arg == "android":
+        library_suffix = ".so"
+    elif platform_arg == "ios":
+        library_suffix = ".dylib"
+    
+    mapped_configuration = ""
+    if configuration_arg in ["editor", "editor_game", "development"]:
+        mapped_configuration = "editor"
+    elif configuration_arg == "template_debug":
+        mapped_configuration = "template_debug"
+    else:
+        mapped_configuration = "template_release"
+    
+    binary_file_path = ""
+    if platform_arg == "windows":
+        binary_file_path = os.path.join(project_bin_path, platform_arg, f"{gdextension_name}.{platform_arg}.{mapped_configuration}.{architecture_arg}{library_suffix}")
+    else:
+        binary_file_path = os.path.join(project_bin_path, platform_arg, f"lib{gdextension_name}.{platform_arg}.{mapped_configuration}.{architecture_arg}{library_suffix}")
+    
+    return binary_file_path.replace("\\", "/")
 
 def get_godot_configuration():
     godot_engine_configuration_arg = configuration_arg
@@ -580,4 +669,5 @@ def get_project_scons_command():
 def get_plugin_scons_command():
     scons_command = get_project_scons_command()
     scons_command = scons_command.replace(f"cache_path={project_cache_path}", f"cache_path={plugin_cache_path}")
+    scons_command += " symbols_visibility=visible"
     return scons_command

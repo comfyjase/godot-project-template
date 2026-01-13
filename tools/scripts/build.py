@@ -6,6 +6,8 @@ import shutil
 import subprocess
 import sys
 
+from pathlib import Path
+
 script_path_to_append = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..")
 if script_path_to_append not in sys.path:
     sys.path.append(script_path_to_append)
@@ -62,6 +64,43 @@ if system.configuration_arg != "development":
 
 # ===============================================
 # Build Plugins
+
+# Development Configuration Only
+# Rename the old file - will be removed later by the gdextension on hot reload if possible
+if system.configuration_arg == "development":
+    project_bin_temp_folder = Path(os.path.join(system.project_bin_path, "temp").replace("\\", "/"))
+    project_bin_temp_folder.mkdir(parents=True, exist_ok=True)
+    gdignore_file_path = project_bin_temp_folder / ".gdignore"
+    
+    if not os.path.exists(gdignore_file_path):
+        with open(gdignore_file_path, "w") as f:
+            pass
+    
+    for (i, plugin_name) in enumerate(system.project_plugins):
+        plugin_binary_file_path = Path(system.get_gdextension_binary_file_path(plugin_name))
+        plugin_binary_file_name = os.path.basename(plugin_binary_file_path)
+        temp_file_path = project_bin_temp_folder / (str(i) + "." + plugin_binary_file_name + ".temp")
+        
+        if os.path.exists(plugin_binary_file_path):
+            if os.path.exists(temp_file_path):
+                try:
+                    os.remove(temp_file_path)
+                except OSError as e:
+                    pass
+                    
+                new_temp_file_path = project_bin_temp_folder / (str(i) + "." + plugin_binary_file_name + ".temp.2")
+                
+                try:
+                    os.replace(plugin_binary_file_path, new_temp_file_path)
+                except PermissionError as e:
+                    try:
+                        shutil.move(plugin_binary_file_path, temp_file_path)
+                    except PermissionError as another_e:
+                        print("Please go to the editor to trigger a hot reload first", flush=True)
+            elif not os.path.exists(temp_file_path):
+                shutil.move(plugin_binary_file_path, temp_file_path)
+
+# Build a new file
 for (i, plugin_name) in enumerate(system.project_plugins):
     os.chdir(os.path.join(system.plugins_dir_path, plugin_name))
     
@@ -70,9 +109,7 @@ for (i, plugin_name) in enumerate(system.project_plugins):
     print("=====================================", flush=True)
     
     build_plugin_command = system.get_plugin_scons_command()
-    if i == 0:
-        build_plugin_command += " symbols_visibility=visible"
-    else:
+    if i > 0:
         build_plugin_command += " build_library=no"
 
     print(f"Command: {build_plugin_command}", flush=True)
@@ -92,6 +129,15 @@ print(f"Command: {system.get_project_scons_command()}", flush=True)
 return_code = subprocess.call(system.get_project_scons_command(), shell=True)
 if return_code != 0:
     sys.exit(f"Error: Failed to build game")
+
+# ===============================================
+# Generate Documentation
+print("=====================================", flush=True)
+print("Generate GDExtension Documentation", flush=True)
+print("=====================================", flush=True)
+
+# Note: It's on the developer to make sure these documentation files are committed.
+system.generate_gdextension_documentation()
 
 # ===============================================
 # Write To Build Information File
