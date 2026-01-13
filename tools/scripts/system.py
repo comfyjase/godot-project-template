@@ -370,7 +370,7 @@ def generate_gdextension_documentation():
         try:
             shutil.move(addons_dir, plugins_dir)
         except IOError as e:
-            sys.exit(f"Error: Failed to move {plugins_dir} -> {addons_dir} {e}")
+            sys.exit(f"Error: Failed to move {addons_dir} -> {plugins_dir} {e}")
     
     print("Done", flush=True)
 
